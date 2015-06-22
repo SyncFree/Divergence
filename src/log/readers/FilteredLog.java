@@ -1,7 +1,10 @@
 package log.readers;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeSet;
 
 import log.formats.Operation;
 
@@ -10,33 +13,33 @@ public class FilteredLog implements Log {
 	private Log logReader;
 	private Operation nextOp;
 
-	/*
-	 * TODO: GENERIC SUPPORT FOR FILTERS
-	 */
-	private Set<String> clients;
+	private Map<String, Set<String>> filter;
 
 	public FilteredLog(Log logReader) {
 		this.logReader = logReader;
-		this.clients = new TreeSet<>();
+		this.filter = new HashMap<>();
 	}
 	public void addFilter(String attribute, String value) {
-		if (attribute.equals("requesterId")) {
-			if (value.equals("*")) {
-				clients.clear();
-			} else {
-				clients.add(value);
-			}
+		if (!filter.containsKey(attribute) || value.equals("*")) {
+			filter.put(attribute, new HashSet<>());
 		}
+		filter.get(attribute).add(value);
 	}
 
 	public void addFilter(String attribute, String... values) {
-		if (attribute.equals("requesterId")) {
-			for (String value : values)
-				if (value.equals("*")) {
-					clients.clear();
-				} else {
-					clients.add(value);
-				}
+
+		if (!filter.containsKey(attribute)) {
+			filter.put(attribute, new HashSet<>());
+		}
+
+		Set<String> filterValues = filter.get(attribute);
+
+		for (String value : values) {
+			if (value.equals("*")) {
+				filterValues.clear();
+			} else {
+				filterValues.add(value);
+			}
 		}
 	}
 
@@ -52,15 +55,23 @@ public class FilteredLog implements Log {
 		while (nextOp == null) {
 			if (logReader.hasNext()) {
 				Operation streamNext = logReader.next();
-				if (clients.contains(streamNext
-						.getAttributeByName("requesterId"))
-						|| clients.size() == 0) {
+				if (filterValue(streamNext)) {
 					nextOp = streamNext;
 				}
 			} else {
 				break;
 			}
 		}
+	}
+
+	private boolean filterValue(Operation op) {
+		for (Entry<String, Set<String>> attrFilter : filter.entrySet()) {
+			if (attrFilter.getValue().size() == 0
+					|| attrFilter.getValue().contains(
+							op.getAttributeByName(attrFilter.getKey())))
+				return true;
+		}
+		return false;
 	}
 	@Override
 	public Operation next() {
