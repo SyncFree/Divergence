@@ -1,0 +1,8 @@
+.classpath
+.project
+*.log
+*TMP
+
+bin
+Logs
+.settings
