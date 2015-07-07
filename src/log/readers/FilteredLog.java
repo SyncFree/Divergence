@@ -65,13 +65,18 @@ public class FilteredLog implements Log {
 	}
 
 	private boolean filterValue(Operation op) {
-		for (Entry<String, Set<String>> attrFilter : filter.entrySet()) {
-			if (attrFilter.getValue().size() == 0
-					|| attrFilter.getValue().contains(
-							op.getAttributeByName(attrFilter.getKey())))
-				return true;
+		boolean ok = false;
+		if (filter.size() == 0) {
+			ok = true;
+		} else {
+			for (Entry<String, Set<String>> attrFilter : filter.entrySet()) {
+				if (attrFilter.getValue().size() == 0
+						|| attrFilter.getValue().contains(
+								op.getAttributeByName(attrFilter.getKey())))
+					ok = true;
+			}
 		}
-		return false;
+		return ok;
 	}
 	@Override
 	public Operation next() {
