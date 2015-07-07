@@ -44,12 +44,14 @@ public class Anonymizer {
 
 			String url = lineArgs[4]
 					.substring(urlPos, lineArgs[4].length() - 1);
-			String[] urlArgs = url.split("\\?");
+			// String[] urlArgs = url.split("\\?");
+			//
+			// outputLine.append("URL_" + urlArgs[0].hashCode()); // URL
+			// if (urlArgs.length > 1) {
+			// outputLine.append("-" + urlArgs[1].hashCode()); // URL args.
+			// }
 
-			outputLine.append("URL_" + urlArgs[0].hashCode()); // URL
-			if (urlArgs.length > 1) {
-				outputLine.append("-" + urlArgs[1].hashCode()); // URL args.
-			}
+			outputLine.append("URL_" + url); // URL
 
 			if (lineArgs.length == 6) {
 				outputLine.append(DELIMITER);
