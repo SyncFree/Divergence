@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Anonymizer {
 
@@ -52,7 +54,7 @@ public class Anonymizer {
 			// outputLine.append("-" + urlArgs[1].hashCode()); // URL args.
 			// }
 
-			outputLine.append("URL_" + url); // URL
+			outputLine.append(getUrlParameters(url)); // URL
 
 			if (lineArgs.length == 6) {
 				outputLine.append(DELIMITER);
@@ -66,5 +68,15 @@ public class Anonymizer {
 
 		scanner.close();
 
+	}
+
+	private static String getUrlParameters(String Url) {
+		Matcher matcher = Pattern.compile("[0-9][0-9]*").matcher(Url);
+		String result = "";
+
+		while (matcher.find()) {
+			result += (Integer.parseInt(matcher.group(0))) + ",";
+		}
+		return result.substring(0, result.length() - 1);
 	}
 }
