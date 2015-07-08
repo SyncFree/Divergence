@@ -10,8 +10,8 @@ import java.text.ParseException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Scanner;
-import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import log.formats.Operation;
@@ -47,28 +47,29 @@ public class LogByTime<T extends Enum<T>> extends AbstractLog<T> {
 	private static File orderByTimeLog(File logFile, OperationFactory<?> factory)
 			throws IOException {
 		Map<String, Operation<?>> ops = new HashMap<>();
-		TreeSet<String> orderedFile = new TreeSet<>(new Comparator<String>() {
+		PriorityQueue<String> orderedFile = new PriorityQueue<>(
+				new Comparator<String>() {
 
-			@Override
-			public int compare(String o1, String o2) {
-				Operation<?> op1 = ops.get(o1);
-				if (op1 == null) {
-					op1 = factory.parseLine(o1);
-					ops.put(o1, op1);
-				}
+					@Override
+					public int compare(String o1, String o2) {
+						Operation<?> op1 = ops.get(o1);
+						if (op1 == null) {
+							op1 = factory.parseLine(o1);
+							ops.put(o1, op1);
+						}
 
-				Operation<?> op2 = ops.get(o2);
-				if (op2 == null) {
-					op2 = factory.parseLine(o2);
-					ops.put(o2, op2);
-				}
+						Operation<?> op2 = ops.get(o2);
+						if (op2 == null) {
+							op2 = factory.parseLine(o2);
+							ops.put(o2, op2);
+						}
 
-				return Long.compare(op1.getTimestamp(), op2.getTimestamp());
-			}
-		});
+						return op1.compareTo(op2);
+					}
+				});
 
 		Scanner scanner = new Scanner(logFile);
-		while (scanner.hasNext()) {
+		while (scanner.hasNextLine()) {
 			orderedFile.add(scanner.nextLine());
 		}
 		scanner.close();

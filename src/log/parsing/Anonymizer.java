@@ -20,7 +20,7 @@ public class Anonymizer {
 		File file = new File(filename);
 		Scanner scanner = new Scanner(file);
 
-		while (scanner.hasNext()) {
+		while (scanner.hasNextLine()) {
 			String line = scanner.nextLine();
 			String[] lineArgs = line.split(DELIMITER);
 
@@ -38,8 +38,9 @@ public class Anonymizer {
 			outputLine.append(DELIMITER);
 			outputLine.append("USER_" + lineArgs[3].hashCode());
 			outputLine.append(DELIMITER);
-			int urlPos = lineArgs[4].lastIndexOf("(");
-			outputLine.append(lineArgs[4].substring(0, urlPos - 1) + "\""); // action
+			int urlPos = lineArgs[4].lastIndexOf("http://");
+			outputLine.append("\""
+					+ lineArgs[4].substring(1, urlPos - 1).trim() + "\""); // action
 			outputLine.append(DELIMITER);
 
 			String url = lineArgs[4]
