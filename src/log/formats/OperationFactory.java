@@ -1,7 +1,7 @@
 package log.formats;
 
-public interface OperationFactory {
+public interface OperationFactory<T extends Enum<T>> {
 
-	public Operation parseLine(String nextLine);
+	public Operation<T> parseLine(String nextLine);
 
 }

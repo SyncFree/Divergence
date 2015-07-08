@@ -8,25 +8,25 @@ import java.util.Set;
 
 import log.formats.Operation;
 
-public class FilteredLog implements Log {
+public class FilteredLog<T extends Enum<T>> implements Log<T> {
 
-	private Log logReader;
-	private Operation nextOp;
+	private Log<T> logReader;
+	private Operation<T> nextOp;
 
-	private Map<String, Set<String>> filter;
+	private Map<T, Set<String>> filter;
 
-	public FilteredLog(Log logReader) {
+	public FilteredLog(Log<T> logReader) {
 		this.logReader = logReader;
 		this.filter = new HashMap<>();
 	}
-	public void addFilter(String attribute, String value) {
+	public void addFilter(T attribute, String value) {
 		if (!filter.containsKey(attribute) || value.equals("*")) {
 			filter.put(attribute, new HashSet<>());
 		}
 		filter.get(attribute).add(value);
 	}
 
-	public void addFilter(String attribute, String... values) {
+	public void addFilter(T attribute, String... values) {
 
 		if (!filter.containsKey(attribute)) {
 			filter.put(attribute, new HashSet<>());
@@ -54,7 +54,7 @@ public class FilteredLog implements Log {
 	private void computeNextOp() {
 		while (nextOp == null) {
 			if (logReader.hasNext()) {
-				Operation streamNext = logReader.next();
+				Operation<T> streamNext = logReader.next();
 				if (filterValue(streamNext)) {
 					nextOp = streamNext;
 				}
@@ -64,12 +64,12 @@ public class FilteredLog implements Log {
 		}
 	}
 
-	private boolean filterValue(Operation op) {
+	private boolean filterValue(Operation<T> op) {
 		boolean ok = false;
 		if (filter.size() == 0) {
 			ok = true;
 		} else {
-			for (Entry<String, Set<String>> attrFilter : filter.entrySet()) {
+			for (Entry<T, Set<String>> attrFilter : filter.entrySet()) {
 				if (attrFilter.getValue().size() == 0
 						|| attrFilter.getValue().contains(
 								op.getAttributeByName(attrFilter.getKey())))
@@ -79,10 +79,10 @@ public class FilteredLog implements Log {
 		return ok;
 	}
 	@Override
-	public Operation next() {
+	public Operation<T> next() {
 		if (nextOp == null)
 			computeNextOp();
-		Operation opToReturn = nextOp;
+		Operation<T> opToReturn = nextOp;
 		nextOp = null;
 		return opToReturn;
 

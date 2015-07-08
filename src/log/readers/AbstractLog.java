@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import log.formats.Operation;
 import log.formats.OperationFactory;
 
-public abstract class AbstractLog implements Log {
+public abstract class AbstractLog<T extends Enum<T>> implements Log<T> {
 
 	public static String DELIMITER = "\t";
 	public static String NEW_LINE = "\n";
@@ -17,11 +17,11 @@ public abstract class AbstractLog implements Log {
 	protected File logFile;
 	protected Scanner stream;
 	protected boolean init;
-	protected OperationFactory factory;
+	protected OperationFactory<T> factory;
 
 	private static Logger log = Logger.getLogger(AbstractLog.class.getName());
 
-	public AbstractLog(String pathToLog, OperationFactory factory)
+	public AbstractLog(String pathToLog, OperationFactory<T> factory)
 			throws ParseException, IOException {
 		this.logFile = new File(pathToLog);
 		this.factory = factory;
@@ -39,7 +39,7 @@ public abstract class AbstractLog implements Log {
 		return init;
 	}
 
-	public Operation nextOp(String line) throws ParseException {
+	public Operation<T> nextOp(String line) throws ParseException {
 		return factory.parseLine(line);
 	}
 
@@ -49,7 +49,7 @@ public abstract class AbstractLog implements Log {
 	}
 
 	@Override
-	public Operation next() {
+	public Operation<T> next() {
 		try {
 			String line = stream.nextLine();
 			return nextOp(line);

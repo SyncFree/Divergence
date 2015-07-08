@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public abstract class AbstractOperation implements Operation {
+public abstract class AbstractOperation<T extends Enum<?>>
+		implements
+			Operation<T> {
 
-	protected Map<String, String> attributes;
+	protected Map<T, String> attributes;
 	protected long timestamp;
 
 	protected static Logger log = Logger.getLogger(AbstractOperation.class
@@ -20,29 +22,17 @@ public abstract class AbstractOperation implements Operation {
 	protected AbstractOperation() {
 	}
 
-	public AbstractOperation(long timestamp, String requesterId,
-			String operation) {
+	public AbstractOperation(long timestamp) {
 		super();
 		this.attributes = new HashMap<>();
 		this.timestamp = timestamp;
-		this.attributes.put("requesterId", requesterId);
-		this.attributes.put("operation", operation);
-		this.attributes.put("timestamp", "" + timestamp);
-
 	}
 
-	public abstract AbstractOperation parseLine(String nextLine);
+	public abstract Operation<T> parseLine(String nextLine);
 
-	public String getAttributeByName(String name) {
+	@Override
+	public String getAttributeByName(T name) {
 		return attributes.get(name);
-	}
-
-	public String getRequesterId() {
-		return this.attributes.get("requesterId");
-	}
-
-	public String getOperation() {
-		return this.attributes.get("operation");
 	}
 
 	public long getTimestamp() {
@@ -50,8 +40,7 @@ public abstract class AbstractOperation implements Operation {
 	}
 
 	public String toString() {
-		return " REQUESTER " + attributes.get("requesterId") + " TS "
-				+ timestamp + " OP " + attributes.get("operation");
+		return " REQUESTER " + " TS " + timestamp;
 	}
 
 }

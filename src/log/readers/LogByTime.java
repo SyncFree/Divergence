@@ -17,13 +17,13 @@ import java.util.logging.Logger;
 import log.formats.Operation;
 import log.formats.OperationFactory;
 
-public class LogByTime extends AbstractLog {
+public class LogByTime<T extends Enum<T>> extends AbstractLog<T> {
 
 	long startTime;
 
 	private static Logger log = Logger.getLogger(LogByTime.class.getName());
 
-	public LogByTime(String pathToLog, OperationFactory factory)
+	public LogByTime(String pathToLog, OperationFactory<T> factory)
 			throws ParseException, IOException {
 		super(pathToLog, factory);
 		this.logFile = orderByTimeLog(logFile, factory);
@@ -33,7 +33,7 @@ public class LogByTime extends AbstractLog {
 	private boolean init() throws ParseException, IOException {
 		stream = new Scanner(logFile);
 		if (stream.hasNextLine()) {
-			Operation op = nextOp(stream.nextLine());
+			Operation<T> op = nextOp(stream.nextLine());
 			startTime = op.getTimestamp();
 			stream.reset();
 			init = true;
@@ -44,20 +44,20 @@ public class LogByTime extends AbstractLog {
 		return init;
 	}
 
-	private static File orderByTimeLog(File logFile, OperationFactory factory)
+	private static File orderByTimeLog(File logFile, OperationFactory<?> factory)
 			throws IOException {
-		Map<String, Operation> ops = new HashMap<>();
+		Map<String, Operation<?>> ops = new HashMap<>();
 		TreeSet<String> orderedFile = new TreeSet<>(new Comparator<String>() {
 
 			@Override
 			public int compare(String o1, String o2) {
-				Operation op1 = ops.get(o1);
+				Operation<?> op1 = ops.get(o1);
 				if (op1 == null) {
 					op1 = factory.parseLine(o1);
 					ops.put(o1, op1);
 				}
 
-				Operation op2 = ops.get(o2);
+				Operation<?> op2 = ops.get(o2);
 				if (op2 == null) {
 					op2 = factory.parseLine(o2);
 					ops.put(o2, op2);
@@ -81,7 +81,6 @@ public class LogByTime extends AbstractLog {
 		fileWriter.close();
 		return tmp;
 	}
-
 	public static void main(String[] args) throws IOException,
 			InstantiationException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException,
@@ -99,7 +98,7 @@ public class LogByTime extends AbstractLog {
 		Class<?> c = Class.forName(args[1]);
 
 		File orderedLog = orderByTimeLog(new File(args[0]),
-				(OperationFactory) c.getMethod("getFactory").invoke(null));
+				(OperationFactory<?>) c.getMethod("getFactory").invoke(null));
 
 		is = new FileInputStream(orderedLog);
 

@@ -8,13 +8,13 @@ import java.util.logging.Logger;
 import log.formats.Operation;
 import log.formats.OperationFactory;
 
-public class SimpleLog extends AbstractLog {
+public class SimpleLog<T extends Enum<T>> extends AbstractLog<T> {
 
 	long startTime;
 
 	private static Logger log = Logger.getLogger(SimpleLog.class.getName());
 
-	public SimpleLog(String pathToLog, OperationFactory factory)
+	public SimpleLog(String pathToLog, OperationFactory<T> factory)
 			throws ParseException, IOException {
 		super(pathToLog, factory);
 		init();
@@ -23,7 +23,7 @@ public class SimpleLog extends AbstractLog {
 	private boolean init() throws ParseException, IOException {
 		stream = new Scanner(logFile);
 		if (stream.hasNextLine()) {
-			Operation op = nextOp(stream.nextLine());
+			Operation<?> op = nextOp(stream.nextLine());
 			startTime = op.getTimestamp();
 			stream.reset();
 			init = true;

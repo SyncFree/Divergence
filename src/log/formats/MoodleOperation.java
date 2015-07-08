@@ -6,10 +6,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.logging.Logger;
 
-public class MoodleOperation extends AbstractOperation
+import log.formats.model.MOODLE_OP;
+
+public class MoodleOperation extends AbstractOperation<MOODLE_OP>
 		implements
-			Operation,
-			OperationFactory {
+			OperationFactory<MOODLE_OP> {
 
 	private static Logger log = Logger.getLogger(MoodleOperation.class
 			.getName());
@@ -24,10 +25,12 @@ public class MoodleOperation extends AbstractOperation
 
 	private MoodleOperation(String courseId, long timestamp,
 			String requesterId, String operation, String info, String objectId) {
-		super(timestamp, requesterId, operation);
-		this.attributes.put("courseId", courseId);
-		this.attributes.put("info", info);
-		this.attributes.put("objectId", "" + objectId);
+		super(timestamp);
+		this.attributes.put(MOODLE_OP.OPERATION, operation);
+		this.attributes.put(MOODLE_OP.REQUESTER_ID, requesterId);
+		this.attributes.put(MOODLE_OP.COURSE_ID, courseId);
+		this.attributes.put(MOODLE_OP.INFO, info);
+		this.attributes.put(MOODLE_OP.OBJECT_ID, "" + objectId);
 	}
 
 	public MoodleOperation parseLine(String nextLine) {
@@ -48,15 +51,17 @@ public class MoodleOperation extends AbstractOperation
 		}
 	}
 
-	public static OperationFactory getFactory() {
+	public static OperationFactory<MOODLE_OP> getFactory() {
 		return new MoodleOperation();
 	}
 
 	public String toString() {
-		return " REQUESTER " + attributes.get("requesterId") + " TS "
-				+ timestamp + " COURSE_ID " + attributes.get("courseId")
-				+ " OP " + attributes.get("operation") + " OBJECT_ID "
-				+ attributes.get("objectId") + " INFO "
-				+ attributes.get("info");
+		return " REQUESTER " + attributes.get(MOODLE_OP.REQUESTER_ID) + " TS "
+				+ timestamp + " COURSE_ID "
+				+ attributes.get(MOODLE_OP.COURSE_ID) + " OP "
+				+ attributes.get(MOODLE_OP.OPERATION) + " OBJECT_ID "
+				+ attributes.get(MOODLE_OP.OBJECT_ID) + " INFO "
+				+ attributes.get(MOODLE_OP.INFO);
 	}
+
 }
