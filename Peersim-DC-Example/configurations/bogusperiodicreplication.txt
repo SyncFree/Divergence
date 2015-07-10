@@ -1,0 +1,65 @@
+#Number of dcs
+DC 3
+#Number of servers per DC
+SERVERS 1
+#Number of clients per DC
+CLIENTS 10
+
+#time of a cicle (2 seconds)
+CYCLE 2000
+
+#random.seed 1234567890
+network peersim.core.dcdatastore.GeoReplicatedDatastoreNetwork
+network.numberDCs DC
+network.serversPerDC SERVERS
+network.clientsPerDC CLIENTS
+network.size 33
+#network.serverNode
+#network.node 
+
+simulation.gracetime 2*CYCLE
+simulation.logtime CYCLE
+simulation.clientmanager peersim.example.replicationProtocols.clients.RandomCounterOperationGenerator
+simulation.clientopsfile ops.spec
+simulation.clientlayer clayer
+
+node.transport tr
+################### protocols ===========================
+
+
+server.protocol.replication peersim.example.replicationProtocols.BogusPeriodicReplicationProtocol
+server.protocol.replication.transport tr
+server.protocol.replication.period CYCLE
+server.protocol.replication.divergencetracking true 
+
+client.protocol.clayer peersim.example.replicationProtocols.clients.CounterClientProtocol
+client.protocol.clayer.remoteproto replication
+client.protocol.clayer.transport tr
+
+protocol.tr peersim.core.dcdatastore.transport.DCTransportLayer
+protocol.tr.config latencymap.txt
+
+################### initialization ======================
+
+init.sch peersim.core.dcdatastore.controls.ServerInitiator
+init.sch.protocol replication
+
+################ activators ===========================
+
+################ observers ==============================
+
+control.test peersim.example.replicationProtocols.observers.EmptyObserver
+control.test.step CYCLE
+
+control.divergence peersim.core.dcdatastore.observers.divergence.DivergenceObserver
+control.divergence.protocol replication
+control.divergence.filename divergece-report.txt
+control.divergence.step CYCLE
+
+################ Alignment ================================
+
+include.init sch
+
+#include.protocol replication clayer tr
+
+include.control test divergence
