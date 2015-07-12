@@ -5,6 +5,7 @@ import peersim.core.CommonState;
 import peersim.core.Node;
 import peersim.core.Protocol;
 import peersim.core.dcdatastore.ClientNode;
+import peersim.core.dcdatastore.DCCommonState;
 import peersim.core.dcdatastore.clientEventGenerators.BaseClientOperationGenerator;
 import peersim.core.dcdatastore.clientEventGenerators.ClientOperation;
 import peersim.core.dcdatastore.clientEventGenerators.Reply;
@@ -53,6 +54,7 @@ public abstract class ClientLayer implements Protocol, EDProtocol, Cloneable {
 		event.setDestination(node.getServer(CommonState.r.nextInt(node.getNumberServer())));
 		event.setTimeOfCreation(CommonState.getTime());
 		event.setClient(node);
+		System.err.println("@" + DCCommonState.getTime() + ", client " + node.getID() + ": Sending request of type " + event.getClass().getCanonicalName() + " to node " + event.getDestination() + " and pid: " + event.getServerProtocolID());
 		((Transport)node.getProtocol(ClientLayer.transport)).send(node, event.getDestination(), event, pid);   
 	}
 

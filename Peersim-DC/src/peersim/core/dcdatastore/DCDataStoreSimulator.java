@@ -286,6 +286,8 @@ private static boolean executeNext() {
 	}
 		
 	long time = ev.time;
+	DCCommonState.setTime(time);
+	CommonState.setTime(time);
 	if (time >= nextlog)
 	{
 		System.err.println("Current time: " + time);
@@ -303,9 +305,8 @@ private static boolean executeNext() {
 		return true;
 	}
 	
-	//CommonState.setTime(time);
-	DCCommonState.setTime(time);
-	
+	System.err.println("@" + DCCommonState.getTime() + ": processing event of type: " + ev.event.getClass().getCanonicalName() + "[pid: " + ev.pid + "; node: " + (ev.node == null ? "null" : ev.node.getClass().getCanonicalName()) + "; node state: " + (ev.node == null? "null" : ev.node.getID()+":"+ev.node.isUp()) + "]");
+
 	int pid = ev.pid;
 	if (ev.node == null)
 	{
@@ -319,7 +320,7 @@ private static boolean executeNext() {
 				"No destination specified (null) for event "+
 				ev);
 	}
-	else if (ev.node != GeoReplicatedDatastoreNetwork.prototype && ev.node.isUp() )
+	else if (ev.node.isUp() )
 	{
 		//CommonState.setPid(pid);
 		DCCommonState.setPid(pid);
@@ -342,6 +343,7 @@ private static boolean executeNext() {
 					Configuration.lookupPid(pid) + 
 					" does not implement EDProtocol; " + ev.event.getClass()  );
 			}
+			System.err.println("Delivering evento to protocol: " + prot.getClass().getCanonicalName());
 			prot.processEvent(ev.node, pid, ev.event);
 		}
 	}
@@ -465,7 +467,7 @@ public static void add(long delay, Object event, Node node, int pid)
 				+ Byte.MAX_VALUE + " protocols");
 	
 	long time = DCCommonState.getTime();
-	if( endtime - time > delay ) // check like this to deal with overflow 
+	if( endtime < 0 || endtime - time > delay ) // check like this to deal with overflow 
 		heap.add(time+delay, event, node, (byte) pid);
 }
 
