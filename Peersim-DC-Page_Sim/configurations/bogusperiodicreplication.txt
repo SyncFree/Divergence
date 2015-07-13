@@ -1,0 +1,57 @@
+#Number of dcs
+DC 3
+#Number of servers per DC
+SERVERS 1
+#Number of clients per DC
+CLIENTS 10
+
+#time of a cicle (2 seconds)
+CYCLE 2000
+
+#random.seed 1234567890
+network peersim.core.dcdatastore.GeoReplicatedDatastoreNetwork
+network.numberDCs DC
+network.serversPerDC SERVERS
+network.clientsPerDC CLIENTS
+network.serverNode
+network.node 
+
+simulation.gracetime 2*CYCLE
+simulation.logtime CYCLE
+simulation.clientmanager peersim.example.replicationProtocols.clients.RandomCounterOperationGenerator
+simulation.clientopsfile ops.spec
+################### protocols ===========================
+
+
+server.protocol.replication peersim.example.replicationProtocols.BogusPeriodicReplicationProtocol
+server.protocol.replication.transport tr
+server.protocol.replication.period CYCLE
+server.protocol.replication.step CYCLE
+
+protocol.client peersim.example.replicationProtocols.clients.CounterClientProtocol
+protocol.client.remoteproto replication
+protocol.client.transpot tr
+
+protocol.tr peersim.core.dcdatastore.transport.DCTransportLayer
+protocol.tr.config latencymap.txt
+
+
+################### initialization ======================
+
+init.sch CDScheduler
+init.sch.protocol replication
+
+################ activators ===========================
+
+################ control ==============================
+
+control.test peersim.example.replicationProtocols.observers.EmptyObserver
+control.test.step CYCLE
+
+################ Alignment ================================
+
+include.init sch
+
+include.protocol replication client tr
+
+include.control test
