@@ -76,8 +76,8 @@ public class LogByTime<T extends Enum<T>> extends AbstractLog<T> {
 		File tmp = File.createTempFile("ordered-" + logFile.getName() + "_",
 				null);
 		FileOutputStream fileWriter = new FileOutputStream(tmp);
-		for (String op : orderedFile) {
-			fileWriter.write((op + "\n").getBytes());
+		while (orderedFile.size() > 0) {
+			fileWriter.write((orderedFile.remove() + "\n").getBytes());
 		}
 		fileWriter.close();
 		return tmp;
