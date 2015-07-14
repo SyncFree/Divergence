@@ -23,6 +23,8 @@ public class GeoReplicatedDatastoreNetwork extends Network {
 	static protected HashMap<Integer,ServerNode[]> servers;
 	static protected HashMap<Integer,ClientNode[]> clients;
 	
+	static protected ClientNode[] allClients;
+	
 	static public ServerNode serverPrototype;
 	static public ClientNode clientPrototype;
 	
@@ -57,6 +59,7 @@ public class GeoReplicatedDatastoreNetwork extends Network {
 		node = new Node[len];
 		servers = new HashMap<Integer, ServerNode[]>();
 		clients = new HashMap<Integer, ClientNode[]>();
+		allClients = new ClientNode[numberDCs * clientsPerDC];
 		for(int i = 0; i < numberDCs; i++) {
 			servers.put(new Integer(i+1), new ServerNode[serversPerDC]);
 			clients.put(new Integer(i+1), new ClientNode[clientsPerDC]);
@@ -106,6 +109,7 @@ public class GeoReplicatedDatastoreNetwork extends Network {
 				totalCounter++;
 			}
 		}
+		short c = 0;
 		for(short i = 0; i < numberDCs; i++) {
 			ClientNode[] tmp = clients.get(new Integer(i+1));
 			for (int j = 0; j < clientsPerDC; j++) {
@@ -114,6 +118,8 @@ public class GeoReplicatedDatastoreNetwork extends Network {
 				node[totalCounter] = tmp[j];
 				tmp[j].setIndex(totalCounter);
 				totalCounter++;
+				allClients[c] = tmp[j];
+				c++;
 			}
 		}
 		
@@ -152,5 +158,9 @@ public class GeoReplicatedDatastoreNetwork extends Network {
 	
 	public static ClientNode getClient(int dc, int index) {
 		return clients.get(dc)[index];
+	}
+	
+	public static ClientNode getClient(int index) {
+		return allClients[index];
 	}
 }

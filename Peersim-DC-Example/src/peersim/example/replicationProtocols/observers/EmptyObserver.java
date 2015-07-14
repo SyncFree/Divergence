@@ -1,7 +1,6 @@
 package peersim.example.replicationProtocols.observers;
 
 import peersim.core.Control;
-import peersim.core.dcdatastore.DCCommonState;
 
 public class EmptyObserver implements Control {
 

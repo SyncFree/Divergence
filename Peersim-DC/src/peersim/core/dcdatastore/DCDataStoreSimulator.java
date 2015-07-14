@@ -305,7 +305,7 @@ private static boolean executeNext() {
 		return true;
 	}
 	
-	System.err.println("@" + DCCommonState.getTime() + ": processing event of type: " + ev.event.getClass().getCanonicalName() + "[pid: " + ev.pid + "; node: " + (ev.node == null ? "null" : ev.node.getClass().getCanonicalName()) + "; node state: " + (ev.node == null? "null" : ev.node.getID()+":"+ev.node.isUp()) + "]");
+	//System.err.println("@" + DCCommonState.getTime() + ": processing event of type: " + ev.event.getClass().getCanonicalName() + "[pid: " + ev.pid + "; node: " + (ev.node == null ? "null" : ev.node.getClass().getCanonicalName()) + "; node state: " + (ev.node == null? "null" : ev.node.getID()+":"+ev.node.isUp()) + "]");
 
 	int pid = ev.pid;
 	if (ev.node == null)
@@ -343,7 +343,7 @@ private static boolean executeNext() {
 					Configuration.lookupPid(pid) + 
 					" does not implement EDProtocol; " + ev.event.getClass()  );
 			}
-			System.err.println("Delivering evento to protocol: " + prot.getClass().getCanonicalName());
+			//System.err.println("Delivering event to protocol: " + prot.getClass().getCanonicalName());
 			prot.processEvent(ev.node, pid, ev.event);
 		}
 	}
@@ -356,7 +356,7 @@ private static boolean loadClientOperations() {
 	List<ClientOperation> operations = clientManager.getNextSetOfOperations();
 	
 	for(ClientOperation c: operations) { 
-		System.err.println(" Preparing client operation @: " + c.getTimeOfCreation());
+		//System.err.println(" Preparing client operation @: " + c.getTimeOfCreation());
 		DCDataStoreSimulator.heap.add(c.getTimeOfCreation(), c , c.getClient(), (byte) c.getClientProtocolID());
 	}
 	

@@ -49,7 +49,7 @@ public abstract class ReactiveReplicationProtocol implements EDProtocol, Diverge
 	public void processEvent(Node node, int pid, Object event) {
 		if(event instanceof ClientWriteOperation) {
 			if (this.handleClientWriteRequest((ServerNode)node, pid, (ClientWriteOperation<?>) event)) {
-				((ReactiveReplicationProtocol)DCCommonState.globalServer().getProtocol(pid)).handleClientWriteRequest((ServerNode)node, pid, (ClientWriteOperation<?>) event);
+				((ReactiveReplicationProtocol)DCCommonState.globalServer().getProtocol(pid)).handleClientWriteRequest((ServerNode)DCCommonState.globalServer(), pid, (ClientWriteOperation<?>) event);
 				this.propagateToAllDCs((ServerNode) node, pid, new SimpleOperationPropagationEvent((ServerNode) node, (ClientWriteOperation<?>) event));
 			}
 		} else if(event instanceof OperationPropagationEvent) {
@@ -80,12 +80,15 @@ public abstract class ReactiveReplicationProtocol implements EDProtocol, Diverge
 	}
 	
 	public final void replyToClient(ServerNode node, int pid, ReadReply<?> reply) {	
-		if(node.getID() < 0) return;
+		if(node.getIndex() < 0) return;
 		
-		if(HybridReplicationProtocol.trackDivergence) {
+		if(ReactiveReplicationProtocol.trackDivergence) {
 			String objectID = reply.getObjectID();
 			DataObject<?,?> localData = node.read(objectID);
-			this.divergenceMeasures.addMeasure(localData.computeDivergence((DataObject<?,?>)DCCommonState.globalServer().read(objectID)));
+			if(localData != null)
+				this.divergenceMeasures.addMeasure(localData.computeDivergence((DataObject<?,?>)DCCommonState.globalServer().read(objectID)));
+			else if(DCCommonState.globalServer().read(objectID) != null)
+				this.divergenceMeasures.addMeasure(((Integer)DCCommonState.globalServer().read(objectID).getMetadata()).doubleValue());
 		}
 		
 		((Transport)node.getProtocol(PeriodicReplicationProtocol.transportID)).send(node, reply.getDestination(), reply, reply.getClientProtocolID());

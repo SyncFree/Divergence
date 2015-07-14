@@ -58,8 +58,8 @@ public abstract class HybridReplicationProtocol implements EDProtocol, Initializ
 
 	public void processEvent(Node node, int pid, Object event) {
 		if(event instanceof ClientWriteOperation) {
-			if(node.getID() >= 0) ((HybridReplicationProtocol)DCCommonState.globalServer().getProtocol(pid)).handleClientWriteRequest((ServerNode)node, pid, (ClientWriteOperation<?>) event);
 			if (this.handleClientWriteRequest((ServerNode)node, pid, (ClientWriteOperation<?>) event)) {
+				 ((HybridReplicationProtocol)DCCommonState.globalServer().getProtocol(pid)).handleClientWriteRequest((ServerNode) DCCommonState.globalServer(), pid, (ClientWriteOperation<?>) event);
 				if(node.getID() >= 0) this.propagateToAllDCs((ServerNode) node, pid, new SimpleOperationPropagationEvent((ServerNode) node, (ClientWriteOperation<?>) event));
 			}
 		} else if(event instanceof OperationPropagationEvent) {
@@ -102,12 +102,15 @@ public abstract class HybridReplicationProtocol implements EDProtocol, Initializ
 	}
 	
 	public final void replyToClient(ServerNode node, int pid, ReadReply<?> reply) {	
-		if(node.getID() < 0) return; //Master node does nothing.
+		if(node.getIndex() < 0) return; //Master node does nothing.
 		
 		if(HybridReplicationProtocol.trackDivergence) {
 			String objectID = reply.getObjectID();
 			DataObject<?,?> localData = node.read(objectID);
-			this.divergenceMeasures.addMeasure(localData.computeDivergence((DataObject<?,?>)DCCommonState.globalServer().read(objectID)));
+			if(localData != null)
+				this.divergenceMeasures.addMeasure(localData.computeDivergence((DataObject<?,?>)DCCommonState.globalServer().read(objectID)));
+			else
+				this.divergenceMeasures.addMeasure(((Integer)DCCommonState.globalServer().read(objectID).getMetadata()).doubleValue());
 		}
 			
 		((Transport)node.getProtocol(HybridReplicationProtocol.transportID)).send(node, reply.getDestination(), reply, reply.getClientProtocolID());

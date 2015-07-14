@@ -15,6 +15,13 @@ public class GeneralServerNode extends GeneralDCNode implements ServerNode {
 		this.db = new HashMap<String,DataObject<?,?>>();
 	}
 
+	public GeneralServerNode clone() {
+		GeneralServerNode gsn = (GeneralServerNode) super.clone();
+		gsn.dcID = 0;
+		gsn.db = new HashMap<String,DataObject<?,?>>();
+		return gsn;
+	}
+	
 	public void setDC(short dcID) {
 		this.dcID = dcID;
 	}
