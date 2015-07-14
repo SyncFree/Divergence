@@ -364,7 +364,7 @@ private static boolean loadClientOperations() {
 	
 	if(ceg != null)
 		heap.add(ceg.getTime(), ceg, null, Byte.MIN_VALUE);
-	else
+	else if(operations.size() == 0)
 		DCDataStoreSimulator.setEndtime();
 	
 	return false;
