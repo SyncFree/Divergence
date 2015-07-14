@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Scanner;
 
 import log.formats.MoodleOperation;
+import log.formats.Operation;
+import log.formats.model.MOODLE_OP;
 import log.readers.LogByTime;
 import log.readers.SimpleLog;
 import peersim.core.dcdatastore.ClientNode;
@@ -26,7 +28,7 @@ import peersim.example.page.replicationsProtocols.data.*;
 
 
 public class RandomPageOperationGenerator extends BaseClientOperationGenerator implements ClientOperationGenerator {	
-	private Scanner sc;
+	private SimpleLog<MOODLE_OP> log;
 	private int timeVal;
 	
 	public RandomPageOperationGenerator() {
@@ -46,7 +48,7 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 	
 	public void init(String filename) {
 		try{
-			LogByTime log = new LogByTime(filename, MoodleOperation.getFactory());
+			log = new SimpleLog<MOODLE_OP>(filename, MoodleOperation.getFactory());
 			
 		} catch (Exception e) {
 			System.err.println("Error : " + this.getClass().getCanonicalName());
@@ -56,7 +58,7 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 	}
 
 	public ClientOperationGenerationEvent hasMoreOperations() {
-		if(sc.hasNext()) 
+		if(log.hasNext()) 
 			return new ClientOperationGenerationEvent(DCCommonState.getTime());
 		else
 			return null;
@@ -65,40 +67,44 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 	public List<ClientOperation> getNextSetOfOperations() {
 		List<ClientOperation> ops = new ArrayList<ClientOperation>();
 		ClientOperation newOp = null;
+		String userId;
+		String operationType;
+		int pageId;
 		
 		long startOfTime = -1;
 		
 		Map<String, ClientNode> clientMap = new HashMap<String, ClientNode>();
 		int lastClientUsed = -1;
 		
-		while(sc.hasNext()) {
-			String[] line = sc.nextLine().split("\t");
-			//String courseId = line[0];
-			//long time = Long.parseLong(line[1]);
-			long time = ++timeVal;
+		while(log.hasNext()) {
+			Operation<MOODLE_OP> op = log.next();
+			userId = op.getAttributeByName(MOODLE_OP.REQUESTER_ID);
+			operationType = op.getAttributeByName(MOODLE_OP.OPERATION);
+			
+			long time = op.getTimestamp();
 			if(startOfTime == -1) {
 				startOfTime = time;
 			}
 			time -= startOfTime;
-			if(!clientMap.containsKey(line[3])) {
+			if(!clientMap.containsKey(userId)) {
 				lastClientUsed++;
 				if (lastClientUsed == GeoReplicatedDatastoreNetwork.sizeClients())
 					lastClientUsed = 0;
-				clientMap.put(line[3], GeoReplicatedDatastoreNetwork.getClient(lastClientUsed, lastClientUsed));
+				clientMap.put(userId, GeoReplicatedDatastoreNetwork.getClient(lastClientUsed, lastClientUsed));
 			}
-			ClientNode client = clientMap.get(line[3]);
-			String operationType = line[4].replaceAll("\"", "");
+			ClientNode client = clientMap.get(userId);
+			
 			switch(operationType) {
 				case "page view":
-					int pageId = Integer.parseInt(line[5]);
+					pageId = Integer.parseInt(op.getAttributeByName(MOODLE_OP.INFO)); 
 					newOp = new PageViewOperation(client, time, pageId);
 				break;
 				case "page add":
-					pageId = Integer.parseInt(line[5]);
+					pageId = Integer.parseInt(op.getAttributeByName(MOODLE_OP.INFO)); 
 					newOp = new PageAddOperation(client, time, pageId);
 				break;
 				case "page update":
-					pageId = Integer.parseInt(line[5]);
+					pageId = Integer.parseInt(op.getAttributeByName(MOODLE_OP.INFO)); 
 					newOp = new PageUpdateOperation(client, time, pageId);
 				break;
 			default:
