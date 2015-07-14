@@ -113,12 +113,14 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 					//System.err.println("Error: This operation \"" +  operationType + "\" doesn't exist.");
 			}
 			if(newOp != null){
+				newOp.setClientProtocolID(RandomPageOperationGenerator.clientProtocolID);
+				newOp.setDestination(client.getServer(0));
 				ops.add(newOp);
 				System.out.println(newOp.getObjectID());
 			}
 		}
 		
-		Collections.sort(ops, new Comparator<ClientOperation>() {
+		/*Collections.sort(ops, new Comparator<ClientOperation>() {
 
 			public int compare(ClientOperation o1, ClientOperation o2) {
 				if(o1.getTimeOfCreation() == o2.getTimeOfCreation())
@@ -127,6 +129,7 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 					return (int) (o1.getTimeOfCreation() - o2.getTimeOfCreation());
 			}
 		});
+		*/
 		return ops;
 	}
 

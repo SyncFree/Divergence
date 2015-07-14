@@ -38,18 +38,18 @@ public class BogusPeriodicReplicationProtocol extends
 	public boolean handleClientWriteRequest(ServerNode node, int pid,
 			ClientWriteOperation<?> event) {
 		
-		switch(event.getObjectID()){
-		case "73":
+		switch(event.operationID()){
+		case 73:
 			//page add operation
 			System.out.println("add");
 			
 			break;
-		case "74":
+		case 74:
 			//page view operation
 			System.out.println("view");
 			
 			break;
-		case "75":
+		case 75:
 			//page update operation
 			System.out.println("update");
 			
