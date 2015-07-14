@@ -37,15 +37,27 @@ public class BogusPeriodicReplicationProtocol extends
 	@Override
 	public boolean handleClientWriteRequest(ServerNode node, int pid,
 			ClientWriteOperation<?> event) {
-	
-		PageUpdateOperation operation = (PageUpdateOperation) event;
-		PageSim p = (PageSim) node.read(operation.getObjectID());
-		if(p == null) { 
-			p = new PageSim(operation.getId());
-			node.write(operation.getObjectID(), p);
+		
+		switch(event.getObjectID()){
+		case "73":
+			//page add operation
+			System.out.println("add");
+			
+			break;
+		case "74":
+			//page view operation
+			System.out.println("view");
+			
+			break;
+		case "75":
+			//page update operation
+			System.out.println("update");
+			
+			break;
+		default:
+			System.err.println("[ ERROR ] Unknown operationID (" + event.getObjectID() + "). [handleClientWriteRequest]");
 		}
-		p.incValue();
-		operations.add(operation);
+		
 		return true;
 	}
 

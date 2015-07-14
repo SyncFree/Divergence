@@ -11,11 +11,13 @@ public class PageAddOperation extends ClientWriteOperation<Integer> {
 	public PageAddOperation(ClientNode c, ServerNode d, long time, int pageId) {
 		super((short) 73, c, d, time);
 		this.pageId = pageId;
+		this.setObjectID(pageId+"");
 	}
 	
 	public PageAddOperation(ClientNode c, long time, int pageId) {
 		super((short) 73, c, time);
 		this.pageId = pageId;
+		this.setObjectID(pageId+"");
 	}
 	
 	public int getId (){
