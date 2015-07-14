@@ -79,7 +79,7 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 		while(log.hasNext()) {
 			Operation<MOODLE_OP> op = log.next();
 			userId = op.getAttributeByName(MOODLE_OP.REQUESTER_ID);
-			operationType = op.getAttributeByName(MOODLE_OP.OPERATION);
+			operationType = op.getAttributeByName(MOODLE_OP.OPERATION).replaceAll("\"", "");
 			
 			long time = op.getTimestamp();
 			if(startOfTime == -1) {
@@ -90,12 +90,13 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 				lastClientUsed++;
 				if (lastClientUsed == GeoReplicatedDatastoreNetwork.sizeClients())
 					lastClientUsed = 0;
-				clientMap.put(userId, GeoReplicatedDatastoreNetwork.getClient(lastClientUsed, lastClientUsed));
+				clientMap.put(userId, GeoReplicatedDatastoreNetwork.getClient(lastClientUsed));
 			}
 			ClientNode client = clientMap.get(userId);
 			
 			switch(operationType) {
 				case "page view":
+					
 					pageId = Integer.parseInt(op.getAttributeByName(MOODLE_OP.INFO)); 
 					newOp = new PageViewOperation(client, time, pageId);
 				break;
@@ -106,12 +107,15 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 				case "page update":
 					pageId = Integer.parseInt(op.getAttributeByName(MOODLE_OP.INFO)); 
 					newOp = new PageUpdateOperation(client, time, pageId);
+					
 				break;
 			default:
 					//System.err.println("Error: This operation \"" +  operationType + "\" doesn't exist.");
 			}
-			if(newOp != null)
+			if(newOp != null){
 				ops.add(newOp);
+				System.out.println(newOp.getObjectID());
+			}
 		}
 		
 		Collections.sort(ops, new Comparator<ClientOperation>() {

@@ -11,11 +11,13 @@ public class PageViewOperation extends ClientWriteOperation<Integer> {
 	public PageViewOperation(ClientNode c, long time, int pageId) {
 		super((short) 74, c, time);
 		this.pageId = pageId;
+		this.setObjectID(pageId+"");
 	}
 	
 	public PageViewOperation(ClientNode c, ServerNode d, long time, int pageId) {
 		super((short) 74, c, d, time);
 		this.pageId = pageId;
+		this.setObjectID(pageId+"");
 	}
 
 	public int getPageId(){		
