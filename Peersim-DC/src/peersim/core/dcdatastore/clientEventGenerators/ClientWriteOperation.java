@@ -1,12 +1,13 @@
 package peersim.core.dcdatastore.clientEventGenerators;
 
 import peersim.core.dcdatastore.ClientNode;
+
 import peersim.core.dcdatastore.ServerNode;
 
 public abstract class ClientWriteOperation<T> extends ClientBaseOperation implements ClientOperation {
 
-	private T value;
-
+	private T value;	
+	
 	public ClientWriteOperation(short operationID) {
 		super(operationID);
 	}
@@ -30,5 +31,6 @@ public abstract class ClientWriteOperation<T> extends ClientBaseOperation implem
 	public void setValue(T value) {
 		this.value = value;
 	}
+	
 
 }

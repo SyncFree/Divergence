@@ -1,19 +1,18 @@
 package peersim.example.page.replicationProtocols.clients;
 
-import java.io.File;
+
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
+
 
 import log.formats.MoodleOperation;
 import log.formats.Operation;
 import log.formats.model.MOODLE_OP;
-import log.readers.LogByTime;
+
 import log.readers.SimpleLog;
 import peersim.core.dcdatastore.ClientNode;
 import peersim.core.dcdatastore.DCCommonState;
@@ -29,11 +28,9 @@ import peersim.example.page.replicationsProtocols.data.*;
 
 public class RandomPageOperationGenerator extends BaseClientOperationGenerator implements ClientOperationGenerator {	
 	private SimpleLog<MOODLE_OP> log;
-	private int timeVal;
 	
 	public RandomPageOperationGenerator() {
 		super();
-		timeVal = 0;
 	}
 
 	/**
@@ -69,7 +66,7 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 		ClientOperation newOp = null;
 		String userId;
 		String operationType;
-		int pageId;
+		String objId;
 		
 		long startOfTime = -1;
 		
@@ -97,17 +94,16 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 			switch(operationType) {
 				case "page view":
 					
-					pageId = Integer.parseInt(op.getAttributeByName(MOODLE_OP.INFO)); 
-					newOp = new PageViewOperation(client, time, pageId);
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new PageViewOperation(client, time, objId, userId);
 				break;
 				case "page add":
-					pageId = Integer.parseInt(op.getAttributeByName(MOODLE_OP.INFO)); 
-					newOp = new PageAddOperation(client, time, pageId);
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new PageAddOperation(client, time, objId, userId);
 				break;
 				case "page update":
-					pageId = Integer.parseInt(op.getAttributeByName(MOODLE_OP.INFO)); 
-					newOp = new PageUpdateOperation(client, time, pageId);
-					
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new PageUpdateOperation(client, time, objId, userId);
 				break;
 			default:
 					//System.err.println("Error: This operation \"" +  operationType + "\" doesn't exist.");
