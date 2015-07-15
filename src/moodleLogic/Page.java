@@ -5,26 +5,24 @@
  */
 package moodleLogic;
 
-import static java.lang.Boolean.*;
-
 /**
  *
  * @author jordi
  */
 class Page {
-    private int id;
+    private String id;
     private int value;
 
-    Page(int id) {
+    Page(String id) {
         this.id = id;
         this.value = 0;
     }
     
-    public int getId() {
+    public String getId() {
         return this.id;
     }
     
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
     

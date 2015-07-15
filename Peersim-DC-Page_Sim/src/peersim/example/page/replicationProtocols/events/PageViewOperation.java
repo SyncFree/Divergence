@@ -2,27 +2,18 @@ package peersim.example.page.replicationProtocols.events;
 
 import peersim.core.dcdatastore.ClientNode;
 
+
 import peersim.core.dcdatastore.ServerNode;
-import peersim.core.dcdatastore.clientEventGenerators.ClientWriteOperation;
 
-public class PageViewOperation extends ClientWriteOperation<Integer> {
-	private int pageId;
+public class PageViewOperation extends MoodleOperation<Integer> {
 	
-	public PageViewOperation(ClientNode c, long time, int pageId) {
-		super((short) 74, c, time);
-		this.pageId = pageId;
-		this.setObjectID(pageId+"");
+	public PageViewOperation(ClientNode c, long time, String pageId, String userId) {
+		super((short) 74, c, time, userId);
+		this.setObjectID(pageId);
 	}
 	
-	public PageViewOperation(ClientNode c, ServerNode d, long time, int pageId) {
-		super((short) 74, c, d, time);
-		this.pageId = pageId;
-		this.setObjectID(pageId+"");
+	public PageViewOperation(ClientNode c, ServerNode d, long time, String pageId, String userId) {
+		super((short) 74, c, d, time, userId);
+		this.setObjectID(pageId);
 	}
-
-	public int getPageId(){		
-		return this.pageId;
-	}
-
-
 }
