@@ -2,8 +2,11 @@ package moodleLogic;
 
 
 import static java.lang.Boolean.*;
+
 import java.util.HashSet;
 import java.util.Set;
+
+import peersim.core.dcdatastore.util.DataObject;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -15,7 +18,7 @@ import java.util.Set;
  *
  * @author jordi
  */
-public class Course {
+public class Course implements DataObject<Course, Integer>{
     private int id;
     private int enrollmentLimit;
     private int value;
@@ -30,20 +33,25 @@ public class Course {
     private Set<Resource> Resources;
     private Set<Page> Pages;
     
-    Course(int courseId, int enrollmentLimit){
+    public Course(int courseId, int enrollmentLimit){
         this.id = courseId;    
         this.enrollmentLimit = enrollmentLimit;
         this.value = 0;
-        this.Calendars = new HashSet();
-        this.Assignments = new HashSet();
-        this.Modules = new HashSet();
-        this.Members = new HashSet();
-        this.Forums = new HashSet();
-        this.Blogs = new HashSet();
-        this.Directories = new HashSet();
-        this.Quizes = new HashSet();
-        this.Resources = new HashSet();
-        this.Pages = new HashSet();
+        this.Calendars = new HashSet<Calendar>();
+        this.Assignments = new HashSet<Assignment>();
+        this.Modules = new HashSet<Module>();
+        this.Members = new HashSet<Member>();
+        this.Forums = new HashSet<Forum>();
+        this.Blogs = new HashSet<Blog>();
+        this.Directories = new HashSet<Directory>();
+        this.Quizes = new HashSet<Quiz>();
+        this.Resources = new HashSet<Resource>();
+        this.Pages = new HashSet<Page>();
+    }
+    @Override
+    public String toString (){
+    	
+    	return null;
     }
     
     
@@ -363,7 +371,7 @@ public class Course {
         // Do some viewing stuff
     }
 
-    protected void viewPage(int pageId) {
+    protected void viewPage(String pageId) {
         // Do some viewing Stuff
     }
     
@@ -378,27 +386,27 @@ public class Course {
         //Do sth viewy.
     }
 
-    protected void addPage(int pageId) {
+    protected void addPage(String pageId) {
         Pages.add(new Page(pageId));
     }
-    protected void editPage(int pageId) {
+    protected void editPage(String pageId) {
        this.getPage(pageId).incValue(); 
     }
-    protected void deletePage(int pageId) {
+    protected void deletePage(String pageId) {
         
         Pages.remove(getPage(pageId)); 
     }
-    public boolean existPage(int pageId) {
+    public boolean existPage(String pageId) {
         for (Page p: Pages) {
-            if (p.getId() == pageId){
+            if (p.getId().equals(pageId)){
                 return TRUE;
             }
         }
         return FALSE;
     }
-    public Page getPage(int pageId) {
+    public Page getPage(String pageId) {
         for (Page p: Pages) {
-            if (p.getId() == pageId){
+            if (p.getId().equals(pageId)){
                 return p;
             }
         }
@@ -925,54 +933,37 @@ public class Course {
         return 1;
     }
 
-    public int PageAddOperation(int userId, int pageId){
-            if (existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int PageAddOperation(String userId, String pageId){
                 if (!existPage(pageId)){
                     addPage(pageId);
                 } else {
                     return 0;
                 }
-            } else {
-                return 0;
-            }
         return 1;
     }
-    public int PageViewOperation(int userId, int pageId){
-        
-            if (existMember(userId)) {
+    public int PageViewOperation(String userId, String pageId){
                 if (existPage(pageId)){
                     viewPage(pageId);
                 } else {
                     return 0;
                 }
-            } else {
-                return 0;
-            }
         return 1;    
     
     }   
-    public int PageEditOperation(int userId, int pageId){
-            if (existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int PageEditOperation(String userId, String pageId){
                 if (existPage(pageId)){
                     getPage(pageId).incValue();
                 } else {
                     return 0;
                 }
-            } else {
-                return 0;
-            }
         return 1;
     }
-    public int PageDeleteOperation(int userId, int pageId){
-            if (existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int PageDeleteOperation(String userId, String pageId){
                 if (existPage(pageId)){
                     deletePage(pageId);
                 } else {
                     return 0;
                 }
-            } else {
-                return 0;
-            }
         return 1;
     }
     
@@ -1616,6 +1607,52 @@ public class Course {
             }
         return 1;
     }
+	@Override
+	public Course getData() {
+		return this;
+	}
+	@Override
+	public void setData(Course data) {
+	    this.id = data.id;
+	    this.enrollmentLimit= data.enrollmentLimit;
+	    this.value= data.value;
+	    this.Calendars= data.Calendars;
+	    this.Assignments= data.Assignments;
+	    this.Modules= data.Modules;
+	    this.Members= data.Members;
+	    this.Forums= data.Forums;
+	    this.Blogs= data.Blogs;
+	    this.Directories= data.Directories;
+	    this.Quizes= data.Quizes;
+	    this.Resources= data.Resources;
+	    this.Pages= data.Pages;
+	}
+	@Override
+	public void setData(Course data, Integer metadata) {
+		this.id = data.id;
+	    this.enrollmentLimit= data.enrollmentLimit;
+	    this.value = data.value;					// value is changed twice!!!!!
+	    this.Calendars= data.Calendars;
+	    this.Assignments= data.Assignments;
+	    this.Modules= data.Modules;
+	    this.Members= data.Members;
+	    this.Forums= data.Forums;
+	    this.Blogs= data.Blogs;
+	    this.Directories= data.Directories;
+	    this.Quizes= data.Quizes;
+	    this.Resources= data.Resources;
+	    this.Pages= data.Pages;
+	    
+	    this.value = metadata;
+	}
+	@Override
+	public Integer getMetadata() {
+		return value;
+	}
+	@Override
+	public double computeDivergence(DataObject<?, ?> other) {
+		return Math.abs(this.value - (Integer) other.getMetadata());
+	}
     
     
 }
