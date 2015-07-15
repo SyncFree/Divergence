@@ -31,7 +31,7 @@ public class RandomCounterOperationGenerator extends BaseClientOperationGenerato
 	private int numberOfOperationsPerClientPerRound;
 	
 	private long nextGenerationEvent;
-	
+
 	public RandomCounterOperationGenerator() {
 		super();
 	}
@@ -114,5 +114,8 @@ public class RandomCounterOperationGenerator extends BaseClientOperationGenerato
 		this.nextGenerationEvent = DCCommonState.getTime() + this.roundLength;
 		return ops;
 	}
-
+	
+	public String[] getObjectIdentifiers() {
+		return this.objectIdentifiers;
+	}
 }
