@@ -263,28 +263,28 @@ public class Course implements DataObject<Course, Integer>{
         return FALSE;
     }
 
-    public void addResource(int resId) {
+    public void addResource(String resId) {
         Resources.add(new Resource(resId));
     }
-    public boolean existResource(int resId) {
+    public boolean existResource(String resId) {
         for (Resource r: Resources) {
             if (r.getId() == resId) return TRUE;
         }
             
         return FALSE;
     }
-    public void deleteResource(int resId) {
+    public void deleteResource(String resId) {
         Resources.remove(getResource(resId));
     }
-    public Resource getResource(int resId) {
+    public Resource getResource(String resId) {
         for (Resource r: Resources) {
-            if (r.getId() == resId){
+            if (r.getId().equals(resId)){
                 return r;
             }
         }
         return null;
     }
-    public void editResource(int resId) {
+    public void editResource(String resId) {
         this.getResource(resId).incValue();
     }
 
@@ -379,7 +379,7 @@ public class Course implements DataObject<Course, Integer>{
         // Do viewy stuff
     }
     
-    protected void viewResource(int resId) {
+    protected void viewResource(String resId) {
         //Do sth viewy.
     }
     protected void viewAllResource(){
@@ -787,68 +787,45 @@ public class Course implements DataObject<Course, Integer>{
         return 1;
     }
 
-    public int ResourceAddOperation(int userId, int resId){
-        if(existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int ResourceAddOperation(String userId, String resId){
             if (existResource(resId)) {
                 return 0;
             }
             else {
                 addResource(resId);
             }
-        } else {
-            return 0;
-        }
-        
         return 1;
     }
-    public int ResourceViewOperation(int userId, int resId){
-        if(existMember(userId)) {
+    public int ResourceViewOperation(String userId, String resId){
             if (!existResource(resId)) {
                 return 0;
             }
             else {
                 viewResource(resId);
-            }
-        } else {
-            return 0;
-        }
-        
+            }        
         return 1;
     }
-    public int ResourceViewAllOperation(int userId){
-        if(existMember(userId)) {
-            viewAllResource();
-        } else {
-            return 0;
-        }
-        
+    public int ResourceViewAllOperation(String userId){
+        viewAllResource();
         return 1;
     }
-    public int ResourceDeleteOperation(int userId, int resId){
-        if(existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int ResourceDeleteOperation(String userId, String resId){
             if (!existResource(resId)) {
                 return 0;
             }
             else {
                 deleteResource(resId);
             }
-        } else {
-            return 0;
-        }
-        
+
         return 1;
     }
-    public int ResourceEditOperation(int userId, int resId){
-        if(existMember(userId) &&getMember(userId).getRole().equals("staff")) {
+    public int ResourceEditOperation(String userId, String resId){
             if (!existResource(resId)) {
                 return 0;
             }
             else {
                 editResource(resId);
             }
-        } else {
-            return 0;
-        }
         
         return 1;
     }

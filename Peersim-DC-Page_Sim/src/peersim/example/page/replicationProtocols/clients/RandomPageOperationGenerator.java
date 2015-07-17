@@ -83,6 +83,7 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 				startOfTime = time;
 			}
 			time -= startOfTime;
+			time /= 10000;
 			if(!clientMap.containsKey(userId)) {
 				lastClientUsed++;
 				if (lastClientUsed == GeoReplicatedDatastoreNetwork.sizeClients())
@@ -90,10 +91,21 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 				clientMap.put(userId, GeoReplicatedDatastoreNetwork.getClient(lastClientUsed));
 			}
 			ClientNode client = clientMap.get(userId);
-			
+			System.out.println(time);
 			switch(operationType) {
+				case "resource add": 
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new ResourceAddOperation(client, time, objId, userId);
+				break;
+				case "resource update": 
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new ResourceUpdateOperation(client, time, objId, userId);
+				break;
+				case "resource view": 
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new ResourceViewOperation(client, time, objId, userId);
+				break;
 				case "page view":
-					
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
 					newOp = new PageViewOperation(client, time, objId, userId);
 				break;

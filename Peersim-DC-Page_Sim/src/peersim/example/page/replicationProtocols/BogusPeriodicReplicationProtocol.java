@@ -2,6 +2,7 @@ package peersim.example.page.replicationProtocols;
 
 import java.util.ArrayList;
 
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,9 +14,8 @@ import peersim.core.dcdatastore.replicationProtocol.PeriodicReplicationProtocol;
 import peersim.core.dcdatastore.serverEvents.MultipleOperationPropagationEvent;
 import peersim.core.dcdatastore.serverEvents.OperationPropagationEvent;
 import peersim.example.page.replicationProtocols.events.PageUpdateOperation;
-
-import peersim.example.page.replicationProtocols.events.MoodleOperation;
-
+import peersim.example.page.replicationProtocols.events.MoodleReadOperation;
+import peersim.example.page.replicationProtocols.events.MoodleWriteOperation;
 import peersim.example.page.replicationProtocols.events.PageSimReadReply;
 
 import peersim.example.page.replicationsProtocols.data.PageSim;
@@ -46,13 +46,30 @@ public class BogusPeriodicReplicationProtocol extends
 	public boolean handleClientWriteRequest(ServerNode node, int pid,
 			ClientWriteOperation<?> event) {
 		
-		String userId = ((MoodleOperation) event).getUserId();
+		String userId = ((MoodleWriteOperation) event).getUserId();
 		String objId;
 		
 		switch(event.operationID()){
+		case 56:
+			//resource add operation
+			objId = event.getObjectID();
+			
+			c.ResourceAddOperation(userId, objId);
+			break;
+		case 58:
+			//resource update operation
+			objId = event.getObjectID();
+			
+			c.ResourceEditOperation(userId, objId);
+			break;
+		case 60:
+			//resource view operation
+			objId = event.getObjectID();
+			
+			c.ResourceViewOperation(userId, objId);
+			break;
 		case 73:
 			//page add operation
-			System.out.println("add");
 			//PageAddOperation op = (PageAddOperation) event;
 			
 			objId = event.getObjectID();
@@ -61,14 +78,12 @@ public class BogusPeriodicReplicationProtocol extends
 			break;
 		case 74:
 			//page view operation
-			System.out.println("view");
 			objId = event.getObjectID();
 			
 			c.PageViewOperation(userId, objId);
 			break;
 		case 75:
 			//page update operation
-			System.out.println("update");
 			objId = event.getObjectID();
 			
 			c.PageEditOperation(userId, objId);
@@ -81,10 +96,40 @@ public class BogusPeriodicReplicationProtocol extends
 	}
 
 	@Override
-	public void handleClientReadRequest(ServerNode node, int pid,
-			ClientReadOperation event) {
+	public void handleClientReadRequest(ServerNode node, int pid, ClientReadOperation event) {
+		
 		PageSim p = (PageSim) node.read(event.getObjectID());
 		PageSimReadReply prr = new PageSimReadReply(event, p, CommonState.getTime());
+		
+		String userId = ((MoodleReadOperation) event).getUserId();
+		String objId;
+		
+		switch(event.operationID()){
+		case 60:
+			//resource view operation
+			objId = event.getObjectID();
+			
+			c.ResourceViewOperation(userId, objId);
+			break;
+		case 74:
+			//page view operation
+			objId = event.getObjectID();
+			
+			c.PageViewOperation(userId, objId);
+			
+			break;
+		default:
+			System.err.println("[ ERROR ] Unknown operationID (" + event.getObjectID() + "). [handleClientWriteRequest]");
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		this.replyToClient(node, prr.getClientProtocolID(), prr);
 	}
 
@@ -93,13 +138,7 @@ public class BogusPeriodicReplicationProtocol extends
 			OperationPropagationEvent event) {
 		Iterator<ClientWriteOperation<?>> ite = ((MultipleOperationPropagationEvent) event).getClientOperations();
 		while(ite.hasNext()) {
-			PageUpdateOperation operation = (PageUpdateOperation) ite.next();
-			PageSim p = (PageSim) node.read(operation.getObjectID());
-			if(p == null) { 
-				p = new PageSim(operation.operationID());
-				node.write(operation.getObjectID(), p);
-			}
-			p.incValue();
+			//
 		}
 	}
 
