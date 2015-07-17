@@ -5,7 +5,7 @@ import peersim.core.dcdatastore.ClientNode;
 
 import peersim.core.dcdatastore.ServerNode;
 
-public class PageViewOperation extends MoodleOperation<Integer> {
+public class PageViewOperation extends MoodleReadOperation {
 	
 	public PageViewOperation(ClientNode c, long time, String pageId, String userId) {
 		super((short) 74, c, time, userId);
