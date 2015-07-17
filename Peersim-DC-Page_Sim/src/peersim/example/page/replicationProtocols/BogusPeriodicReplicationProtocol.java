@@ -50,6 +50,18 @@ public class BogusPeriodicReplicationProtocol extends
 		String objId;
 		
 		switch(event.operationID()){
+		case 29:
+			//resource add operation
+			objId = event.getObjectID();
+			
+			c.DirAddOperation(userId, objId);
+			break;
+		case 31:
+			//resource update operation
+			objId = event.getObjectID();
+			
+			c.DirEditOperation(userId, objId);
+			break;
 		case 56:
 			//resource add operation
 			objId = event.getObjectID();
@@ -105,6 +117,12 @@ public class BogusPeriodicReplicationProtocol extends
 		String objId;
 		
 		switch(event.operationID()){
+		case 32:
+			//resource view operation
+			objId = event.getObjectID();
+			
+			c.DirViewOperation(userId, objId);
+			break;
 		case 60:
 			//resource view operation
 			objId = event.getObjectID();

@@ -6,14 +6,14 @@ import peersim.core.dcdatastore.ServerNode;
 
 public class ResourceUpdateOperation extends MoodleWriteOperation<Integer> {
 	
-	public ResourceUpdateOperation(ClientNode c, long time, String pageId, String userId) {
+	public ResourceUpdateOperation(ClientNode c, long time, String userId, String objId) {
 		super((short) 58, c, time, userId);
-		this.setObjectID(pageId);
+		this.setObjectID(objId);
 	}
 	
-	public ResourceUpdateOperation(ClientNode c, ServerNode d, long time, String pageId, String userId) {
+	public ResourceUpdateOperation(ClientNode c, ServerNode d, long time, String userId, String objId) {
 		super((short) 58, c, d, time, userId);
-		this.setObjectID(pageId);
+		this.setObjectID(objId);
 	}
 	
 

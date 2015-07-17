@@ -93,29 +93,41 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 			ClientNode client = clientMap.get(userId);
 			System.out.println(time);
 			switch(operationType) {
+				case "folder add": 
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new DirAddOperation(client, time, userId, objId);
+				break;
+				case "folder view": 
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new DirViewOperation(client, time, userId, objId);
+				break;
+				case "folder edit": 
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new DirUpdateOperation(client, time, userId, objId);
+				break;
 				case "resource add": 
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
-					newOp = new ResourceAddOperation(client, time, objId, userId);
+					newOp = new ResourceAddOperation(client, time, userId, objId);
 				break;
 				case "resource update": 
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
-					newOp = new ResourceUpdateOperation(client, time, objId, userId);
+					newOp = new ResourceUpdateOperation(client, time, userId, objId);
 				break;
 				case "resource view": 
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
-					newOp = new ResourceViewOperation(client, time, objId, userId);
+					newOp = new ResourceViewOperation(client, time, userId, objId);
 				break;
 				case "page view":
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
-					newOp = new PageViewOperation(client, time, objId, userId);
+					newOp = new PageViewOperation(client, time, userId, objId);
 				break;
 				case "page add":
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
-					newOp = new PageAddOperation(client, time, objId, userId);
+					newOp = new PageAddOperation(client, time, userId, objId);
 				break;
 				case "page update":
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
-					newOp = new PageUpdateOperation(client, time, objId, userId);
+					newOp = new PageUpdateOperation(client, time, userId, objId);
 				break;
 			default:
 					//System.err.println("Error: This operation \"" +  operationType + "\" doesn't exist.");

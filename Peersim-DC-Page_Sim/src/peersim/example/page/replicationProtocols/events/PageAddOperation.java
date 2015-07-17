@@ -7,13 +7,13 @@ import peersim.core.dcdatastore.ServerNode;
 
 public class PageAddOperation extends MoodleWriteOperation<Integer> {
 
-	public PageAddOperation(ClientNode c, ServerNode d, long time, String pageId, String userId) {
+	public PageAddOperation(ClientNode c, ServerNode d, long time, String userId, String objId) {
 		super((short) 73, c, d, time, userId);
-		this.setObjectID(pageId);
+		this.setObjectID(objId);
 	}
 	
-	public PageAddOperation(ClientNode c, long time, String pageId, String userId) {
+	public PageAddOperation(ClientNode c, long time, String userId, String objId) {
 		super((short) 73, c, time, userId);
-		this.setObjectID(pageId);
+		this.setObjectID(objId);
 	}
 }
