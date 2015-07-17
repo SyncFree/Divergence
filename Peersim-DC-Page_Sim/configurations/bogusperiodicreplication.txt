@@ -13,45 +13,54 @@ network peersim.core.dcdatastore.GeoReplicatedDatastoreNetwork
 network.numberDCs DC
 network.serversPerDC SERVERS
 network.clientsPerDC CLIENTS
-network.serverNode
-network.node 
+network.size 33
+#network.serverNode
+#network.node 
 
-simulation.gracetime 2*CYCLE
+simulation.gracetime 20000
 simulation.logtime CYCLE
-simulation.clientmanager peersim.example.replicationProtocols.clients.RandomCounterOperationGenerator
-simulation.clientopsfile ops.spec
+simulation.clientmanager peersim.example.page.replicationProtocols.clients.RandomPageOperationGenerator
+#simulation.clientopsfile ops.spec
+simulation.clientopsfile /home/jordi/Downloads/logs/new/IP1213.log
+simulation.clientlayer clayer
+
+node.transport tr
 ################### protocols ===========================
 
 
-server.protocol.replication peersim.example.replicationProtocols.BogusPeriodicReplicationProtocol
+server.protocol.replication peersim.example.page.replicationProtocols.BogusPeriodicReplicationProtocol
 server.protocol.replication.transport tr
 server.protocol.replication.period CYCLE
-server.protocol.replication.step CYCLE
+server.protocol.replication.divergencetracking true 
 
-protocol.client peersim.example.replicationProtocols.clients.CounterClientProtocol
-protocol.client.remoteproto replication
-protocol.client.transpot tr
+client.protocol.clayer peersim.example.page.replicationProtocols.clients.PageClientProtocol
+client.protocol.clayer.remoteproto replication
+client.protocol.clayer.transport tr
 
 protocol.tr peersim.core.dcdatastore.transport.DCTransportLayer
-protocol.tr.config latencymap.txt
-
+protocol.tr.config Peersim-DC-Page_Sim/configurations/latencymap.txt
 
 ################### initialization ======================
 
-init.sch CDScheduler
+init.sch peersim.core.dcdatastore.controls.ServerInitiator
 init.sch.protocol replication
 
 ################ activators ===========================
 
-################ control ==============================
+################ observers ==============================
 
-control.test peersim.example.replicationProtocols.observers.EmptyObserver
+control.test peersim.example.page.replicationProtocols.observers.EmptyObserver
 control.test.step CYCLE
+
+control.divergence peersim.core.dcdatastore.observers.divergence.DivergenceObserver
+control.divergence.protocol replication
+control.divergence.filename Peersim-DC-Page_Sim/configurations/divergece-report.txt
+control.divergence.step CYCLE
 
 ################ Alignment ================================
 
 include.init sch
 
-include.protocol replication client tr
+#include.protocol replication clayer tr
 
-include.control test
+include.control test divergence
