@@ -112,7 +112,6 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 				newOp.setClientProtocolID(RandomPageOperationGenerator.clientProtocolID);
 				newOp.setDestination(client.getServer(0));
 				ops.add(newOp);
-				System.out.println(newOp.getObjectID());
 			}
 		}
 		
