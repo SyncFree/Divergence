@@ -146,20 +146,20 @@ public class Course implements DataObject<Course, Integer>{
         this.getBlog(blogId).incValue();
     }
 
-    public boolean existDir(int dirId) {
+    public boolean existDir(String dirId) {
         for (Directory d: Directories) {
             if (d.getId() == dirId) return TRUE;
         }
             
         return FALSE;    
     }
-    public void addDir(int dirId) {
+    public void addDir(String dirId) {
         Directories.add(new Directory(dirId));
     }
-    public void deleteDir(int dirId) {
+    public void deleteDir(String dirId) {
         Directories.remove(getDir(dirId));
     }
-    public Directory getDir(int dirId) {
+    public Directory getDir(String dirId) {
         for (Directory d: Directories) {
             if (d.getId() == dirId){
                 return d;
@@ -167,7 +167,7 @@ public class Course implements DataObject<Course, Integer>{
         }
         return null;
     }
-    public void editDir(int dirId) {
+    public void editDir(String dirId) {
         this.getDir(dirId).incValue();
     }
     
@@ -319,7 +319,7 @@ public class Course implements DataObject<Course, Integer>{
         //DO some Viewing stuff
     }
 
-    protected void viewDir(int dirId) {
+    protected void viewDir(String dirId) {
         // Do some viewing stuff
     }
 
@@ -519,59 +519,43 @@ public class Course implements DataObject<Course, Integer>{
     }
 
     
-    public int DirAddOperation(int userId, int dirId){
-        if(existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int DirAddOperation(String userId, String dirId){
             if (existDir(dirId)) {
                 return 0;
             }
             else {
                 addDir(dirId);
             }
-        } else {
-            return 0;
-        }
         
         return 1;
     }
-    public int DirViewOperation( int userId, int dirId){
-        if(existMember(userId)) {
+    public int DirViewOperation( String userId, String dirId){
             if (existDir(dirId)) {
                 viewDir(dirId);
             }
             else {
                 return 0;
             }
-        } else {
-            return 0;
-        }
         
         return 1;
     }
-    public int DirDeleteOperation(int userId, int dirId){
-        if(existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int DirDeleteOperation(String userId, String dirId){
             if (!existDir(dirId)) {
                 return 0;
             }
             else {
                 deleteDir(dirId);
             }
-        } else {
-            return 0;
-        }
         
         return 1;
     }
-    public int DirEditOperation(int userId, int dirId){
-        if(existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int DirEditOperation(String userId, String dirId){
             if (!existDir(dirId)) {
                 return 0;
             }
             else {
                 editDir(dirId);
             }
-        } else {
-            return 0;
-        }
         
         return 1;
     }
@@ -1584,7 +1568,8 @@ public class Course implements DataObject<Course, Integer>{
             }
         return 1;
     }
-	@Override
+	
+    @Override
 	public Course getData() {
 		return this;
 	}

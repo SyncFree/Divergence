@@ -15,22 +15,22 @@ import java.util.Set;
  */
 public class Directory {
     
-    private int id;
+    private String id;
     private int value;
     Set<String> Path; 
 
-    Directory(int id) {
+    Directory(String id) {
         this.id = id;
         this.value = 0;
-        this.Path = new HashSet();
+        this.Path = new HashSet<String>();
     }
     
     
-    public int getId() {
+    public String getId() {
         return this.id;
     }
     
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
     
