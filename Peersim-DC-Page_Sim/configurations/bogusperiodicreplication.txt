@@ -5,8 +5,9 @@ SERVERS 1
 #Number of clients per DC
 CLIENTS 10
 
-#time of a cicle (2 seconds)
-CYCLE 2000
+#time of a cicle (60 seconds) We only have minute resolution
+CYCLE 60000
+#CYCLE 20000000
 
 #random.seed 1234567890
 network peersim.core.dcdatastore.GeoReplicatedDatastoreNetwork
@@ -20,8 +21,7 @@ network.size 33
 simulation.gracetime 20000
 simulation.logtime CYCLE
 simulation.clientmanager peersim.example.page.replicationProtocols.clients.RandomPageOperationGenerator
-#simulation.clientopsfile ops.spec
-simulation.clientopsfile /home/jordi/Downloads/logs/new/IP1213.log
+simulation.clientopsfile /home/jordi/Downloads/logs/IP1213.log
 simulation.clientlayer clayer
 
 node.transport tr
@@ -54,8 +54,13 @@ control.test.step CYCLE
 
 control.divergence peersim.core.dcdatastore.observers.divergence.DivergenceObserver
 control.divergence.protocol replication
-control.divergence.filename Peersim-DC-Page_Sim/configurations/divergece-report.txt
+control.divergence.filename divergence-report.txt
 control.divergence.step CYCLE
+
+control.dbstate peersim.core.dcdatastore.observers.dbstate.DatabaseObserver
+control.dbstate.protocol replication
+control.dbstate.filename DbState.txt
+control.dbstate.step CYCLE
 
 ################ Alignment ================================
 

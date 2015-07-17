@@ -43,11 +43,11 @@ public class BogusPeriodicReplicationProtocol extends
 	}
 
 	@Override
-	public boolean handleClientWriteRequest(ServerNode node, int pid,
-			ClientWriteOperation<?> event) {
+	public boolean handleClientWriteRequest(ServerNode node, int pid, ClientWriteOperation<?> event) {
 		
 		String userId = ((MoodleWriteOperation) event).getUserId();
 		String objId;
+		String[] tmp;
 		
 		switch(event.operationID()){
 		case 29:
@@ -62,6 +62,58 @@ public class BogusPeriodicReplicationProtocol extends
 			
 			c.DirEditOperation(userId, objId);
 			break;
+		case 33:
+			//resource update operation
+			objId = event.getObjectID();
+			
+			c.ForumAddDiscussionOperation(userId, objId);
+			break;
+		case 34:
+			//resource update operation
+			objId = event.getObjectID();
+			
+			c.ForumAddOperation(userId, objId);
+			break;
+		
+		case 35:
+			//resource update operation
+			objId = event.getObjectID();
+			tmp = objId.split(",");
+			
+			c.ForumAddPostOperation(userId, tmp[0], tmp[1] );
+			break;
+		case 37:
+			//resource update operation
+			objId = event.getObjectID();
+			
+			c.ForumSubscribeOperation(userId, objId);
+			break;
+		case 38:
+			//resource update operation
+			objId = event.getObjectID();
+			
+			c.ForumUnsubscribeOperation(userId, objId);
+			break;
+		case 39:
+			//resource update operation
+			objId = event.getObjectID();
+			
+			c.ForumUpdateDiscussionOperation(userId, objId);
+			break;
+		case 40:
+			//resource update operation
+			objId = event.getObjectID();
+			
+			c.ForumUpdateOperation(userId, objId);
+			break;
+		case 41:
+			//resource update operation
+			objId = event.getObjectID();
+			tmp = objId.split(",");
+			
+			c.ForumUpdatePostOperation(userId, tmp[0], tmp[1] );
+			break;
+			
 		case 56:
 			//resource add operation
 			objId = event.getObjectID();
@@ -118,10 +170,11 @@ public class BogusPeriodicReplicationProtocol extends
 		
 		switch(event.operationID()){
 		case 32:
-			//resource view operation
+			//Folder view operation
 			objId = event.getObjectID();
 			
 			c.DirViewOperation(userId, objId);
+			
 			break;
 		case 60:
 			//resource view operation
@@ -134,19 +187,10 @@ public class BogusPeriodicReplicationProtocol extends
 			objId = event.getObjectID();
 			
 			c.PageViewOperation(userId, objId);
-			
 			break;
 		default:
 			System.err.println("[ ERROR ] Unknown operationID (" + event.getObjectID() + "). [handleClientWriteRequest]");
-		}
-		
-		
-		
-		
-		
-		
-		
-		
+		}	
 		
 		this.replyToClient(node, prr.getClientProtocolID(), prr);
 	}

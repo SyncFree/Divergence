@@ -28,6 +28,7 @@ import peersim.example.page.replicationsProtocols.data.*;
 
 public class RandomPageOperationGenerator extends BaseClientOperationGenerator implements ClientOperationGenerator {	
 	private SimpleLog<MOODLE_OP> log;
+	private long maximumTime = -1;
 	
 	public RandomPageOperationGenerator() {
 		super();
@@ -54,10 +55,13 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 		}
 	}
 
+	private boolean firstTime = true;
+	
 	public ClientOperationGenerationEvent hasMoreOperations() {
-		if(log.hasNext()) 
-			return new ClientOperationGenerationEvent(DCCommonState.getTime());
-		else
+		if(log.hasNext() || firstTime) {
+			firstTime = false;
+			return new ClientOperationGenerationEvent(maximumTime);
+		} else
 			return null;
 	}
 
@@ -83,7 +87,10 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 				startOfTime = time;
 			}
 			time -= startOfTime;
-			time /= 10000;
+			//time /= 10000;			// to reduce the gap between operations
+			
+			if(time > maximumTime) maximumTime = time;
+			
 			if(!clientMap.containsKey(userId)) {
 				lastClientUsed++;
 				if (lastClientUsed == GeoReplicatedDatastoreNetwork.sizeClients())
@@ -93,6 +100,10 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 			ClientNode client = clientMap.get(userId);
 			System.out.println(time);
 			switch(operationType) {
+				case "forum add": 
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new ForumAddOperation(client, time, userId, objId);
+				break;
 				case "folder add": 
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
 					newOp = new DirAddOperation(client, time, userId, objId);
@@ -138,6 +149,8 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 				ops.add(newOp);
 			}
 		}
+		
+		//System.err.println("Maximum time for a client event is: " + maximumTime);
 		
 		/*Collections.sort(ops, new Comparator<ClientOperation>() {
 

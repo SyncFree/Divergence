@@ -226,7 +226,7 @@ public class Course implements DataObject<Course, Integer>{
         return count;
     }
 
-    public boolean existForum(int forId) {
+    public boolean existForum(String forId) {
         for (Forum f: Forums) {
             if (f.getId() == forId) {
                 return TRUE;
@@ -234,7 +234,7 @@ public class Course implements DataObject<Course, Integer>{
         }
         return FALSE;
     }
-    public Forum getForum(int forId) {
+    public Forum getForum(String forId) {
         for (Forum f: Forums) {
             if (f.getId() == forId) {
                 return f;
@@ -242,7 +242,7 @@ public class Course implements DataObject<Course, Integer>{
         }
         return null;
     }
-    void addForum(int forId) {
+    void addForum(String forId) {
         Forums.add(new Forum(forId));
     }
 
@@ -347,7 +347,7 @@ public class Course implements DataObject<Course, Integer>{
         // Do some viewing stuff
     }
 
-    protected void viewForum(int forId) {
+    protected void viewForum(String forId) {
         // Do some viewing stuff
     }
 
@@ -560,40 +560,25 @@ public class Course implements DataObject<Course, Integer>{
         return 1;
     }
     
-    public int ForumAddOperation(int userId, int forId) {
-                if (existMember(userId) && getMember(userId).getRole().equals("staff") ) {
+    public int ForumAddOperation(String userId, String forId) {
                     if (existForum(forId)) {
                         return 0;
                     } else {
                         addForum(forId);
                     }
-                } else {
-                    return 0;
-                }
         return 1;
     }
-    public int ForumUpdateOperation(int userId, int forId) {
-            if (!existMember(userId) ) {
-                return 0;
-            } else {
-                if (getMember(userId).getRole().equals("staff") ) {
+    public int ForumUpdateOperation(String userId, String forId) {
                     if (!existForum(forId)) {
                         return 0;
                     } else {
                         getForum(forId).incValue();
                     }
-                } else {
-                    return 0;
-                }
-            }
         return 1;
     }
-    public int ForumAddDiscussionOperation(int userId, int forId, int disId) {
-            if (!existMember(userId)) {
-                return 0;
-            } else {
-                if (getMember(userId).getRole().equals("staff") ) {
-                    if (!existForum(forId)) {
+    public int ForumAddDiscussionOperation(String userId, String disId) {
+    	String forId = ""; // We have to fix this.
+    				if (!existForum(forId)) {
                         return 0;
                     } else {
                         if (getForum(forId).existDiscussion(disId) ) {
@@ -602,18 +587,11 @@ public class Course implements DataObject<Course, Integer>{
                             getForum(forId).addDiscussion(disId);
                         }
                     }
-                } else {
-                    return 0;
-                }
-            }
         return 1;
     }
-    public int ForumUpdateDiscussionOperation(int userId, int forId, int disId) {
-        if (!existMember(userId)) {
-                return 0;
-            } else {
-                if (getMember(userId).getRole().equals("staff") ) {
-                    if (!existForum(forId)) {
+    public int ForumUpdateDiscussionOperation(String userId, String disId) {
+    	String forId = "";
+    				if (!existForum(forId)) {
                         return 0;
                     } else {
                         if (!getForum(forId).existDiscussion(disId) ) {
@@ -622,17 +600,11 @@ public class Course implements DataObject<Course, Integer>{
                             getForum(forId).getDiscussion(disId).incValue();
                         }
                     }
-                } else {
-                    return 0;
-                }
-            }
         return 1;
     }
-    public int ForumAddPostOperation(int userId, int forId, int disId, int posId) {
-            if (!existMember(userId)) {
-                return 0;
-            } else {
-                if (!existForum(forId)) {
+    public int ForumAddPostOperation(String userId, String disId, String posId) {
+    	String forId = "";
+    			if (!existForum(forId)) {
                     return 0;
                 } else {
                     if (!getForum(forId).existDiscussion(disId) ) {
@@ -645,15 +617,11 @@ public class Course implements DataObject<Course, Integer>{
                         }
                     }
                 }
-            }
         return 1;
     }
-    public int ForumUpdatePostOperation(int userId, int forId, int disId, int posId) {
-        // You can update the post if its yours or you are staff.
-            if (!existMember(userId)) {
-                return 0;
-            } else {
-                if (!existForum(forId)) {
+    public int ForumUpdatePostOperation(String userId, String disId, String posId) {
+    	String forId = "";
+    			if (!existForum(forId)) {
                     return 0;
                 } else {
                     if (!getForum(forId).existDiscussion(disId) ) {
@@ -662,25 +630,15 @@ public class Course implements DataObject<Course, Integer>{
                         if(!getForum(forId).getDiscussion(disId).existPost(posId)) {
                             return 0;
                         } else {
-                            if (userId == getForum(forId).getDiscussion(disId).getPost(posId).getOwner()){
-                                getForum(forId).getDiscussion(disId).getPost(posId).incValue();
-                            } else if (getMember(userId).getRole().equals("staff")) {
-                                getForum(forId).getDiscussion(disId).getPost(posId).incValue();
-                            } else {
-                                return 0;
-                            }
+                        	getForum(forId).getDiscussion(disId).getPost(posId).incValue();
                         }
                     }
                 }
-            }
         return 1;
     }
-    public int ForumUserReportOperation(int userId, int forId, int disId, int posId) {
+    public int ForumUserReportOperation(String userId, String forId, String disId, String posId) {
         // Any user can report a post.
-            if (!existMember(userId)) {
-                return 0;
-            } else {
-                if (!existForum(forId)) {
+            	if (!existForum(forId)) {
                     return 0;
                 } else {
                     if (!getForum(forId).existDiscussion(disId) ) {
@@ -693,15 +651,11 @@ public class Course implements DataObject<Course, Integer>{
                         }
                     }
                 }
-            }
+            	
         return 1;
     }
-    public int ForumSubscribeOperation( int userId, int forId) {
-        // Any user can report a post.
-            if (!existMember(userId)) {
-                return 0;
-            } else {
-                if (!existForum(forId)) {
+    public int ForumSubscribeOperation( String userId, String forId) {
+    			if (!existForum(forId)) {
                     return 0;
                 } else {
                     if (getForum(forId).existSubscriber(userId)){
@@ -710,15 +664,10 @@ public class Course implements DataObject<Course, Integer>{
                         getForum(forId).addSubscriber(userId);
                     }
                 }
-            }
         return 1;
     }
-    public int ForumUnsubscribeOperation(int userId,int forId) {
-        // Any user can report a post.
-            if (!existMember(userId)) {
-                return 0;
-            } else {
-                if (!existForum(forId)) {
+    public int ForumUnsubscribeOperation(String userId,String forId) {
+    			if (!existForum(forId)) {
                     return 0;
                 } else {
                     if (!getForum(forId).existSubscriber(userId)){
@@ -727,39 +676,26 @@ public class Course implements DataObject<Course, Integer>{
                         getForum(forId).deleteSubscriber(userId);
                     }
                 }
-            }
         return 1;
     }
-    public int ForumSearchOperation(int userId){
-        if (existMember(userId)){
-            viewForumSearch();
-        } else {
-            return 0;
-        }
+    public int ForumSearchOperation(String userId){
+    	viewForumSearch();
         return 1;
     }
-    public int ForumViewOperation(int userId, int forId){
-        if (existMember(userId)){
+    public int ForumViewOperation(String userId, String forId){
             if (existForum(forId)){
                 viewForum(forId);
             } else {
                 return 0;
             }
-        } else {
-            return 0;
-        }
         return 1;
     }
-    public int ForumViewAllOperation(int userId){
-        if (existMember(userId)){
-            viewForumAll();
-        } else {
-            return 0;
-        }
+    public int ForumViewAllOperation(String userId){
+    	viewForumAll();
         return 1;
     }
-    public int ForumViewDiscussionOperation(int userId, int forId, int disId){
-        if (existMember(userId) && existForum(forId)){
+    public int ForumViewDiscussionOperation(String userId, String forId, String disId){
+        if (existForum(forId)){
             if (getForum(forId).existDiscussion(disId)){
                 viewForumDiscussion();
             } else {

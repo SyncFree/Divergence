@@ -15,14 +15,14 @@ import java.util.Set;
  * @author jordi
  */
 public class Discussion {
-    private int id;
+    private String id;
     private int value;
     Set<Post> Posts;
 
-    Discussion(int id) {
+    Discussion(String id) {
         this.id = id;
         this.value = 0;
-        this.Posts = new HashSet();
+        this.Posts = new HashSet<Post>();
     }
     
     public int getValue() {
@@ -37,26 +37,26 @@ public class Discussion {
         this.value+=1;
     }
     
-    public int getId() {
+    public String getId() {
         return this.id;
     }
     
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    boolean existPost(int posId) {
+    boolean existPost(String posId) {
         for (Post p: Posts) {
             if (p.getId() == posId) return TRUE;
         }
         return FALSE;
     }
 
-    void addPost(int posId, int userId) {
+    void addPost(String posId, String userId) {
         Posts.add(new Post(posId, userId));
     }
 
-    Post getPost(int posId) {
+    Post getPost(String posId) {
         for (Post p: Posts) {
             if (p.getId() == posId) return p;
         }
