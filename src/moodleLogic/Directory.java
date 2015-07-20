@@ -3,6 +3,8 @@ package moodleLogic;
 import java.util.HashSet;
 import java.util.Set;
 
+import peersim.core.dcdatastore.util.DataObject;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -13,13 +15,13 @@ import java.util.Set;
  *
  * @author jordi
  */
-public class Directory {
+public class Directory implements DataObject<String, Integer> {
     
     private String id;
     private int value;
     Set<String> Path; 
 
-    Directory(String id) {
+    public Directory(String id) {
         this.id = id;
         this.value = 0;
         this.Path = new HashSet<String>();
@@ -45,4 +47,40 @@ public class Directory {
     public void incValue() {
         this.value+=1;
     }
+
+
+	@Override
+	public String getData() {
+		return this.id;
+	}
+
+
+	@Override
+	public void setData(String data) {
+		this.id = data;
+	}
+
+
+	@Override
+	public void setData(String data, Integer metadata) {
+		this.id = data;
+		this.value = metadata;
+	}
+
+
+	@Override
+	public Integer getMetadata() {
+		return this.value;
+	}
+
+
+	@Override
+	public double computeDivergence(DataObject<?, ?> dataObject) {
+		if(!(dataObject instanceof Directory) )
+			return 0;
+		else {
+			Directory other = (Directory) dataObject;
+			return Math.abs(this.value - other.value);
+		}
+	}
 }

@@ -1,9 +1,6 @@
 package peersim.example.page.replicationProtocols;
 
 import java.util.ArrayList;
-
-
-
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,18 +15,17 @@ import peersim.example.page.replicationProtocols.events.PageUpdateOperation;
 import peersim.example.page.replicationProtocols.events.MoodleReadOperation;
 import peersim.example.page.replicationProtocols.events.MoodleWriteOperation;
 import peersim.example.page.replicationProtocols.events.PageSimReadReply;
-
 import peersim.example.page.replicationsProtocols.data.PageSim;
-
 import moodleLogic.Course;
+import moodleLogic.Directory;
 
 
 public class BogusPeriodicReplicationProtocol extends
 		PeriodicReplicationProtocol implements Cloneable {
 	
-	private static Course c = new Course(0, 30);
-	
 	private List<PageUpdateOperation> operations;
+	
+	private Course c = new Course(0, 30);
 	
 	public BogusPeriodicReplicationProtocol(String name) {
 		super(name);
@@ -54,14 +50,20 @@ public class BogusPeriodicReplicationProtocol extends
 		case 29:
 			//resource add operation
 			objId = event.getObjectID();
+			Directory d = (Directory) node.read(objId);
+			if(d == null) {
+				d = new Directory(objId);
+				node.write(objId, d);
+			}
 			
 			c.DirAddOperation(userId, objId);
 			break;
 		case 31:
 			//resource update operation
 			objId = event.getObjectID();
-			
-			c.DirEditOperation(userId, objId);
+			Course c2 = null;
+			c2 = (Course) node.read(objId);
+			c2.DirEditOperation(userId, objId);
 			break;
 		case 33:
 			//resource update operation
