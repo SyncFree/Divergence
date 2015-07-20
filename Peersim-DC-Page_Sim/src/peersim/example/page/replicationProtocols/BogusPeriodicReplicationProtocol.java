@@ -25,8 +25,6 @@ public class BogusPeriodicReplicationProtocol extends
 	
 	private List<PageUpdateOperation> operations;
 	
-	private Course c = new Course(0, 30);
-	
 	public BogusPeriodicReplicationProtocol(String name) {
 		super(name);
 		this.operations = new ArrayList<PageUpdateOperation>();
@@ -45,7 +43,7 @@ public class BogusPeriodicReplicationProtocol extends
 		MoodleWriteOperation<?> op = (MoodleWriteOperation<?>) event;
 		String userId = ((MoodleWriteOperation<?>) event).getUserId();
 		String courseId = event.getObjectID();
-		c = (Course) node.read(courseId);
+		Course c = (Course) node.read(courseId);
 		if (c == null) {
 			// f**k
 			System.err.println("[ Error ] No course "+ courseId + " found in DB." );
@@ -167,16 +165,24 @@ public class BogusPeriodicReplicationProtocol extends
 	@Override
 	public void handleClientReadRequest(ServerNode node, int pid, ClientReadOperation event) {
 		
+		MoodleReadOperation op = (MoodleReadOperation) event;
 		PageSim p = (PageSim) node.read(event.getObjectID());
 		PageSimReadReply prr = new PageSimReadReply(event, p, CommonState.getTime());
 		
 		String userId = ((MoodleReadOperation) event).getUserId();
+		String courseId = event.getObjectID();
 		String objId;
+		
+		Course c = (Course) node.read(courseId);
+		if (c == null) {
+			// f**k
+			System.err.println("[ Error ] No course "+ courseId + " found in DB." );
+		}
 		
 		switch(event.operationID()){
 		case 32:
 			//Folder view operation
-			objId = event.getObjectID();
+			objId = op.getOperationId();
 			
 			c.DirViewOperation(userId, objId);
 			

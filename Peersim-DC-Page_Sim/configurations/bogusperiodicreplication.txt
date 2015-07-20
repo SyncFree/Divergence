@@ -45,7 +45,7 @@ protocol.tr.config Peersim-DC-Page_Sim/configurations/latencymap.txt
 init.sch peersim.core.dcdatastore.controls.ServerInitiator
 init.sch.protocol replication
 
-init.dbinit peersim.example.replicationProtocol.init.CourseLoader
+init.dbinit peersim.example.replicationProtocols.init.CourseLoader
 init.dbinit.protocol replication
 
 ################ activators ===========================
