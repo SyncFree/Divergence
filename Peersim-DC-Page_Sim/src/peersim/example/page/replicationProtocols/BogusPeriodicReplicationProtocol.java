@@ -3,6 +3,7 @@ package peersim.example.page.replicationProtocols;
 import java.util.ArrayList;
 
 
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -196,11 +197,13 @@ public class BogusPeriodicReplicationProtocol extends
 	}
 
 	@Override
-	public void handleServerPropagationRequest(ServerNode node, int pid,
-			OperationPropagationEvent event) {
+	public void handleServerPropagationRequest(ServerNode node, int pid, OperationPropagationEvent event) {
 		Iterator<ClientWriteOperation<?>> ite = ((MultipleOperationPropagationEvent) event).getClientOperations();
 		while(ite.hasNext()) {
-			//
+			// We apply the same function that processes the Client-Server operations
+			// But wont it send the messages again to the other replicas. In the 
+			// handleClientWrite doesn't seem so...
+			handleClientWriteRequest(node, pid, ite.next());
 		}
 	}
 

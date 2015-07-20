@@ -98,7 +98,7 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 				clientMap.put(userId, GeoReplicatedDatastoreNetwork.getClient(lastClientUsed));
 			}
 			ClientNode client = clientMap.get(userId);
-			System.out.println(time);
+			
 			switch(operationType) {
 				case "forum add": 
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
