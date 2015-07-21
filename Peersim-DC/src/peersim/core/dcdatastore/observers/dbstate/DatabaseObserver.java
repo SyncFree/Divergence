@@ -34,7 +34,7 @@ public class DatabaseObserver implements Control {
 			ServerNode servers[] = GeoReplicatedDatastoreNetwork.getServersForDC(i);
 			for (int j = 0; j < servers.length; j++) {
 				this.output.println("Server " + j + " (DC: " + j + ")");
-				Map<String,DataObject<?,?>> dbCopy = ((DatabaseObservable)servers[j].getProtocol(protocolID)).getDatabaseState();
+				Map<String,DataObject<?,?>> dbCopy = ((DatabaseObservable)servers[j].getProtocol(protocolID)).getDatabaseState((ServerNode) servers[j]);
 				for(String k: dbCopy.keySet()) {
 					this.output.println("Key " + k + " -> " + dbCopy.get(k).toString());
 				}

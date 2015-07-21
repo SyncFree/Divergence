@@ -1,6 +1,7 @@
 package peersim.core.dcdatastore;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import peersim.core.dcdatastore.util.DataObject;
 
@@ -36,6 +37,11 @@ public class GeneralServerNode extends GeneralDCNode implements ServerNode {
 
 	public DataObject<?,?> read(String key) {
 		return this.db.get(key);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Map<String, DataObject<?, ?>> getDatabaseCopy() {
+		return (Map<String, DataObject<?, ?>>) this.db.clone();
 	}
 
 }
