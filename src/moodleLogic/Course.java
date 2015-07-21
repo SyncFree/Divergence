@@ -2,7 +2,6 @@ package moodleLogic;
 
 
 import static java.lang.Boolean.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,10 +47,38 @@ public class Course implements DataObject<Course, Integer>{
         this.Resources = new HashSet<Resource>();
         this.Pages = new HashSet<Page>();
     }
+    
+    public Object clone(){
+    	Course nc = null;
+		try {
+			nc = (Course) super.clone();
+	    	nc.id = this.id;    
+	        nc.enrollmentLimit = this.enrollmentLimit;
+	        nc.value = this.value;
+	        nc.Calendars = new HashSet<Calendar>(this.Calendars);
+	        nc.Assignments = new HashSet<Assignment>(this.Assignments);
+	        nc.Modules = new HashSet<Module>(this.Modules);
+	        nc.Members = new HashSet<Member>(this.Members);
+	        nc.Forums = new HashSet<Forum>(this.Forums);
+	        nc.Blogs = new HashSet<Blog>(this.Blogs);
+	        nc.Directories = new HashSet<Directory>(this.Directories);
+	        nc.Quizes = new HashSet<Quiz>(this.Quizes);
+	        nc.Resources = new HashSet<Resource>(this.Resources);
+	        nc.Pages = new HashSet<Page>(this.Pages);
+    	
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	return nc;
+    }
+    
     @Override
     public String toString (){
-    	
-    	return null;
+    	// Will return a string with all the values 
+    	String str = getValue() + " " + this.Pages.size() + " " + this.Resources.size() + " " + this.Forums.size() + " " + this.Quizes.size() + " " + this.Directories.size() + " ";
+    	return str;
     }
     
     
@@ -1549,7 +1576,30 @@ public class Course implements DataObject<Course, Integer>{
 	}
 	@Override
 	public double computeDivergence(DataObject<?, ?> other) {
-		return Math.abs(this.value - (Integer) other.getMetadata());
+		int val = 0;
+		int valOther = 0;
+		
+		if (other instanceof Course){
+		
+			//return Math.abs(this.value - (Integer) other.getMetadata());
+			Course cother = (Course) other;
+			
+			for (Page p: Pages){
+				val += p.getValue() + 1; 
+			}
+			
+			for (Forum f: Forums){
+				val += f.getValue() + 1;
+			}
+			
+			for (Page p: cother.Pages){
+				valOther += p.getValue() + 1;
+			}
+			
+			
+		}
+		System.err.println("" + val+ "  " + valOther);
+		return Math.abs(val - valOther);
 	}
     
     

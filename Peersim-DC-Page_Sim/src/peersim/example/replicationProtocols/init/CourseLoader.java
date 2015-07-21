@@ -1,8 +1,6 @@
 package peersim.example.replicationProtocols.init;
 
 import java.util.HashMap;
-
-
 import java.util.Map;
 
 import moodleLogic.Course;

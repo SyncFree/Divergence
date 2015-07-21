@@ -1,21 +1,26 @@
 package peersim.example.page.replicationProtocols;
 
 import java.util.ArrayList;
+
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import peersim.core.CommonState;
+import peersim.core.dcdatastore.DCCommonState;
 import peersim.core.dcdatastore.ServerNode;
 import peersim.core.dcdatastore.clientEventGenerators.ClientReadOperation;
 import peersim.core.dcdatastore.clientEventGenerators.ClientWriteOperation;
+import peersim.core.dcdatastore.initializers.databaseinit.DatabaseInitializable;
 import peersim.core.dcdatastore.replicationProtocol.PeriodicReplicationProtocol;
 import peersim.core.dcdatastore.serverEvents.MultipleOperationPropagationEvent;
 import peersim.core.dcdatastore.serverEvents.OperationPropagationEvent;
+import peersim.core.dcdatastore.util.DataObject;
 import peersim.example.page.replicationProtocols.events.PageUpdateOperation;
 import peersim.example.page.replicationProtocols.events.MoodleReadOperation;
 import peersim.example.page.replicationProtocols.events.MoodleWriteOperation;
-import peersim.example.page.replicationProtocols.events.PageSimReadReply;
-import peersim.example.page.replicationsProtocols.data.PageSim;
+import peersim.example.page.replicationProtocols.events.CourseSimReadReply;
+import peersim.example.replicationProtocols.events.CounterReadReply;
 import moodleLogic.Course;
 import moodleLogic.Directory;
 
@@ -166,8 +171,6 @@ public class BogusPeriodicReplicationProtocol extends
 	public void handleClientReadRequest(ServerNode node, int pid, ClientReadOperation event) {
 		
 		MoodleReadOperation op = (MoodleReadOperation) event;
-		PageSim p = (PageSim) node.read(event.getObjectID());
-		PageSimReadReply prr = new PageSimReadReply(event, p, CommonState.getTime());
 		
 		String userId = ((MoodleReadOperation) event).getUserId();
 		String courseId = event.getObjectID();
@@ -178,7 +181,8 @@ public class BogusPeriodicReplicationProtocol extends
 			// f**k
 			System.err.println("[ Error ] No course "+ courseId + " found in DB." );
 		}
-		
+		CourseSimReadReply crr = new CourseSimReadReply(event, c, CommonState.getTime());
+
 		switch(event.operationID()){
 		case 32:
 			//Folder view operation
@@ -202,8 +206,7 @@ public class BogusPeriodicReplicationProtocol extends
 		default:
 			System.err.println("[ ERROR ] Unknown operationID (" + event.getObjectID() + "). [handleClientWriteRequest]");
 		}	
-		
-		this.replyToClient(node, prr.getClientProtocolID(), prr);
+		this.replyToClient(node, crr.getClientProtocolID(), crr);
 	}
 
 	@Override
@@ -224,5 +227,6 @@ public class BogusPeriodicReplicationProtocol extends
 			ope.addOperation(op);
 		return ope;
 	}
+
 
 }

@@ -21,7 +21,7 @@ network.size 33
 simulation.gracetime 20000
 simulation.logtime CYCLE
 simulation.clientmanager peersim.example.page.replicationProtocols.clients.RandomPageOperationGenerator
-simulation.clientopsfile /home/jordi/Downloads/logs/IP1213.log
+simulation.clientopsfile /home/jordi/Downloads/logs/head_IP1213.log
 simulation.clientlayer clayer
 
 node.transport tr
@@ -30,7 +30,7 @@ node.transport tr
 
 server.protocol.replication peersim.example.page.replicationProtocols.BogusPeriodicReplicationProtocol
 server.protocol.replication.transport tr
-server.protocol.replication.period CYCLE
+server.protocol.replication.period 85197360000
 server.protocol.replication.divergencetracking true 
 
 client.protocol.clayer peersim.example.page.replicationProtocols.clients.PageClientProtocol
@@ -63,7 +63,7 @@ control.divergence.step CYCLE
 control.dbstate peersim.core.dcdatastore.observers.dbstate.DatabaseObserver
 control.dbstate.protocol replication
 control.dbstate.filename DbState.txt
-control.dbstate.step CYCLE
+control.dbstate.step CYCLE*1000
 
 ################ Alignment ================================
 
@@ -71,4 +71,4 @@ include.init sch dbinit
 
 #include.protocol replication clayer tr
 
-include.control test divergence
+include.control test divergence dbstate

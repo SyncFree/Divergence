@@ -27,6 +27,22 @@ public class Directory implements DataObject<String, Integer> {
         this.Path = new HashSet<String>();
     }
     
+    public Object clone(){
+		Directory nd = null;
+		try {
+			nd = (Directory) super.clone();
+			nd.id = this.id;
+			nd.value = this.value;
+			nd.Path = new HashSet<String>(this.Path);
+			
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+    	return nd;
+    }
+    
     
     public String getId() {
         return this.id;
