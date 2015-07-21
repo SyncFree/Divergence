@@ -27,7 +27,7 @@ public abstract class DatabaseInitiator implements Control {
 			for(int j = 0; j < servers.length; j++) {
 				DatabaseInitializable proto = (DatabaseInitializable) servers[j].getProtocol(protocolID);
 				for(String key: objects.keySet()) {
-					proto.storeObject(((ServerNode)servers[j]), key, objects.get(key));
+					proto.storeObject(((ServerNode)servers[j]), key,  (DataObject<?, ?>) objects.get(key).clone());
 				}
 			}
 		}
