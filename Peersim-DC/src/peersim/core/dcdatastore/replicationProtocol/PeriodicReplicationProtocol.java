@@ -1,6 +1,7 @@
 package peersim.core.dcdatastore.replicationProtocol;
 
 import java.util.Iterator;
+import java.util.Map;
 
 import peersim.config.Configuration;
 import peersim.core.Node;
@@ -154,5 +155,9 @@ public abstract class PeriodicReplicationProtocol implements EDProtocol, Initial
 	
 	public void storeObject(ServerNode node, String key, DataObject<?,?> object) {
 		node.write(key, object);
+	}
+	
+	public Map<String,DataObject<?,?>> getDatabaseState(ServerNode node) {
+		return node.getDatabaseCopy();
 	}
 }
