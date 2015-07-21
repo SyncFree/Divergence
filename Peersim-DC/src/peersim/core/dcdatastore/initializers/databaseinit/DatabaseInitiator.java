@@ -5,6 +5,7 @@ import java.util.Map;
 import peersim.config.Configuration;
 import peersim.core.Control;
 import peersim.core.Node;
+import peersim.core.dcdatastore.DCCommonState;
 import peersim.core.dcdatastore.GeoReplicatedDatastoreNetwork;
 import peersim.core.dcdatastore.ServerNode;
 import peersim.core.dcdatastore.util.DataObject;
@@ -30,6 +31,12 @@ public abstract class DatabaseInitiator implements Control {
 				}
 			}
 		}
+		
+		for(String key: objects.keySet()) {
+			DatabaseInitializable proto = (DatabaseInitializable)DCCommonState.globalServer().getProtocol(protocolID);	
+			proto.storeObject(((ServerNode)DCCommonState.globalServer()), key, objects.get(key));
+		}
+		
 		return false;
 	}
 	
