@@ -6,6 +6,7 @@ import peersim.config.Configuration;
 import peersim.core.Control;
 import peersim.core.Node;
 import peersim.core.dcdatastore.GeoReplicatedDatastoreNetwork;
+import peersim.core.dcdatastore.ServerNode;
 import peersim.core.dcdatastore.util.DataObject;
 
 public abstract class DatabaseInitiator implements Control {
@@ -25,7 +26,7 @@ public abstract class DatabaseInitiator implements Control {
 			for(int j = 0; j < servers.length; j++) {
 				DatabaseInitializable proto = (DatabaseInitializable) servers[j].getProtocol(protocolID);
 				for(String key: objects.keySet()) {
-					proto.storeObject(key, objects.get(key));
+					proto.storeObject(((ServerNode)servers[j]), key, objects.get(key));
 				}
 			}
 		}

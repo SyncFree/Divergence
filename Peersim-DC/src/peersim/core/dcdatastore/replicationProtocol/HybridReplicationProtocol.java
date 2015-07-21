@@ -13,6 +13,7 @@ import peersim.core.dcdatastore.clientEventGenerators.ClientWriteOperation;
 import peersim.core.dcdatastore.clientEventGenerators.ReadReply;
 import peersim.core.dcdatastore.controls.Initializable;
 import peersim.core.dcdatastore.controls.NextPeriodicSync;
+import peersim.core.dcdatastore.initializers.databaseinit.DatabaseInitializable;
 import peersim.core.dcdatastore.observers.divergence.DivergenceObservable;
 import peersim.core.dcdatastore.replicationProtocol.divergenceControl.DivergenceMetrics;
 import peersim.core.dcdatastore.serverEvents.OperationPropagationEvent;
@@ -21,7 +22,7 @@ import peersim.core.dcdatastore.util.DataObject;
 import peersim.edsim.EDProtocol;
 import peersim.transport.Transport;
 
-public abstract class HybridReplicationProtocol implements EDProtocol, Initializable, DivergenceObservable, Cloneable {
+public abstract class HybridReplicationProtocol implements EDProtocol, Initializable, DivergenceObservable, DatabaseInitializable, Cloneable {
 	
 	private static final String PAR_TRACK_DIVERGENTE = "divergencetracking";
 	private static final String PAR_TRANSPORT = "transport";
@@ -142,6 +143,10 @@ public abstract class HybridReplicationProtocol implements EDProtocol, Initializ
 
 	public void resetDivergenceMetrics() {
 		this.divergenceMeasures.reset();
+	}
+	
+	public void storeObject(ServerNode node, String key, DataObject<?,?> object) {
+		node.write(key, object);
 	}
 	
 }
