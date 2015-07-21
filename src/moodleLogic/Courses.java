@@ -18,7 +18,7 @@ public class Courses {
     private Set<Course> Courses;
     
     Courses() {
-        this.Courses = new HashSet();
+        this.Courses = new HashSet<Course>();
     }
     
     
@@ -26,7 +26,7 @@ public class Courses {
         return FALSE;
     }
     
-    public Course getCourse(int courseId) {
+    public Course getCourse(String courseId) {
         for (Course c:Courses) {
             if (c.getId() == courseId) return c;
         }
@@ -34,7 +34,7 @@ public class Courses {
         return null;
     }
 
-    void addCourse(int id, int enrollmentLimit) {
+    void addCourse(String id, int enrollmentLimit) {
         Courses.add(new Course(id, enrollmentLimit));
     }
     

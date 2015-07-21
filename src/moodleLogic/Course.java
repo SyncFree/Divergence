@@ -19,7 +19,7 @@ import peersim.core.dcdatastore.util.DataObject;
  * @author jordi
  */
 public class Course implements DataObject<Course, Integer>{
-    private int id;
+    private String id;
     private int enrollmentLimit;
     private int value;
     private Set<Calendar> Calendars;
@@ -33,7 +33,7 @@ public class Course implements DataObject<Course, Integer>{
     private Set<Resource> Resources;
     private Set<Page> Pages;
     
-    public Course(int courseId, int enrollmentLimit){
+    public Course(String courseId, int enrollmentLimit){
         this.id = courseId;    
         this.enrollmentLimit = enrollmentLimit;
         this.value = 0;
@@ -55,10 +55,10 @@ public class Course implements DataObject<Course, Integer>{
     }
     
     
-    public int getId () {
+    public String getId () {
         return this.id;
     }
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

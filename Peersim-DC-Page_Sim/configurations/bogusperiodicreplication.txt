@@ -45,6 +45,9 @@ protocol.tr.config Peersim-DC-Page_Sim/configurations/latencymap.txt
 init.sch peersim.core.dcdatastore.controls.ServerInitiator
 init.sch.protocol replication
 
+init.dbinit peersim.example.replicationProtocols.init.CourseLoader
+init.dbinit.protocol replication
+
 ################ activators ===========================
 
 ################ observers ==============================
@@ -64,7 +67,7 @@ control.dbstate.step CYCLE
 
 ################ Alignment ================================
 
-include.init sch
+include.init sch dbinit
 
 #include.protocol replication clayer tr
 

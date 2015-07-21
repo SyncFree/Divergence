@@ -9,17 +9,17 @@ public class ForumUpdatePostOperation extends MoodleWriteOperation<Integer> {
 	private String postId;
 
 	
-	public ForumUpdatePostOperation(ClientNode c, long time, String userId, String objId, String disId, String postId) {
-		super((short) 41, c, time, userId);
-		this.setObjectID(objId);
+	public ForumUpdatePostOperation(ClientNode c, long time, String userId, String objId, String disId, String postId, String courseId) {
+		super((short) 41, c, time, userId, objId);
+		this.setObjectID(courseId);
 		this.disId = disId;
 		this.postId = postId;
 
 	}
 	
-	public ForumUpdatePostOperation(ClientNode c, ServerNode d, long time, String userId, String objId, String disId, String postId) {
-		super((short) 41, c, d, time, userId);
-		this.setObjectID(objId);
+	public ForumUpdatePostOperation(ClientNode c, ServerNode d, long time, String userId, String objId, String disId, String postId, String courseId) {
+		super((short) 41, c, d, time, userId, objId);
+		this.setObjectID(courseId);
 		this.disId = disId;
 		this.postId = postId;
 

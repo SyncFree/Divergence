@@ -25,8 +25,6 @@ public class BogusPeriodicReplicationProtocol extends
 	
 	private List<PageUpdateOperation> operations;
 	
-	private Course c = new Course(0, 30);
-	
 	public BogusPeriodicReplicationProtocol(String name) {
 		super(name);
 		this.operations = new ArrayList<PageUpdateOperation>();
@@ -41,77 +39,79 @@ public class BogusPeriodicReplicationProtocol extends
 
 	@Override
 	public boolean handleClientWriteRequest(ServerNode node, int pid, ClientWriteOperation<?> event) {
-		
-		String userId = ((MoodleWriteOperation) event).getUserId();
+
+		MoodleWriteOperation<?> op = (MoodleWriteOperation<?>) event;
+		String userId = ((MoodleWriteOperation<?>) event).getUserId();
+		String courseId = event.getObjectID();
+		Course c = (Course) node.read(courseId);
+		if (c == null) {
+			// f**k
+			System.err.println("[ Error ] No course "+ courseId + " found in DB." );
+		}
 		String objId;
 		String[] tmp;
 		
+		
 		switch(event.operationID()){
 		case 29:
-			//resource add operation
-			objId = event.getObjectID();
-			Directory d = (Directory) node.read(objId);
-			if(d == null) {
-				d = new Directory(objId);
-				node.write(objId, d);
-			}
+			//Folder add operation
+			objId = op.getOperationId();
 			
 			c.DirAddOperation(userId, objId);
 			break;
 		case 31:
-			//resource update operation
-			objId = event.getObjectID();
-			Course c2 = null;
-			c2 = (Course) node.read(objId);
-			c2.DirEditOperation(userId, objId);
+			//Folder update operation
+			objId = op.getOperationId();
+			
+			c.DirEditOperation(userId, objId);
 			break;
 		case 33:
 			//resource update operation
-			objId = event.getObjectID();
+			objId = op.getOperationId();
 			
 			c.ForumAddDiscussionOperation(userId, objId);
 			break;
 		case 34:
 			//resource update operation
-			objId = event.getObjectID();
+			objId = op.getOperationId();
 			
 			c.ForumAddOperation(userId, objId);
 			break;
 		
 		case 35:
 			//resource update operation
-			objId = event.getObjectID();
+			objId = op.getOperationId();
 			tmp = objId.split(",");
 			
 			c.ForumAddPostOperation(userId, tmp[0], tmp[1] );
 			break;
 		case 37:
 			//resource update operation
-			objId = event.getObjectID();
+			objId = op.getOperationId();
 			
 			c.ForumSubscribeOperation(userId, objId);
 			break;
 		case 38:
 			//resource update operation
-			objId = event.getObjectID();
+			objId = op.getOperationId();
 			
 			c.ForumUnsubscribeOperation(userId, objId);
 			break;
 		case 39:
 			//resource update operation
-			objId = event.getObjectID();
+			objId = op.getOperationId();
 			
 			c.ForumUpdateDiscussionOperation(userId, objId);
 			break;
 		case 40:
 			//resource update operation
-			objId = event.getObjectID();
+			objId = op.getOperationId();
 			
 			c.ForumUpdateOperation(userId, objId);
 			break;
 		case 41:
 			//resource update operation
-			objId = event.getObjectID();
+			objId = op.getOperationId();
 			tmp = objId.split(",");
 			
 			c.ForumUpdatePostOperation(userId, tmp[0], tmp[1] );
@@ -119,19 +119,19 @@ public class BogusPeriodicReplicationProtocol extends
 			
 		case 56:
 			//resource add operation
-			objId = event.getObjectID();
+			objId = op.getOperationId();
 			
 			c.ResourceAddOperation(userId, objId);
 			break;
 		case 58:
 			//resource update operation
-			objId = event.getObjectID();
+			objId = op.getOperationId();
 			
 			c.ResourceEditOperation(userId, objId);
 			break;
 		case 60:
 			//resource view operation
-			objId = event.getObjectID();
+			objId = op.getOperationId();
 			
 			c.ResourceViewOperation(userId, objId);
 			break;
@@ -139,19 +139,19 @@ public class BogusPeriodicReplicationProtocol extends
 			//page add operation
 			//PageAddOperation op = (PageAddOperation) event;
 			
-			objId = event.getObjectID();
+			objId = op.getOperationId();
 			
 			c.PageAddOperation(userId, objId);
 			break;
 		case 74:
 			//page view operation
-			objId = event.getObjectID();
+			objId = op.getOperationId();
 			
 			c.PageViewOperation(userId, objId);
 			break;
 		case 75:
 			//page update operation
-			objId = event.getObjectID();
+			objId = op.getOperationId();
 			
 			c.PageEditOperation(userId, objId);
 			break;
@@ -165,16 +165,24 @@ public class BogusPeriodicReplicationProtocol extends
 	@Override
 	public void handleClientReadRequest(ServerNode node, int pid, ClientReadOperation event) {
 		
+		MoodleReadOperation op = (MoodleReadOperation) event;
 		PageSim p = (PageSim) node.read(event.getObjectID());
 		PageSimReadReply prr = new PageSimReadReply(event, p, CommonState.getTime());
 		
 		String userId = ((MoodleReadOperation) event).getUserId();
+		String courseId = event.getObjectID();
 		String objId;
+		
+		Course c = (Course) node.read(courseId);
+		if (c == null) {
+			// f**k
+			System.err.println("[ Error ] No course "+ courseId + " found in DB." );
+		}
 		
 		switch(event.operationID()){
 		case 32:
 			//Folder view operation
-			objId = event.getObjectID();
+			objId = op.getOperationId();
 			
 			c.DirViewOperation(userId, objId);
 			
@@ -199,11 +207,13 @@ public class BogusPeriodicReplicationProtocol extends
 	}
 
 	@Override
-	public void handleServerPropagationRequest(ServerNode node, int pid,
-			OperationPropagationEvent event) {
+	public void handleServerPropagationRequest(ServerNode node, int pid, OperationPropagationEvent event) {
 		Iterator<ClientWriteOperation<?>> ite = ((MultipleOperationPropagationEvent) event).getClientOperations();
 		while(ite.hasNext()) {
-			//
+			// We apply the same function that processes the Client-Server operations
+			// But wont it send the messages again to the other replicas. In the 
+			// handleClientWrite doesn't seem so...
+			handleClientWriteRequest(node, pid, ite.next());
 		}
 	}
 

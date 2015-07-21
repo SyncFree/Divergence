@@ -71,6 +71,7 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 		String userId;
 		String operationType;
 		String objId;
+		String courseId;
 		
 		long startOfTime = -1;
 		
@@ -81,6 +82,7 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 			Operation<MOODLE_OP> op = log.next();
 			userId = op.getAttributeByName(MOODLE_OP.REQUESTER_ID);
 			operationType = op.getAttributeByName(MOODLE_OP.OPERATION).replaceAll("\"", "");
+			courseId = op.getAttributeByName(MOODLE_OP.COURSE_ID);
 			
 			long time = op.getTimestamp();
 			if(startOfTime == -1) {
@@ -98,47 +100,47 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 				clientMap.put(userId, GeoReplicatedDatastoreNetwork.getClient(lastClientUsed));
 			}
 			ClientNode client = clientMap.get(userId);
-			System.out.println(time);
+			
 			switch(operationType) {
 				case "forum add": 
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
-					newOp = new ForumAddOperation(client, time, userId, objId);
+					newOp = new ForumAddOperation(client, time, userId, objId, courseId);
 				break;
 				case "folder add": 
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
-					newOp = new DirAddOperation(client, time, userId, objId);
+					newOp = new DirAddOperation(client, time, userId, objId, courseId);
 				break;
 				case "folder view": 
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
-					newOp = new DirViewOperation(client, time, userId, objId);
+					newOp = new DirViewOperation(client, time, userId, objId, courseId);
 				break;
 				case "folder edit": 
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
-					newOp = new DirUpdateOperation(client, time, userId, objId);
+					newOp = new DirUpdateOperation(client, time, userId, objId, courseId);
 				break;
 				case "resource add": 
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
-					newOp = new ResourceAddOperation(client, time, userId, objId);
+					newOp = new ResourceAddOperation(client, time, userId, objId, courseId);
 				break;
 				case "resource update": 
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
-					newOp = new ResourceUpdateOperation(client, time, userId, objId);
+					newOp = new ResourceUpdateOperation(client, time, userId, objId, courseId);
 				break;
 				case "resource view": 
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
-					newOp = new ResourceViewOperation(client, time, userId, objId);
+					newOp = new ResourceViewOperation(client, time, userId, objId, courseId);
 				break;
 				case "page view":
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
-					newOp = new PageViewOperation(client, time, userId, objId);
+					newOp = new PageViewOperation(client, time, userId, objId, courseId);
 				break;
 				case "page add":
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
-					newOp = new PageAddOperation(client, time, userId, objId);
+					newOp = new PageAddOperation(client, time, userId, objId, courseId);
 				break;
 				case "page update":
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
-					newOp = new PageUpdateOperation(client, time, userId, objId);
+					newOp = new PageUpdateOperation(client, time, userId, objId, courseId);
 				break;
 			default:
 					//System.err.println("Error: This operation \"" +  operationType + "\" doesn't exist.");
