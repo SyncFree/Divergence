@@ -2,6 +2,7 @@ package moodleLogic;
 
 
 import static java.lang.Boolean.*;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,6 +32,7 @@ public class Course implements DataObject<Course, Integer>{
     private Set<Quiz> Quizes;
     private Set<Resource> Resources;
     private Set<Page> Pages;
+    private Set<Url> Urls;
     
     public Course(String courseId, int enrollmentLimit){
         this.id = courseId;    
@@ -46,6 +48,7 @@ public class Course implements DataObject<Course, Integer>{
         this.Quizes = new HashSet<Quiz>();
         this.Resources = new HashSet<Resource>();
         this.Pages = new HashSet<Page>();
+        this.Urls = new HashSet<Url>();
     }
     
     public Object clone(){
@@ -121,17 +124,17 @@ public class Course implements DataObject<Course, Integer>{
         this.incEnrollmentLimit();
     }
    
-    public void addCalendar(int calId) {
+    public void addCalendar(String calId) {
         Calendars.add(new Calendar(calId));
     }
-    public void editCalendar(int calId) {
+    public void editCalendar(String calId) {
        this.getCalendar(calId).incValue(); 
     }
-    public void deleteCalendar(int calId) {
+    public void deleteCalendar(String calId) {
         
         Calendars.remove(getCalendar(calId)); // Will he get upset because you shouldn't remove null objects???
     }
-    public boolean existCalendar(int calId) {
+    public boolean existCalendar(String calId) {
         for (Calendar cal: Calendars) {
             if (cal.getId() == calId){
                 return TRUE;
@@ -139,7 +142,7 @@ public class Course implements DataObject<Course, Integer>{
         }
         return FALSE;
     }
-    public Calendar getCalendar(int calId) {
+    public Calendar getCalendar(String calId) {
         for (Calendar cal: Calendars) {
             if (cal.getId() == calId){
                 return cal;
@@ -148,20 +151,20 @@ public class Course implements DataObject<Course, Integer>{
         return null;
     }
 
-    public void addBlog(int blogId) {
+    public void addBlog(String blogId) {
         Blogs.add(new Blog(blogId));
     }
-    public boolean existBlog(int blogId) {
+    public boolean existBlog(String blogId) {
         for (Blog b: Blogs) {
             if (b.getId() == blogId) return TRUE;
         }
             
         return FALSE;
     }
-    public void deleteBlog(int blogId) {
+    public void deleteBlog(String blogId) {
         Blogs.remove(getBlog(blogId));
     }
-    public Blog getBlog(int blogId) {
+    public Blog getBlog(String blogId) {
         for (Blog b: Blogs) {
             if (b.getId() == blogId){
                 return b;
@@ -169,7 +172,7 @@ public class Course implements DataObject<Course, Integer>{
         }
         return null;
     }
-    public void editBlog(int blogId) {
+    public void editBlog(String blogId) {
         this.getBlog(blogId).incValue();
     }
 
@@ -234,6 +237,34 @@ public class Course implements DataObject<Course, Integer>{
        // We remove the module
        Modules.remove(m);
     } 
+    
+    public boolean existUrl(String urlId) {
+        for (Url u: Urls) {
+            if (u.getId() == urlId) return TRUE;
+        }
+        return FALSE;
+    }
+    
+    public Url getUrl(String urlId) {
+        for (Url u: Urls) {
+            if (u.getId() == urlId) return u;
+        }
+        return null;
+    }
+
+    void addUrl(String urlId) {
+        Urls.add(new Url(urlId));
+    }
+
+    void deleteUrl(String urlId) {
+        Urls.remove(getUrl(urlId));
+    }
+
+    void viewUrl(String urlId) {
+        // Do some viewing stuff
+    }
+    
+
 
     public int getEnrollmentLimit() {
         return this.enrollmentLimit;
@@ -338,11 +369,11 @@ public class Course implements DataObject<Course, Integer>{
         return Assignments;
     }
 
-    protected void viewCalendar(int calId) {
+    protected void viewCalendar(String calId) {
         //DO some Viewing stuff
     }
 
-    protected void viewBlog(int blogId) {
+    protected void viewBlog(String blogId) {
         //DO some Viewing stuff
     }
 
@@ -441,107 +472,80 @@ public class Course implements DataObject<Course, Integer>{
     }
     
     
-    public int CalendarAddOperation(int userId, int calId ) {
+    public int CalendarAddOperation(String userId, String calId ) {
         
-        if (existMember(userId) && getMember(userId).getRole().equals("staff") ){
             // add the new calendar
             if (existCalendar(calId)) {
                 return 0;
             } else {
                 addCalendar(calId);
             }
-        } else {
-            return 0;
-        }
-       
         return 1;
     }
-    public int CalendarEditOperation(int userId, int calId ) {
-        if(this.existMember(userId) && this.getMember(userId).getRole().equals("staff")) {
-            this.editCalendar(calId);
+    public int CalendarEditOperation(String userId, String calId ) {
+        if(existCalendar(calId)) {
+            editCalendar(calId);
         } else {
-            return 0;
+            addCalendar(calId);
         }
         
         return 1;
     }
-    public int CalendarDeleteOperation(int userId, int calId ) {
-        if(existMember(userId) && getMember(userId).getRole().equals("staff")) {
-            deleteCalendar(calId);
+    public int CalendarDeleteOperation(String userId, String calId ) {
+    	if(existCalendar(calId)) {
+            editCalendar(calId);
         } else {
-            return 0;
+            addCalendar(calId);
         }
         
         return 1;  
     }
-    public int CalendarViewOperation(int userId, int calId) {
-        if (existMember(userId)){
+    public int CalendarViewOperation(String userId, String calId) {
             if (existCalendar(calId)) {
                 viewCalendar(calId);
             } else {
-                return 0;
+                addCalendar(calId);
             }
-        } else {
-            return 0;
-        }
-       
         return 1;
     }
     
-    public int BlogAddOperation(int userId,  int blogId){
-        if(existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int BlogAddOperation(String userId,  String blogId){
             if (existBlog(blogId)) {
                 return 0;
             }
             else {
                 addBlog(blogId);
             }
-        } else {
-            return 0;
-        }
         
         return 1;
     }
-    public int BlogViewOperation(int userId,  int blogId){
-        if(existMember(userId)) {
+    public int BlogViewOperation(String userId,  String blogId){
             if (!existBlog(blogId)) {
-                return 0;
+                addBlog(blogId);
             }
             else {
                 viewBlog(blogId);
             }
-        } else {
-            return 0;
-        }
         
         return 1;
     }
-    public int BlogDeleteOperation(int userId,  int blogId){
-        if(existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int BlogDeleteOperation(String userId,  String blogId){
             if (!existBlog(blogId)) {
                 return 0;
             }
             else {
                 deleteBlog(blogId);
             }
-        } else {
-            return 0;
-        }
         
         return 1;
     }
-    public int BlogEditOperation(int userId, int blogId) {
-        if(existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int BlogEditOperation(String userId, String blogId) {
             if (!existBlog(blogId)) {
-                return 0;
+                addBlog(blogId);
             }
             else {
                 editBlog(blogId);
             }
-        } else {
-            return 0;
-        }
-        
         return 1;    
     }
 
@@ -578,7 +582,7 @@ public class Course implements DataObject<Course, Integer>{
     }
     public int DirEditOperation(String userId, String dirId){
             if (!existDir(dirId)) {
-                return 0;
+                addDir(dirId);
             }
             else {
                 editDir(dirId);
@@ -588,36 +592,41 @@ public class Course implements DataObject<Course, Integer>{
     }
     
     public int ForumAddOperation(String userId, String forId) {
-                    if (existForum(forId)) {
-                        return 0;
-                    } else {
-                        addForum(forId);
-                    }
+    	forId = "default"; 	// This should the sent to the operation and not changed here...	
+    						// But then we have to update the other ForumOp to have the forId set to "default"
+    	if (existForum(forId)) {
+    		return 0;
+    	} else {
+    		addForum(forId);
+    	}
         return 1;
     }
     public int ForumUpdateOperation(String userId, String forId) {
-                    if (!existForum(forId)) {
-                        return 0;
-                    } else {
-                        getForum(forId).incValue();
-                    }
+        forId = "default";
+        
+    	if (!existForum(forId)) {
+    		addForum(forId);
+    	} else {
+    		getForum(forId).incValue();
+    	}
         return 1;
     }
     public int ForumAddDiscussionOperation(String userId, String disId) {
-    	String forId = ""; // We have to fix this.
-    				if (!existForum(forId)) {
-                        return 0;
-                    } else {
-                        if (getForum(forId).existDiscussion(disId) ) {
-                            return 0;
-                        } else {
-                            getForum(forId).addDiscussion(disId);
-                        }
-                    }
+    	String forId = "default";
+    				
+    	if (!existForum(forId)) {
+    		addForum(forId);
+    	}
+    	if (getForum(forId).existDiscussion(disId) ) {
+    		return 0;
+    	} else {
+    		getForum(forId).addDiscussion(disId);
+    	}
+    	
         return 1;
     }
     public int ForumUpdateDiscussionOperation(String userId, String disId) {
-    	String forId = "";
+    	String forId = "default";
     				if (!existForum(forId)) {
                         return 0;
                     } else {
@@ -630,8 +639,8 @@ public class Course implements DataObject<Course, Integer>{
         return 1;
     }
     public int ForumAddPostOperation(String userId, String disId, String posId) {
-    	String forId = "";
-    			if (!existForum(forId)) {
+    	String forId = "default";
+    	if (!existForum(forId)) {
                     return 0;
                 } else {
                     if (!getForum(forId).existDiscussion(disId) ) {
@@ -647,8 +656,8 @@ public class Course implements DataObject<Course, Integer>{
         return 1;
     }
     public int ForumUpdatePostOperation(String userId, String disId, String posId) {
-    	String forId = "";
-    			if (!existForum(forId)) {
+    	String forId = "default";
+    	if (!existForum(forId)) {
                     return 0;
                 } else {
                     if (!getForum(forId).existDiscussion(disId) ) {
@@ -663,8 +672,9 @@ public class Course implements DataObject<Course, Integer>{
                 }
         return 1;
     }
-    public int ForumUserReportOperation(String userId, String forId, String disId, String posId) {
+    public int ForumUserReportOperation(String userId, String disId, String posId) {
         // Any user can report a post.
+    	String forId = "default";
             	if (!existForum(forId)) {
                     return 0;
                 } else {
@@ -682,6 +692,7 @@ public class Course implements DataObject<Course, Integer>{
         return 1;
     }
     public int ForumSubscribeOperation( String userId, String forId) {
+    	forId = "default"; 	
     			if (!existForum(forId)) {
                     return 0;
                 } else {
@@ -694,6 +705,7 @@ public class Course implements DataObject<Course, Integer>{
         return 1;
     }
     public int ForumUnsubscribeOperation(String userId,String forId) {
+    	forId = "default";
     			if (!existForum(forId)) {
                     return 0;
                 } else {
@@ -710,7 +722,8 @@ public class Course implements DataObject<Course, Integer>{
         return 1;
     }
     public int ForumViewOperation(String userId, String forId){
-            if (existForum(forId)){
+    	forId = "default";
+    		if (existForum(forId)){
                 viewForum(forId);
             } else {
                 return 0;
@@ -721,7 +734,8 @@ public class Course implements DataObject<Course, Integer>{
     	viewForumAll();
         return 1;
     }
-    public int ForumViewDiscussionOperation(String userId, String forId, String disId){
+    public int ForumViewDiscussionOperation(String userId, String disId){
+    	String forId = "default";
         if (existForum(forId)){
             if (getForum(forId).existDiscussion(disId)){
                 viewForumDiscussion();
@@ -777,81 +791,39 @@ public class Course implements DataObject<Course, Integer>{
         return 1;
     }
 
-    public int UrlAddOperation(int userId, int modId, int secId, int urlId) {
-       if(existMember(userId) && getMember(userId).getRole().equals("staff")) {
-            if (!existModule(modId)) {
-                return 0;
+    public int UrlAddOperation(String userId, String urlId) {
+            if (existUrl(urlId)){
+            	return 0;
+            } else {
+            	addUrl(urlId);
             }
-            else {
-                if (getModule(modId).existSection(secId)){
-                    if (getModule(modId).getSection(secId).existUrl(urlId)){
-                        return 0;
-                    } else {
-                        getModule(modId).getSection(secId).addUrl(urlId);
-                    }
-                } else {
-                    return 0;
-                }
-            }
-        } else {
-            return 0;
-        }
         
         return 1;
     }
-    public int UrlEditOperation(int userId, int modId, int secId, int urlId) {
-        if(existMember(userId) && getMember(userId).getRole().equals("staff")) {
-            if (!existModule(modId)) {
-                return 0;
-            }
-            else {
-                if (getModule(modId).existSection(secId)){
-                    if (!getModule(modId).getSection(secId).existUrl(urlId)){
-                        return 0;
+    public int UrlEditOperation(String userId, String urlId) {
+                    if (!existUrl(urlId)){
+                        addUrl(urlId);
                     } else {
-                        getModule(modId).getSection(secId).getUrl(urlId).incValue();
+                        getUrl(urlId).incValue();
                     }
-                } else {
-                    return 0;
-                }
-            }
-        } else {
-            return 0;
-        }
+
         
         return 1;
     }    
-    public int UrlDeleteOperation(int userId, int modId, int secId, int urlId) {
-        if(existMember(userId) && getMember(userId).getRole().equals("staff")) {
-            if (existModule(modId) && getModule(modId).existSection(secId) && getModule(modId).getSection(secId).existUrl(urlId)) {
-                getModule(modId).getSection(secId).deleteUrl(urlId);
+    public int UrlDeleteOperation(String userId, String urlId) {
+            if (existUrl(urlId)){
+            		deleteUrl(urlId);
             } else{
                 return 0;
             }
-        } else {
-            return 0;
-        }
         
         return 1;
     }
-    public int UrlViewOperation(int userId, int modId, int secId, int urlId) {
-        if(existMember(userId) ) {
-            if (!existModule(modId)) {
-                return 0;
-            }
-            else {
-                if (getModule(modId).existSection(secId)){
-                    if (!getModule(modId).getSection(secId).existUrl(urlId)){
-                        return 0;
-                    } else {
-                        getModule(modId).getSection(secId).viewUrl(urlId);
-                    }
-                } else {
-                    return 0;
-                }
-            }
+    public int UrlViewOperation(String userId, String urlId) {
+        if (!existUrl(urlId)){
+        	return 0;
         } else {
-            return 0;
+        	viewUrl(urlId);
         }
         
         return 1;

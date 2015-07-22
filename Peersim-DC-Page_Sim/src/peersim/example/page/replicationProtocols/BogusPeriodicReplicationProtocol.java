@@ -20,6 +20,8 @@ import peersim.example.page.replicationProtocols.events.PageUpdateOperation;
 import peersim.example.page.replicationProtocols.events.MoodleReadOperation;
 import peersim.example.page.replicationProtocols.events.MoodleWriteOperation;
 import peersim.example.page.replicationProtocols.events.CourseSimReadReply;
+import peersim.example.page.replicationProtocols.events.ForumAddPostOperation;
+import peersim.example.page.replicationProtocols.events.ForumUpdatePostOperation;
 import peersim.example.replicationProtocols.events.CounterReadReply;
 import moodleLogic.Course;
 import moodleLogic.Directory;
@@ -58,6 +60,42 @@ public class BogusPeriodicReplicationProtocol extends
 		
 		
 		switch(event.operationID()){
+		case 9:
+			//Folder add operation
+			objId = op.getOperationId();
+			
+			c.BlogAddOperation(userId, objId);
+			break;
+		case 100:
+			//Folder add operation
+			objId = op.getOperationId();
+			
+			c.BlogEditOperation(userId, objId);
+			break;			
+		case 10:
+			//Folder update operation
+			objId = op.getOperationId();
+			
+			c.BlogDeleteOperation(userId, objId);
+			break;
+		case 12:
+			//Folder add operation
+			objId = op.getOperationId();
+			
+			c.CalendarAddOperation(userId, objId);
+			break;
+		case 13:
+			//Folder update operation
+			objId = op.getOperationId();
+			
+			c.CalendarDeleteOperation(userId, objId);
+			break;
+		case 14:
+			//Folder update operation
+			objId = op.getOperationId();
+			
+			c.CalendarEditOperation(userId, objId);
+			break;
 		case 29:
 			//Folder add operation
 			objId = op.getOperationId();
@@ -85,10 +123,9 @@ public class BogusPeriodicReplicationProtocol extends
 		
 		case 35:
 			//resource update operation
-			objId = op.getOperationId();
-			tmp = objId.split(",");
-			
-			c.ForumAddPostOperation(userId, tmp[0], tmp[1] );
+			ForumAddPostOperation fap_op = (ForumAddPostOperation) op;
+
+			c.ForumAddPostOperation(userId, fap_op.getDiscussionId(), fap_op.getPostId() );
 			break;
 		case 37:
 			//resource update operation
@@ -119,7 +156,8 @@ public class BogusPeriodicReplicationProtocol extends
 			objId = op.getOperationId();
 			tmp = objId.split(",");
 			
-			c.ForumUpdatePostOperation(userId, tmp[0], tmp[1] );
+			ForumUpdatePostOperation fup_op = (ForumUpdatePostOperation) op;
+			c.ForumUpdatePostOperation(userId, fup_op.getDiscussionId(), fup_op.getPostId() );
 			break;
 			
 		case 56:
@@ -140,6 +178,18 @@ public class BogusPeriodicReplicationProtocol extends
 			
 			c.ResourceViewOperation(userId, objId);
 			break;
+		case 61:
+			//resource view operation
+			objId = op.getOperationId();
+			
+			c.UrlAddOperation(userId, objId);
+			break;
+		case 62:
+			//resource view operation
+			objId = op.getOperationId();
+			
+			c.UrlDeleteOperation(userId, objId);
+			break;
 		case 73:
 			//page add operation
 			//PageAddOperation op = (PageAddOperation) event;
@@ -159,6 +209,11 @@ public class BogusPeriodicReplicationProtocol extends
 			objId = op.getOperationId();
 			
 			c.PageEditOperation(userId, objId);
+			break;
+			
+		case 777:
+			// We should put something to know which operation is it.
+			System.err.println("[ ERROR ] Operation Not Yet Implemented (" + event.getObjectID() + "). [handleClientWriteRequest]");
 			break;
 		default:
 			System.err.println("[ ERROR ] Unknown operationID (" + event.getObjectID() + "). [handleClientWriteRequest]");
@@ -204,7 +259,7 @@ public class BogusPeriodicReplicationProtocol extends
 			c.PageViewOperation(userId, objId);
 			break;
 		default:
-			System.err.println("[ ERROR ] Unknown operationID (" + event.getObjectID() + "). [handleClientWriteRequest]");
+			System.err.println("[ ERROR ] Unknown operationID (" + event.operationID() + "). [handleClientWriteRequest]");
 		}	
 		this.replyToClient(node, crr.getClientProtocolID(), crr);
 	}

@@ -11,19 +11,19 @@ package moodleLogic;
  * @author jordi
  */
 public class Blog {
-    private int id;
+    private String id;
     private int value;
 
-    Blog(int id) {
+    Blog(String id) {
         this.id = id;
         this.value = 0;
     }
     
-    public int getId() {
+    public String getId() {
         return this.id;
     }
     
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
     

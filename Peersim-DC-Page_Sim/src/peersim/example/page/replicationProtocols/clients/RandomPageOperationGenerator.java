@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import log.formats.MoodleOperation;
 import log.formats.Operation;
@@ -102,9 +103,56 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 			ClientNode client = clientMap.get(userId);
 			
 			switch(operationType) {
+				case "forum subscribe": 
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new ForumSubscribeOperation(client, time, userId, objId, courseId);
+				break;
+				case "forum unsubscribe": 
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new ForumUnsubscribeOperation(client, time, userId, objId, courseId);
+				break;
 				case "forum add": 
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
 					newOp = new ForumAddOperation(client, time, userId, objId, courseId);
+				break;
+				case "forum edit": 
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new ForumUpdateOperation(client, time, userId, objId, courseId);
+				break;
+				case "forum edit discussion": 
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new ForumUpdateDiscussionOperation(client, time, userId, objId, courseId);
+				break;
+				case "forum add discussion":
+					objId = op.getAttributeByName(MOODLE_OP.INFO);
+					newOp = new ForumAddDiscussionOperation(client, time, userId, objId, courseId);
+				break;
+				case "forum add post":					
+					objId = op.getAttributeByName(MOODLE_OP.INFO);
+					List<Integer> al = getUrlNumbers(objId);
+					// ForumAddPostOperation is a special op as it has 2 incoming IDs.
+					// the one we usually use is rendered null
+					newOp = new ForumAddPostOperation(client, time, userId, null, al.get(0)+"", al.get(1)+"", courseId);
+				break;
+				case "forum search":
+					objId = op.getAttributeByName(MOODLE_OP.INFO);
+					
+					newOp = new ForumSearchOperation(client, time, userId, objId, courseId);
+				break;
+				case "forum view discussion":
+					objId = op.getAttributeByName(MOODLE_OP.INFO);
+					
+					newOp = new ForumViewDiscussionOperation(client, time, userId, objId, courseId);
+				break;
+				case "forum view forum":
+					objId = op.getAttributeByName(MOODLE_OP.INFO);
+					
+					newOp = new ForumViewForumOperation(client, time, userId, objId, courseId);						
+				break;
+				case "forum view forums":
+					objId = op.getAttributeByName(MOODLE_OP.INFO);
+					
+					newOp = new ForumViewAllForumsOperation(client, time, userId, objId, courseId);					
 				break;
 				case "folder add": 
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
@@ -122,7 +170,7 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
 					newOp = new ResourceAddOperation(client, time, userId, objId, courseId);
 				break;
-				case "resource update": 
+				case "resource edit": 
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
 					newOp = new ResourceUpdateOperation(client, time, userId, objId, courseId);
 				break;
@@ -138,9 +186,157 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
 					newOp = new PageAddOperation(client, time, userId, objId, courseId);
 				break;
-				case "page update":
+				case "page edit":
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
 					newOp = new PageUpdateOperation(client, time, userId, objId, courseId);
+				break;
+				case "url add":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new UrlAddOperation(client, time, userId, objId, courseId);
+				break;
+				case "url view":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "url edit":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new UrlUpdateOperation(client, time, userId, objId, courseId);
+				break;
+				case "url delete":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new UrlDeleteOperation(client, time, userId, objId, courseId);
+				break;
+				case "calendar add":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new CalendarAddOperation(client, time, userId, objId, courseId);
+				break;
+				case "calendar view":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "calendar edit":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new CalendarUpdateOperation(client, time, userId, objId, courseId);
+				break;
+				case "calendar delete":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new CalendarDeleteOperation(client, time, userId, objId, courseId);
+				break;
+				case "blog add":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new BlogAddOperation(client, time, userId, objId, courseId);
+				break;
+				case "blog view":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "blog edit":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new BlogUpdateOperation(client, time, userId, objId, courseId);
+				break;
+				case "blog delete":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new BlogDeleteOperation(client, time, userId, objId, courseId);
+				break;
+				case "assignment view all":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "assignment view submission":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "assign view submission":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "questionnarie view all":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "quiz view all":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "quiz view summary":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "resource view all":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "scheduler view all":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "user view all":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "user view":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "assign view":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "choice view":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "course view":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "questionnaire view":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "quiz view":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "scheduler view":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "course add mod":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new CourseAddModuleOperation(client, time, userId, objId, courseId);
+				break;
+				case "course delete mod":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new CourseDeleteModuleOperation(client, time, userId, objId, courseId);
+				break;
+				case "course update mod":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new CourseUpdateModuleOperation(client, time, userId, objId, courseId);
+				break;
+				case "course editsection":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new CourseUpdateSectionOperation(client, time, userId, objId, courseId);
+				break;
+				case "course enrol":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new CourseEnrolOperation(client, time, userId, objId, courseId);
+				break;
+				case "course guest":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new CourseEnrolGuestOperation(client, time, userId, objId, courseId);
+				break;
+				case "course recent":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new CourseRecentOperation(client, time, userId, objId, courseId);
+				break;
+				case "course unenrol":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new CourseUnenrolOperation(client, time, userId, objId, courseId);
+				break;
+				case "course edit":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new CourseUpdateOperation(client, time, userId, objId, courseId);
 				break;
 			default:
 					//System.err.println("Error: This operation \"" +  operationType + "\" doesn't exist.");
@@ -165,6 +361,16 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 		});
 		*/
 		return ops;
+	}
+	
+	public ArrayList<Integer> getUrlNumbers (String Url){
+		Matcher matcher = Pattern.compile("[0-9][0-9]*").matcher(Url);
+		ArrayList<Integer> result = new ArrayList<Integer>();
+		
+		while ( matcher.find() ) {
+			result.add(Integer.parseInt(matcher.group(0)));
+		}
+		return result;
 	}
 
 }

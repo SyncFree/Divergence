@@ -11,19 +11,19 @@ package moodleLogic;
  * @author jordi
  */
 public class Calendar {
-    private int id;
+    private String id;
     private int value;
     
-    Calendar(int calId) {
+    Calendar(String calId) {
         this.id = calId;
         this.value = 0;
     }
    
-    public int getId() {
+    public String getId() {
         return this.id;
     }
     
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
     
