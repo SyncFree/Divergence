@@ -30,6 +30,7 @@ import peersim.example.page.replicationsProtocols.data.*;
 public class RandomPageOperationGenerator extends BaseClientOperationGenerator implements ClientOperationGenerator {	
 	private SimpleLog<MOODLE_OP> log;
 	private long maximumTime = -1;
+	private long unknown_op = 0;
 	
 	public RandomPageOperationGenerator() {
 		super();
@@ -170,7 +171,7 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
 					newOp = new ResourceAddOperation(client, time, userId, objId, courseId);
 				break;
-				case "resource edit": 
+				case "resource update": 
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
 					newOp = new ResourceUpdateOperation(client, time, userId, objId, courseId);
 				break;
@@ -186,7 +187,7 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
 					newOp = new PageAddOperation(client, time, userId, objId, courseId);
 				break;
-				case "page edit":
+				case "page update":
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
 					newOp = new PageUpdateOperation(client, time, userId, objId, courseId);
 				break;
@@ -338,8 +339,22 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
 					newOp = new CourseUpdateOperation(client, time, userId, objId, courseId);
 				break;
+				case "assignment view":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "assignment upload":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new AssignmentUploadOperation(client, time, userId, objId, courseId);
+				break;
+				case "course report log":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				
 			default:
-					//System.err.println("Error: This operation \"" +  operationType + "\" doesn't exist.");
+					unknown_op+=1;
+					System.err.println("@@@Error: This operation \"" +  operationType + "\" doesn't exist ("+ unknown_op +").");
 			}
 			if(newOp != null){
 				newOp.setClientProtocolID(RandomPageOperationGenerator.clientProtocolID);

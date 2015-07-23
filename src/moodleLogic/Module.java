@@ -15,21 +15,21 @@ import java.util.Set;
  * @author jordi
  */
 public class Module {
-    private int id;
+    private String id;
     private int value;
     Set<Section> Sections;
 
-    Module(int id) {
+    Module(String id) {
         this.id = id;
         this.value = 0;
-        this.Sections = new HashSet();
+        this.Sections = new HashSet<Section>();
     }
     
-    public int getId() {
+    public String getId() {
         return this.id;
     }
     
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -37,7 +37,7 @@ public class Module {
         this.value+=1;
     }
 
-    boolean existSection(int secId) {
+    boolean existSection(String secId) {
         for (Section s: Sections) {
             if (s.getId() == secId) {
                 return TRUE;
@@ -46,11 +46,11 @@ public class Module {
         return FALSE;
     }
     
-    void addSection (int secId) {
+    void addSection (String secId) {
         Sections.add(new Section(secId));
     }
 
-    public Section getSection(int secId) {
+    public Section getSection(String secId) {
         for (Section s: Sections) {
             if (s.getId() == secId) {
                 return s;
@@ -63,11 +63,11 @@ public class Module {
         return this.value;
     }
 
-    protected void viewSection(int secId) {
+    protected void viewSection(String secId) {
         // do viewy stuff
     }
 
-    protected void deleteSection(int secId) {
+    protected void deleteSection(String secId) {
         Sections.remove(getSection(secId));
     }
     

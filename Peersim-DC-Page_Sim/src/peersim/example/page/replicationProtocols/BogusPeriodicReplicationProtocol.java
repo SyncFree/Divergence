@@ -60,6 +60,12 @@ public class BogusPeriodicReplicationProtocol extends
 		
 		
 		switch(event.operationID()){
+		case 4:
+			//Folder add operation
+			objId = op.getOperationId();
+			
+			c.AssignmentUploadOperation(userId, objId);
+			break;
 		case 9:
 			//Folder add operation
 			objId = op.getOperationId();
@@ -95,6 +101,12 @@ public class BogusPeriodicReplicationProtocol extends
 			objId = op.getOperationId();
 			
 			c.CalendarEditOperation(userId, objId);
+			break;
+		case 22:
+			//Folder update operation
+			objId = op.getOperationId();
+			
+			c.CourseAddModuleOperation(userId, objId);
 			break;
 		case 29:
 			//Folder add operation
@@ -216,7 +228,7 @@ public class BogusPeriodicReplicationProtocol extends
 			System.err.println("[ ERROR ] Operation Not Yet Implemented (" + event.getObjectID() + "). [handleClientWriteRequest]");
 			break;
 		default:
-			System.err.println("[ ERROR ] Unknown operationID (" + event.getObjectID() + "). [handleClientWriteRequest]");
+			System.err.println("[ ERROR ] Unknown operationID (" + event.operationID() + "). [handleClientWriteRequest]");
 		}
 		
 		return true;
@@ -258,8 +270,13 @@ public class BogusPeriodicReplicationProtocol extends
 			
 			c.PageViewOperation(userId, objId);
 			break;
+		case 666:
+			objId = event.getObjectID();
+			
+			c.GenericView(objId);
+			break;
 		default:
-			System.err.println("[ ERROR ] Unknown operationID (" + event.operationID() + "). [handleClientWriteRequest]");
+			System.err.println("[ ERROR ] Unknown operationID (" + event.operationID() + "). [handleClientReadRequest]");
 		}	
 		this.replyToClient(node, crr.getClientProtocolID(), crr);
 	}

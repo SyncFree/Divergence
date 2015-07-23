@@ -12,11 +12,11 @@ import static java.lang.Boolean.*;
  * @author jordi
  */
 class Submission {
-    private int id;
+    private String id;
     private int grade;
     private int value;
     
-    Submission(int student){
+    Submission(String student){
         this.value = 0;
         this.id = student;
         this.grade = -1;
@@ -34,7 +34,7 @@ class Submission {
         this.value+=1;
     }
     
-    public int getId() {
+    public String getId() {
         return this.id;    
     }
         

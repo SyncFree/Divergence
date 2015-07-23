@@ -2,7 +2,6 @@ package peersim.example.page.replicationProtocols.events;
 
 import peersim.core.dcdatastore.ClientNode;
 
-
 import peersim.core.dcdatastore.ServerNode;
 
 public class CourseRecentOperation extends MoodleReadOperation {

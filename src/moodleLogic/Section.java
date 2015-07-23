@@ -15,10 +15,10 @@ import java.util.Set;
  * @author jordi
  */
 public class Section {
-    private int id;
+    private String id;
     private int value;
     
-    Section(int id){
+    Section(String id){
         this.id = id;
         this.value = 0;
     }
@@ -35,11 +35,11 @@ public class Section {
         this.value+=1;
     }
     
-    public int getId() {
+    public String getId() {
         return this.id;
     }
     
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

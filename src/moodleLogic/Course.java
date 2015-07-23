@@ -68,6 +68,7 @@ public class Course implements DataObject<Course, Integer>{
 	        nc.Quizes = new HashSet<Quiz>(this.Quizes);
 	        nc.Resources = new HashSet<Resource>(this.Resources);
 	        nc.Pages = new HashSet<Page>(this.Pages);
+	        nc.Urls = new HashSet<Url>(this.Urls);
     	
 		} catch (CloneNotSupportedException e) {
 			// TODO Auto-generated catch block
@@ -201,21 +202,21 @@ public class Course implements DataObject<Course, Integer>{
         this.getDir(dirId).incValue();
     }
     
-    public void addModule(int modId) {
+    public void addModule(String modId) {
         Modules.add(new Module(modId));
     }
-    public boolean existModule(int modId) {
+    public boolean existModule(String modId) {
         for (Module m: Modules) {
             if (m.getId() == modId) return TRUE;
         }
             
         return FALSE;            
     }
-    public void editModule(int modId) {
+    public void editModule(String modId) {
         this.getModule(modId).incValue();
     }
     
-    public Module getModule(int modId) {
+    public Module getModule(String modId) {
         for (Module m: Modules) {
             if (m.getId() == modId){
                 return m;
@@ -223,7 +224,7 @@ public class Course implements DataObject<Course, Integer>{
         }
         return null;
     }
-    public void deleteModule(int modId){  
+    public void deleteModule(String modId){  
         // With which policy do we want to play?? 
         //      - Delete on cascade
         //      - Move section to orphanage
@@ -346,22 +347,22 @@ public class Course implements DataObject<Course, Integer>{
         this.getResource(resId).incValue();
     }
 
-    public boolean existAssignment(int assId) {
+    public boolean existAssignment(String assId) {
         for (Assignment a: Assignments){
             if (a.getId() == assId) return TRUE;
         }
         return FALSE;
     }
-    public Assignment getAssignment(int assId) {
+    public Assignment getAssignment(String assId) {
         for (Assignment a: Assignments){
             if (a.getId() == assId) return a;
         }
         return null;
     }
-    public void addAssignment(int assId) {
+    public void addAssignment(String assId) {
         Assignments.add(new Assignment(assId));
     }
-    public void deleteAssignment(int assId) {
+    public void deleteAssignment(String assId) {
         Assignments.remove(getAssignment(assId));
     }
 
@@ -433,7 +434,7 @@ public class Course implements DataObject<Course, Integer>{
         // Do some viewing Stuff
     }
     
-    protected void viewModule(int modId) {
+    protected void viewModule(String modId) {
         // Do viewy stuff
     }
     
@@ -863,65 +864,50 @@ public class Course implements DataObject<Course, Integer>{
         return 1;
     }
     
-    public int CourseModuleAddOperation(int userId, int modId){
-        if(existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int CourseAddModuleOperation(String userId, String modId){
             if (existModule(modId)) {
                 return 0;
             }
             else {
                 addModule(modId);
-            }
-        } else {
-            return 0;
-        }
-        
+            }        
         return 1;
     }
-    public int CourseModuleEditOperation(int userId, int modId){
-        if(existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int CourseEditModuleOperation(String userId, String modId){
             if (!existModule(modId)) {
                 return 0;
             }
             else {
                 editModule(modId);
             }
-        } else {
-            return 0;
-        }
+
         
         return 1;
     }
-    public int CourseModuleDeleteOperation(int userId, int modId){
-        if(existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int CourseDeleteModuleOperation(String userId, String modId){
             if (!existModule(modId)) {
                 return 0;
             }
             else {
                 deleteModule(modId);
             }
-        } else {
-            return 0;
-        }
+
         
         return 1;
     }
-    public int CourseModuleViewOperation(int userId, int modId){
-        if(existMember(userId)) {
+    public int CourseViewModuleOperation(String userId, String modId){
             if (!existModule(modId)) {
                 return 0;
             }
             else {
                 viewModule(modId);
             }
-        } else {
-            return 0;
-        }
         
         return 1;
     }
     
-    public int CourseAddSectionOperation (int userId, int modId, int secId) {
-        if(existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int CourseAddSectionOperation (String userId, String modId, String secId) {
+        
             if (!existModule(modId)) {
                 return 0;
             }
@@ -933,15 +919,10 @@ public class Course implements DataObject<Course, Integer>{
                     return 0;
                 }
             }
-        } else {
-            return 0;
-        }
-        
         return 1;
     
     }
-    public int CourseEditSectionOperation (int userId, int modId, int secId) {
-        if(existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int CourseEditSectionOperation (String userId, String modId, String secId) {
             if (!existModule(modId)) {
                 return 0;
             }
@@ -952,16 +933,11 @@ public class Course implements DataObject<Course, Integer>{
                 } else {
                     return 0;
                 }
-            }
-        } else {
-            return 0;
-        }
-        
+            }        
         return 1;
     
     }
-    public int CourseDeleteSectionOperation (int userId, int modId, int secId) {
-        if(existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int CourseDeleteSectionOperation (String userId, String modId, String secId) {
             if (!existModule(modId)) {
                 return 0;
             }
@@ -973,15 +949,11 @@ public class Course implements DataObject<Course, Integer>{
                     return 0;
                 }
             }
-        } else {
-            return 0;
-        }
         
         return 1;
     
     }
-    public int CourseViewSectionOperation (int userId, int modId, int secId) {
-        if(existMember(userId) ) {
+    public int CourseViewSectionOperation (String userId, String modId, String secId) {
             if (!existModule(modId)) {
                 return 0;
             }
@@ -993,10 +965,7 @@ public class Course implements DataObject<Course, Integer>{
                     return 0;
                 }
             }
-        } else {
-            return 0;
-        }
-        
+
         return 1;
     
     }
@@ -1067,65 +1036,25 @@ public class Course implements DataObject<Course, Integer>{
         
         return 1;
     }
-    public int CourseEditOperation (int userId) {
-            if (!existMember(userId)) {
-                    return 0;
-                } else {
-                    if (getMember(userId).getRole().equals("staff") ) {
-                        incValue();
-                    } else {
-                        return 0;
-                    }
-                }
-        
+    public int CourseEditOperation () {
+    	incValue();
         return 1;
     }
-    public int CourseViewOperation(Users us, int userId) {
-        // Maybe it shouldn't need to check the user!!
-        if (us.existUser(userId)){
-            viewCourse();
-        } else {
-            return 0;
-        }
+    public int CourseViewOperation() {
+        viewCourse();
         return 1;
     }
-    public int CourseReportLogOperation(int userId) {
-        if (existMember(userId) && getMember(userId).getRole().equals("staff")){
+    public int CourseReportLogOperation() {
             viewCourseReport();
-        } else {
-            return 0;
-        }
         return 1;
     }
-    public int CourseReportOutlineOperation(int userId) {
-        if (existMember(userId) && getMember(userId).getRole().equals("staff")){
-            viewCourseReportOutline();
-        } else {
-            return 0;
-        }
+    public int CourseReportOutlineOperation() {
+    	viewCourseReportOutline();
         return 1;
     }
-    public int CourseRoleAssignOperation (int userId, int promoteId) {
-            if (existMember(userId)){
-                if (getMember(userId).getRole().equals("staff")) {
-                    if (existMember(promoteId)){
-                        if (!getMember(promoteId).getRole().equals("staff")) {
-                            getMember(promoteId).setOldRole(getMember(promoteId).getRole());
-                            getMember(promoteId).setRole("staff");
-                            // many things can go wrong now. because he is not and student any more he may loose access to the quizes.
-                            // SHould we fix that here??
-                        } else {
-                            return 0;
-                        }
-                    } else {
-                        return 0;
-                    }
-                } else {
-                    return 0;
-                }
-            } else {
-                return 0;
-            }
+    public int CourseRoleAssignOperation (int promoteId) {
+    	//getMember(promoteId).setOldRole(getMember(promoteId).getRole());
+    	//getMember(promoteId).setRole("staff");
         return 1;
     }
     public int CourseRoleUnassignOperation (int userId, int demoteId) {
@@ -1396,111 +1325,88 @@ public class Course implements DataObject<Course, Integer>{
         return 1;
     }
     
-    public int AssignmentAddOperation(int userId, int assId) {
-        if (existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int AssignmentAddOperation(String userId, String assId) {
                 if (!existAssignment(assId)) {
                     addAssignment(assId);
                 } else {
                     return 0;
                 }
-            } else {
-                return 0;
-            }
         return 1;
     }
-    public int AssignmentUpdateOperation(int userId, int assId) {
-        if (existMember(userId) && getMember(userId).getRole().equals("staff")) {
-                if (existAssignment(assId)) {
-                        getAssignment(assId).incValue();
-                } else {
-                    return 0;
-                }
-            } else {
-                return 0;
-            }
+    public int AssignmentUpdateOperation(String userId, String assId) {
+//                if (existAssignment(assId)) {
+//                        getAssignment(assId).incValue();
+//                } else {
+//                    return 0;
+//                }
+//     
         return 1;
     }
-    public int AssignmentUpdateSubmissionOperation(int userId, int assId) {
-        if (existMember(userId) && getMember(userId).getRole().equals("student")) {
-                if (existAssignment(assId)) {
-                    if (getAssignment(assId).existSubmission(userId)){
-                        getAssignment(assId).getSubmission(userId).incValue();
-                    } else {
-                        return 0;
-                    }
-                } else {
-                    return 0;
-                }
-            } else {
-                return 0;
-            }
+    public int AssignmentUpdateSubmissionOperation(String userId, String assId) {
+//        if (existMember(userId) && getMember(userId).getRole().equals("student")) {
+//                if (existAssignment(assId)) {
+//                    if (getAssignment(assId).existSubmission(userId)){
+//                        getAssignment(assId).getSubmission(userId).incValue();
+//                    } else {
+//                        return 0;
+//                    }
+//                } else {
+//                    return 0;
+//                }
+//            } else {
+//                return 0;
+//            }
         return 1;
     }
-    public int AssignmentUpdateGradesOperation(int userId, int assId, int studentId, int grade) {
-        if (existMember(userId) && getMember(userId).getRole().equals("staff")) {
-                if (existAssignment(assId)) {
-                    if (getAssignment(assId).existSubmission(studentId)) {
-                        getAssignment(assId).getSubmission(studentId).setGrade(grade);
-                    } else {
-                        return 0;
-                    }
-                } else {
-                    return 0;
-                }
-            } else {
-                return 0;
-            }
+    public int AssignmentUpdateGradesOperation(String userId, String assId, String studentId, int grade) {
+//                if (existAssignment(assId)) {
+//                    if (getAssignment(assId).existSubmission(studentId)) {
+//                        getAssignment(assId).getSubmission(studentId).setGrade(grade);
+//                    } else {
+//                        return 0;
+//                    }
+//                } else {
+//                    return 0;
+//                }
         return 1;
     }
-    public int AssignmentUploadOperation(int userId, int assId) {
-            if (existMember(userId) && getMember(userId).getRole().equals("student")) {
+    public int AssignmentUploadOperation(String userId, String assId) {
                 if (existAssignment(assId)) {
                     getAssignment(assId).addSubmission(userId);
                 } else {
-                    return 0;
+                    addAssignment(assId);
                 }
-            } else {
-                return 0;
-            }
         return 1;
     }
-    public int AssignmentViewSubmissionOperation(int userId, int assId) {
-            if (existMember(userId) && getMember(userId).getRole().equals("student")) {
-                if (existAssignment(assId)) {
-                    if (getAssignment(assId).existSubmission(userId)) {
-                        getAssignment(assId).viewSubmission(userId);
-                    }else {
-                        return 0;
-                    }
-                } else {
-                    return 0;
-                }
-            } else {
-                return 0;
-            }
+    public int AssignmentViewSubmissionOperation(String userId, String assId) {
+//            if (existMember(userId) && getMember(userId).getRole().equals("student")) {
+//                if (existAssignment(assId)) {
+//                    if (getAssignment(assId).existSubmission(userId)) {
+//                        getAssignment(assId).viewSubmission(userId);
+//                    }else {
+//                        return 0;
+//                    }
+//                } else {
+//                    return 0;
+//                }
+//            } else {
+//                return 0;
+//            }
         return 1;
     }
-    public int AssignmentViewAllOperation(int userId) {
-            if (existMember(userId) && getMember(userId).getRole().equals("staff")) {
+    public int AssignmentViewAllOperation(String userId) {
                 for (Assignment a: getAssignments()){
                     // We view all the submissions.
                     a.viewSubmission(userId);
                 }
-            } else {
-                return 0;
-            }
         return 1;
     }
-    public int AssignmentViewOperation(int userId, int assId) {
-            if (existMember(userId)) {
+    public int AssignmentViewOperation(String userId, String assId) {
                 if (existAssignment(assId)) {
                     getAssignment(assId).viewAssignment();
                 } else {
-                    return 0;
+                	addAssignment(assId);
                 }
-            } else {
-                return 0;
-            }
         return 1;
     }
 	
@@ -1511,35 +1417,36 @@ public class Course implements DataObject<Course, Integer>{
 	@Override
 	public void setData(Course data) {
 	    this.id = data.id;
-	    this.enrollmentLimit= data.enrollmentLimit;
-	    this.value= data.value;
-	    this.Calendars= data.Calendars;
-	    this.Assignments= data.Assignments;
-	    this.Modules= data.Modules;
-	    this.Members= data.Members;
-	    this.Forums= data.Forums;
-	    this.Blogs= data.Blogs;
-	    this.Directories= data.Directories;
-	    this.Quizes= data.Quizes;
-	    this.Resources= data.Resources;
-	    this.Pages= data.Pages;
+	    this.enrollmentLimit = data.enrollmentLimit;
+	    this.value = data.value;
+	    this.Calendars = data.Calendars;
+	    this.Assignments = data.Assignments;
+	    this.Modules = data.Modules;
+	    this.Members = data.Members;
+	    this.Forums = data.Forums;
+	    this.Blogs = data.Blogs;
+	    this.Directories = data.Directories;
+	    this.Quizes = data.Quizes;
+	    this.Resources = data.Resources;
+	    this.Pages = data.Pages;
+	    this.Urls = data.Urls;
 	}
 	@Override
 	public void setData(Course data, Integer metadata) {
 		this.id = data.id;
-	    this.enrollmentLimit= data.enrollmentLimit;
+	    this.enrollmentLimit = data.enrollmentLimit;
 	    this.value = data.value;					// value is changed twice!!!!!
-	    this.Calendars= data.Calendars;
-	    this.Assignments= data.Assignments;
-	    this.Modules= data.Modules;
-	    this.Members= data.Members;
-	    this.Forums= data.Forums;
-	    this.Blogs= data.Blogs;
-	    this.Directories= data.Directories;
-	    this.Quizes= data.Quizes;
-	    this.Resources= data.Resources;
-	    this.Pages= data.Pages;
-	    
+	    this.Calendars = data.Calendars;
+	    this.Assignments = data.Assignments;
+	    this.Modules = data.Modules;
+	    this.Members = data.Members;
+	    this.Forums = data.Forums;
+	    this.Blogs = data.Blogs;
+	    this.Directories = data.Directories;
+	    this.Quizes = data.Quizes;
+	    this.Resources = data.Resources;
+	    this.Pages = data.Pages;
+	    this.Urls = data.Urls;
 	    this.value = metadata;
 	}
 	@Override
@@ -1572,6 +1479,11 @@ public class Course implements DataObject<Course, Integer>{
 		}
 		System.err.println("" + val+ "  " + valOther);
 		return Math.abs(val - valOther);
+	}
+
+	public void GenericView(String objId) {
+		// Generic Empty View
+		// this way it will return the course anyway and the divergence can b computed in the client.
 	}
     
     
