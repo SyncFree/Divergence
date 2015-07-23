@@ -30,6 +30,7 @@ public class Course implements DataObject<Course, Integer>{
     private Set<Blog> Blogs;
     private Set<Directory> Directories;
     private Set<Quiz> Quizes;
+    private Set<QuizAttempt> QuizAttempts;
     private Set<Resource> Resources;
     private Set<Page> Pages;
     private Set<Url> Urls;
@@ -46,6 +47,7 @@ public class Course implements DataObject<Course, Integer>{
         this.Blogs = new HashSet<Blog>();
         this.Directories = new HashSet<Directory>();
         this.Quizes = new HashSet<Quiz>();
+        this.QuizAttempts = new HashSet<QuizAttempt>();
         this.Resources = new HashSet<Resource>();
         this.Pages = new HashSet<Page>();
         this.Urls = new HashSet<Url>();
@@ -103,24 +105,28 @@ public class Course implements DataObject<Course, Integer>{
         this.value+=1;
     }
     
-    public Boolean existMember(int userId) {
+    public Boolean existMember(String userId) {
         for (Member m:Members) {
             if (m.getId() == userId) return TRUE;
         }
         
         return FALSE;
     }
-    public Member getMember(int userId) {
+    public Member getMember(String userId) {
         for (Member m:Members) {
             if (m.getId() == userId) return m;
         }
         return null;
     }
-    public void addMember(int userId, String role){
+    public void addMember(String userId){
+        Members.add(new Member(userId, "student"));
+        this.decEnrollmentLimit();
+    }
+    public void addMember(String userId, String role){
         Members.add(new Member(userId, role));
         this.decEnrollmentLimit();
     }
-    public void deleteMember(int userId){
+    public void deleteMember(String userId){
         Members.remove(getMember(userId));
         this.incEnrollmentLimit();
     }
@@ -305,17 +311,17 @@ public class Course implements DataObject<Course, Integer>{
         Forums.add(new Forum(forId));
     }
 
-    public void addQuiz(int quizId, int maxAttemps) {
+    public void addQuiz(String quizId, int maxAttemps) {
         Quizes.add(new Quiz(quizId, maxAttemps, Members));
     }
     
-    public Quiz getQuiz(int quizId) {
+    public Quiz getQuiz(String quizId) {
         for (Quiz q: Quizes) {
             if (q.getId() == quizId) return q;
         }
         return null;
     }    
-    public Boolean existQuiz(int quizId) {
+    public Boolean existQuiz(String quizId) {
         for (Quiz q: Quizes) {
             if (q.getId() == quizId) return TRUE;
         }
@@ -970,14 +976,14 @@ public class Course implements DataObject<Course, Integer>{
     
     }
     
-    public int CourseEnrollOperation (Users us, int userId) {
+    public int CourseEnrollOperation (Users us, String userId) {
         // Check that userId exists in Users
         // Check that courseId exists in Courses
         // Check that userId is not enrolled in courseId
         // Check that there are still places in the course.
-        if (!us.existUser(userId)){
-            return 0;
-        } else {
+//        if (!us.existUser(userId)){
+//            return 0;
+//        } else {
             if (existMember(userId)) {
                     return 0;
                 } else {
@@ -988,41 +994,41 @@ public class Course implements DataObject<Course, Integer>{
                         return 0;
                     }
                 }
-            }
+//            }
         
         return 1;
     }
-    public int CourseEnrollGuestOperation (Users us, int userId) {
+    public int CourseEnrollGuestOperation (Users us, String userId) {
         // Check that userId exists in Users
         // Check that courseId exists in Courses
         // Check that userId is not enrolled in courseId
         // Check that there are still places in the course.
-        if (!us.existUser(userId)){
-            return 0;
-        } else {
-            if (existMember(userId)) {
-                    return 0;
-                } else {
+//        if (!us.existUser(userId)){
+//            return 0;
+//        } else {
+//            if (existMember(userId)) {
+//                    return 0;
+//                } else {
                     if (getEnrollmentLimit() > 0 ) {
                     // enroll him!
                         addMember(userId, "guest");
                     } else {
                         return 0;
                     }
-                }
-            }
+//                }
+//            }
         
         return 1;
     }
-    public int CourseUnenrollOperation (int userId) {
+    public int CourseUnenrollOperation (String userId) {
         // Check that userId exists in Users
         // Check that courseId exists in Courses
         // Check that userId is enrolled in courseId
         // Check that there is at least one staff left
         // Check that there are still places in the course.
-            if (!existMember(userId)) {
-                    return 0;
-                } else {
+//            if (!existMember(userId)) {
+//                    return 0;
+//                } else {
                     if (getMember(userId).getRole().equals("staff") ) {
                         if (countMemberType("staff") > 1)
                             deleteMember(userId);
@@ -1032,7 +1038,7 @@ public class Course implements DataObject<Course, Integer>{
                     } else {
                         deleteMember(userId);
                     }
-                }
+//                }
         
         return 1;
     }
@@ -1052,141 +1058,110 @@ public class Course implements DataObject<Course, Integer>{
     	viewCourseReportOutline();
         return 1;
     }
-    public int CourseRoleAssignOperation (int promoteId) {
-    	//getMember(promoteId).setOldRole(getMember(promoteId).getRole());
-    	//getMember(promoteId).setRole("staff");
+    public int CourseRoleAssignOperation (String userId, String objId) {
+    	if (existMember(userId)){
+    		getMember(userId).incValue();
+    	} else{
+    		addMember(userId);
+    	}
+    		
         return 1;
     }
-    public int CourseRoleUnassignOperation (int userId, int demoteId) {
-            if (existMember(userId)){
-                if (getMember(userId).getRole().equals("staff")) {
-                    if (existMember(demoteId)){
-                        if (getMember(demoteId).getRole().equals("staff")) {
-                            if (countMemberType("staff") > 1) { 
-                                getMember(demoteId).setRole(getMember(demoteId).getOldRole());
-                            } else {
-                                return 0;
-                            }
-                        } else {
-                            return 0;
-                        }
-                    } else {
-                        return 0;
-                    }
-                } else {
-                    return 0;
-                }
-            } else {
-                return 0;
-            }
+    public int CourseRoleUnassignOperation (String userId, String objId) {
+    	if (existMember(userId)){
+    		getMember(userId).incValue();
+    	} else{
+    		addMember(userId);
+    	}
         return 1;
     }
 
     
-    public int QuizAddOperation(int userId, int quizId, int maxAttemps){
+    public int QuizAddOperation(String userId, String quizId, int maxAttemps){
     
-        if (existMember(userId) && getMember(userId).getRole().equals("staff")){
             if (existQuiz(quizId)) {
                 return 0;
             } else {
                 addQuiz(quizId, maxAttemps);
             }
-        } else {
-            return 0;
+
+        return 1;
+    }
+    public int QuizAttemptOperation(String userId, String quizId) {
+        // User has to be a student to attempt the quiz.
+        if (existQuizAttempt(quizId)){
+        	return 0;
+        } else{
+        	addQuizAttempt(quizId);
         }
+    	
         return 1;
     }
-    public int QuizAttemptOperation(int userId, int quizId) {
+    public int QuizContinueAttemptOperation(String userId, String quizId) {
+        // User has to be a student to attempt the quiz.
+        if (existQuizAttempt(quizId)){
+        	getQuizAttempt(quizId).incValue();
+        } else{
+        	addQuizAttempt(quizId);
+        }
+    	
+        return 1;
+    }
+    private void addQuizAttempt(String quizId) {
+    	QuizAttempts.add(new QuizAttempt(quizId));
+	}
+
+	private boolean existQuizAttempt(String quizId) {
+		for (QuizAttempt qa: QuizAttempts){
+			if (qa.getId() == quizId) return true;
+		}
+		return false;
+	}
+	
+	private QuizAttempt getQuizAttempt(String quizId) {
+		for (QuizAttempt qa: QuizAttempts){
+			if (qa.getId() == quizId) return qa;
+		}
+		return null;
+	}
+
+	public int QuizCloseAttemptOperation(String userId, String quizId) {
+		if (existQuizAttempt(quizId)){
+			getQuizAttempt(quizId).incValue();
+		} else {
+			addQuizAttempt(quizId);
+		}
+		
+        return 1;
+    }
+//    public int QuizContinueAttemptOperation(String userId, String quizId) {
+//        // User has to be a student to attempt the quiz.
+//        if (!existMember(userId)) {
+//                return 0;
+//            } else {
+//                    if (existQuiz(quizId)) {
+//                        if (!getQuiz(quizId).getQuizStudent(userId).getOpen()) {
+//                            return 0;
+//                        } else {
+//                            if (!getQuiz(quizId).getQuizStudent(userId).getStopped()) {
+//                                return 0;
+//                            } else {
+//                                getQuiz(quizId).getQuizStudent(userId).setOpen(TRUE);
+//                                getQuiz(quizId).getQuizStudent(userId).setStopped(FALSE);
+//                            }
+//                        }
+//   
+//                } else {
+//                    return 0;
+//                }
+//            }
+//        return 1;
+//    }
+    public int QuizStopAttemptOperation(String userId, String quizId) {
         // User has to be a student to attempt the quiz.
         if (!existMember(userId)) {
                 return 0;
             } else {
-                if (getMember(userId).getRole().equals("student") ) {
-                    if (existQuiz(quizId)) {
-                        if (getQuiz(quizId).getQuizStudent(userId).getOpen()) {
-                            return 0;
-                        } else {
-                            if (getQuiz(quizId).getQuizStudent(userId).getStopped()) {
-                                // If it has been stopped you have to continue it, no attemp again.
-                                return 0;
-                            } else {
-                                if (getQuiz(quizId).getQuizStudent(userId).getAttemps() > 0 ) {
-                                    // You may attemp it.
-                                    getQuiz(quizId).getQuizStudent(userId).setOpen(TRUE);
-                                    getQuiz(quizId).getQuizStudent(userId).decAttemps();
-                                } else {
-                                    return 0;
-                                }
-                            }
-                        }
-                    } else {
-                        return 0;
-                    }    
-                } else {
-                    return 0;
-                }
-            }
-        return 1;
-    }
-    public int QuizCloseAttemptOperation(int userId, int quizId) {
-        // User has to be a student to attempt the quiz.
-        if (!existMember(userId)) {
-                return 0;
-            } else {
-                if (getMember(userId).getRole().equals("student") ) {
-                    if (existQuiz(quizId)) {
-                        if (!getQuiz(quizId).getQuizStudent(userId).getOpen()) {
-                            return 0;
-                        } else {
-                            if (getQuiz(quizId).getQuizStudent(userId).getStopped()) {
-                                // If it has been stopped you have to continue it, no attemp again.
-                                return 0;
-                            } else {
-                                getQuiz(quizId).getQuizStudent(userId).setOpen(FALSE);
-                                getQuiz(quizId).getQuizStudent(userId).setStopped(TRUE);
-                            }
-                        }
-                    } else {
-                        return 0;
-                    }    
-                } else {
-                    return 0;
-                }
-            }
-        return 1;
-    }
-    public int QuizContinueAttemptOperation(int userId, int quizId) {
-        // User has to be a student to attempt the quiz.
-        if (!existMember(userId)) {
-                return 0;
-            } else {
-                if (getMember(userId).getRole().equals("student") ) {
-                    if (existQuiz(quizId)) {
-                        if (!getQuiz(quizId).getQuizStudent(userId).getOpen()) {
-                            return 0;
-                        } else {
-                            if (!getQuiz(quizId).getQuizStudent(userId).getStopped()) {
-                                return 0;
-                            } else {
-                                getQuiz(quizId).getQuizStudent(userId).setOpen(TRUE);
-                                getQuiz(quizId).getQuizStudent(userId).setStopped(FALSE);
-                            }
-                        }
-                    } else {
-                        return 0;
-                    }    
-                } else {
-                    return 0;
-                }
-            }
-        return 1;
-    }
-    public int QuizStopAttemptOperation(int userId, int quizId) {
-        // User has to be a student to attempt the quiz.
-        if (!existMember(userId)) {
-                return 0;
-            } else {
-                if (getMember(userId).getRole().equals("student") ) {
                     if (existQuiz(quizId)) {
                         if (!getQuiz(quizId).getQuizStudent(userId).getOpen()) {
                             return 0;
@@ -1202,37 +1177,26 @@ public class Course implements DataObject<Course, Integer>{
                     } else {
                         return 0;
                     }    
-                } else {
-                    return 0;
-                }
             }
         return 1;
     }
-    public int QuizEditOperation(int userId, int quizId) {
+    public int QuizEditOperation(String userId, String quizId) {
         // User has to be a student to attempt the quiz.
         // We are not checking that the QUIZ is not open by other users.
-         if (!existMember(userId)) {
-                return 0;
-            } else {
-                if (getMember(userId).getRole().equals("staff") ) {
-                    if (existQuiz(quizId)) {
-                        getQuiz(quizId).incValue();
-                    } else {
-                        return 0;
-                    }    
-                } else {
-                    return 0;
-                }
-            }
+
+    	if (existQuiz(quizId)) {
+        	getQuiz(quizId).incValue();
+    	} else {
+        	addQuiz(quizId, 100); // 100 = maxAttempts of the Quiz.
+        }    
         return 1;
     }
-    public int QuizManualGradeOperation(int userId, int quizId, int studentId, int grade) {
+    public int QuizManualGradeOperation(String userId, String quizId, String studentId, int grade) {
         // User has to be a student to attempt the quiz.
         // We are not checking that the QUIZ is not open by other users.
         if (!existMember(userId)) {
                 return 0;
             } else {
-                if (getMember(userId).getRole().equals("staff") ) {
                     if (existQuiz(quizId)) {
                         // Should it be open or closed???
                         // Should we close the exam??
@@ -1240,88 +1204,60 @@ public class Course implements DataObject<Course, Integer>{
                     } else {
                         return 0;
                     }    
-                } else {
-                    return 0;
-                }
             }
         return 1;
     }
-    public int QuizPreviewOperation(int userId, int quizId) {
+    public int QuizPreviewOperation(String userId, String quizId) {
         // User has to be a student to attempt the quiz.
         // We are not checking that the QUIZ is not open by other users.
         if (!existMember(userId)) {
                 return 0;
             } else {
-                if (getMember(userId).getRole().equals("staff") ) {
                     if (existQuiz(quizId)) {
                        viewQuizPreview();
                     } else {
                         return 0;
                     }    
-                } else {
-                    return 0;
-                }
             }
         return 1;
     }
-    public int QuizReportOperation(int userId, int quizId) {
+    public int QuizReportOperation(String userId, String quizId) {
         // User has to be a student to attempt the quiz.
         // We are not checking that the QUIZ is not open by other users.
-        if (!existMember(userId)) {
-                return 0;
-            } else {
                 if (existQuiz(quizId)) {
                    viewQuizReport();
                 } else {
                     return 0;
                 }
-            }
         return 1;
     }
-    public int QuizViewOperation(int userId, int quizId) {
+    public int QuizViewOperation(String userId, String quizId) {
         // User has to be a student to attempt the quiz.
         // We are not checking that the QUIZ is not open by other users.
-        if (!existMember(userId)) {
-                return 0;
-            } else {
+
                 if (existQuiz(quizId)) {
                     viewQuiz();
                 } else {
                     return 0;
                 }
-            }
+
         return 1;
     }
-    public int QuizViewAllOperation(int userId) {
+    public int QuizViewAllOperation(String userId) {
         // User has to be a student to attempt the quiz.
         // We are not checking that the QUIZ is not open by other users.
-        if (!existMember(userId)) {
-                return 0;
-            } else {
-                if (getMember(userId).getRole().equals("staff") ) {
-                       viewQuizAll();
-                } else {
-                    return 0;
-                }
-            }
+    	viewQuizAll();
+
         return 1;
     }
-    public int QuizViewSummaryOperation(int userId, int quizId) {
+    public int QuizViewSummaryOperation(String userId, String quizId) {
         // User has to be a student to attempt the quiz.
         // We are not checking that the QUIZ is not open by other users.
-        if (!existMember(userId)) {
-                return 0;
-            } else {
-                if (getMember(userId).getRole().equals("staff") ) {
                     if (existQuiz(quizId)) {
                        viewQuizSummary();
                     } else {
                         return 0;
                     }
-                } else {
-                    return 0;
-                }
-            }
         return 1;
     }
     
@@ -1358,16 +1294,12 @@ public class Course implements DataObject<Course, Integer>{
 //            }
         return 1;
     }
-    public int AssignmentUpdateGradesOperation(String userId, String assId, String studentId, int grade) {
-//                if (existAssignment(assId)) {
-//                    if (getAssignment(assId).existSubmission(studentId)) {
-//                        getAssignment(assId).getSubmission(studentId).setGrade(grade);
-//                    } else {
-//                        return 0;
-//                    }
-//                } else {
-//                    return 0;
-//                }
+    public int AssignmentUpdateGradesOperation(String userId, String assId) {
+                if (existAssignment(assId)) {
+                	getAssignment(assId).incValue();
+    			} else {
+                	addAssignment(assId);
+    			}
         return 1;
     }
     public int AssignmentUploadOperation(String userId, String assId) {
@@ -1427,6 +1359,7 @@ public class Course implements DataObject<Course, Integer>{
 	    this.Blogs = data.Blogs;
 	    this.Directories = data.Directories;
 	    this.Quizes = data.Quizes;
+	    this.QuizAttempts = data.QuizAttempts;
 	    this.Resources = data.Resources;
 	    this.Pages = data.Pages;
 	    this.Urls = data.Urls;
@@ -1444,6 +1377,7 @@ public class Course implements DataObject<Course, Integer>{
 	    this.Blogs = data.Blogs;
 	    this.Directories = data.Directories;
 	    this.Quizes = data.Quizes;
+	    this.QuizAttempts = data.QuizAttempts;
 	    this.Resources = data.Resources;
 	    this.Pages = data.Pages;
 	    this.Urls = data.Urls;
@@ -1462,19 +1396,34 @@ public class Course implements DataObject<Course, Integer>{
 		
 			//return Math.abs(this.value - (Integer) other.getMetadata());
 			Course cother = (Course) other;
-			
-			for (Page p: Pages){
-				val += p.getValue() + 1; 
-			}
-			
-			for (Forum f: Forums){
-				val += f.getValue() + 1;
-			}
-			
-			for (Page p: cother.Pages){
-				valOther += p.getValue() + 1;
-			}
-			
+
+			// This versions value
+			for (Page p: Pages) val += p.getValue() + 1; 
+			for (Forum f: Forums) val += f.getValue() + 1;
+		    for ( Assignment o: Assignments) val += o.getValue() + 1; 
+		    for ( Module o: Modules) val += o.getValue() + 1;
+		    val += Members.size();
+		    for ( Member o: Members) valOther += o.getValue() + 1;
+		    for ( Blog o: Blogs) val += o.getValue() + 1;
+		    for ( Directory o: Directories) val += o.getValue() + 1;
+		    for ( Quiz o: Quizes) val += o.getValue() + 1;
+		    for ( QuizAttempt o: QuizAttempts) val += o.getValue() + 1;
+		    for ( Resource o: Resources) val += o.getValue() + 1;
+		    val += value;
+		    
+			// Computing the OTTER value
+		    for (Page p: cother.Pages) valOther += p.getValue() + 1; 
+			for (Forum f: cother.Forums) valOther += f.getValue() + 1;
+		    for ( Assignment o: cother.Assignments) valOther += o.getValue() + 1; 
+		    for ( Module o: cother.Modules) valOther += o.getValue() + 1;
+		    valOther += cother.Members.size();
+		    for ( Member o: cother.Members) valOther += o.getValue() + 1;
+		    for ( Blog o: cother.Blogs) valOther += o.getValue() + 1;
+		    for ( Directory o: cother.Directories) valOther += o.getValue() + 1;
+		    for ( Quiz o: cother.Quizes) valOther += o.getValue() + 1;
+		    for ( QuizAttempt o: cother.QuizAttempts) valOther += o.getValue() + 1;
+		    for ( Resource o: cother.Resources) valOther += o.getValue() + 1;
+		    valOther += cother.value;
 			
 		}
 		System.err.println("" + val+ "  " + valOther);

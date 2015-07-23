@@ -15,12 +15,12 @@ public class CourseLoader extends DatabaseInitiator {
 
 	@Override
 	protected Map<String, DataObject<?, ?>> getDataToLoad() {
-		String key = "COURSE_-1768490243";
+		String keys[] = {"COURSE_-1768490243","COURSE_-1914466859","COURSE_1435140924","COURSE_-1901537565"};
 		
 		Map<String, DataObject<?, ?>> objects = new HashMap<String, DataObject<?, ?>>();
-		
-		objects.put(key, new Course(key, 30));
-		
+		for (String key:keys){
+			objects.put(key, new Course(key, 1000000));// 1M enrollmentLimit should be ok, no?
+		}
 		return objects;
 	}
 

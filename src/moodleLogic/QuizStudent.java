@@ -13,13 +13,13 @@ import static java.lang.Boolean.FALSE;
  * @author jordi
  */
 public class QuizStudent {
-    private int id;
+    private String id;
     private Boolean stopped;
     private Boolean open;
     private int attemps;
     private int grade;
     
-    QuizStudent(int userId, int attemps) {
+    QuizStudent(String userId, int attemps) {
         this.id = userId;
         this.stopped = FALSE;
         this.open = FALSE;
@@ -51,11 +51,11 @@ public class QuizStudent {
         this.open = open;
     }
         
-    public int getId() {
+    public String getId() {
         return this.id;
     }
     
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
     

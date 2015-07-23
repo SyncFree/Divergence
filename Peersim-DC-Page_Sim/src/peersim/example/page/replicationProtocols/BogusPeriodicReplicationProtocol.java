@@ -60,6 +60,24 @@ public class BogusPeriodicReplicationProtocol extends
 		
 		
 		switch(event.operationID()){
+		case 1:
+			//Folder add operation
+			objId = op.getOperationId();
+			
+			c.AssignmentAddOperation(userId, objId);
+			break;
+		case 2:
+			//Folder add operation
+			objId = op.getOperationId();
+			
+			c.AssignmentUpdateGradesOperation(userId, objId);
+			break;
+		case 3:
+			//Folder add operation
+			objId = op.getOperationId();
+			
+			c.AssignmentUpdateOperation(userId, objId);
+			break;
 		case 4:
 			//Folder add operation
 			objId = op.getOperationId();
@@ -108,11 +126,17 @@ public class BogusPeriodicReplicationProtocol extends
 			
 			c.CourseAddModuleOperation(userId, objId);
 			break;
+		case 25:
+			//Folder update operation
+			objId = op.getOperationId();
+			
+			c.CourseRoleAssignOperation(userId, objId);
+			break;
 		case 29:
 			//Folder add operation
 			objId = op.getOperationId();
 			
-			c.DirAddOperation(userId, objId);
+			c.CourseRoleUnassignOperation(userId, objId);
 			break;
 		case 31:
 			//Folder update operation
@@ -166,12 +190,34 @@ public class BogusPeriodicReplicationProtocol extends
 		case 41:
 			//resource update operation
 			objId = op.getOperationId();
-			tmp = objId.split(",");
 			
 			ForumUpdatePostOperation fup_op = (ForumUpdatePostOperation) op;
 			c.ForumUpdatePostOperation(userId, fup_op.getDiscussionId(), fup_op.getPostId() );
 			break;
+		case 46:
+			//resource update operation
+			objId = op.getOperationId();
 			
+			c.QuizAttemptOperation(userId, objId);
+			break;
+		case 47:
+			//resource update operation
+			objId = op.getOperationId();
+			
+			c.QuizCloseAttemptOperation(userId, objId);
+			break;
+		case 48:
+			//resource update operation
+			objId = op.getOperationId();
+			
+			c.QuizContinueAttemptOperation(userId, objId);
+			break;
+		case 49:
+			//resource update operation
+			objId = op.getOperationId();
+			
+			c.QuizEditOperation(userId, objId);
+			break;
 		case 56:
 			//resource add operation
 			objId = op.getOperationId();

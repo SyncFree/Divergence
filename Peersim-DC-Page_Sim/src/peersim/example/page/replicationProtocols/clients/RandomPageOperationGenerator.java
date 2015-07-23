@@ -203,6 +203,10 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
 					newOp = new UrlUpdateOperation(client, time, userId, objId, courseId);
 				break;
+				case "url update":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new UrlUpdateOperation(client, time, userId, objId, courseId);
+				break;
 				case "url delete":
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
 					newOp = new UrlDeleteOperation(client, time, userId, objId, courseId);
@@ -343,6 +347,10 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
 					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
 				break;
+				case "notes view":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
 				case "assignment upload":
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
 					newOp = new AssignmentUploadOperation(client, time, userId, objId, courseId);
@@ -350,6 +358,73 @@ public class RandomPageOperationGenerator extends BaseClientOperationGenerator i
 				case "course report log":
 					objId = op.getAttributeByName(MOODLE_OP.INFO); 
 					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "quiz review":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "quiz report":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new GenericViewOperation(client, time, userId, objId, courseId);
+				break;
+				case "quiz attempt":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new QuizAttemptOperation(client, time, userId, objId, courseId);
+				break;
+				case "quiz continue attempt":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new QuizContinueAttemptOperation(client, time, userId, objId, courseId);
+				break;
+				case "quiz close attempt":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new QuizCloseAttemptOperation(client, time, userId, objId, courseId);
+				break;
+				case "quiz update":
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new QuizUpdateOperation(client, time, userId, objId, courseId);
+				break;
+				case "quiz editquestions":
+					// We use the same QuizUpdate function as it is a modifier in the same course while
+					// we dont have questions within the quiz.
+					
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new QuizUpdateOperation(client, time, userId, objId, courseId);
+				break;
+				case "assignment update grades":
+					
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new AssignmentUpdateGradesOperation(client, time, userId, objId, courseId);
+				break;
+				case "assignment add":
+					
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new AssignmentAddOperation(client, time, userId, objId, courseId);
+				break;
+				case "assignment update":
+					
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new AssignmentUpdateOperation(client, time, userId, objId, courseId);
+				break;
+				case "role assign":
+					
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new RoleAssignOperation(client, time, userId, objId, courseId);
+				break;
+				case "role unassign":
+					
+					objId = op.getAttributeByName(MOODLE_OP.INFO); 
+					newOp = new RoleUnassignOperation(client, time, userId, objId, courseId);
+				break;
+				case "forum update post":
+					objId = op.getAttributeByName(MOODLE_OP.INFO);
+					String[] tmp = objId.split(",");
+					
+					newOp = new ForumUpdatePostOperation(client, time, userId, null, tmp[0], tmp[2],courseId);
+				break;
+				case "forum update":
+					objId = op.getAttributeByName(MOODLE_OP.INFO);
+					
+					newOp = new ForumUpdateOperation(client, time, userId, objId, courseId);
 				break;
 				
 			default:

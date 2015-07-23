@@ -21,11 +21,12 @@ network.size 33
 simulation.gracetime 20000
 simulation.logtime CYCLE
 simulation.clientmanager peersim.example.page.replicationProtocols.clients.RandomPageOperationGenerator
-simulation.clientopsfile /home/jordi/Downloads/logs/IP1213.log
+#simulation.clientopsfile /home/jordi/Downloads/logs/IP1213.log
+simulation.clientopsfile /home/jordi/Downloads/NEW_LOGS/logs_1/IP1213.log
 simulation.clientlayer clayer
 
 node.transport tr
-################### protocols ===========================
+################### protocols ==========================
 
 
 server.protocol.replication peersim.example.page.replicationProtocols.BogusPeriodicReplicationProtocol
