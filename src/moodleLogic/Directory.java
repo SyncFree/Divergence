@@ -99,4 +99,8 @@ public class Directory implements DataObject<String, Integer> {
 			return Math.abs(this.value - other.value);
 		}
 	}
+	
+	public int computeValue() {
+    	return this.value;
+    }
 }

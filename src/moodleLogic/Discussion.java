@@ -62,4 +62,9 @@ public class Discussion {
         }
         return null;
     }
+    public int computeValue() {
+    	int val = 0; 
+    	for (Post p: Posts) val+=p.computeValue();
+    	return this.value +  Posts.size() + val;
+    }
 }

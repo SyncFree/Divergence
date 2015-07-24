@@ -70,5 +70,8 @@ public class Assignment {
     void viewAssignment() {
         // DO SOME VIEWING STUFF
     }
-    
+    public int computeValue() {
+    	
+    	return this.value;
+    }
 }

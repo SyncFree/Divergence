@@ -37,5 +37,7 @@ public class Resource {
     public void setId(String id) {
         this.id = id;
     }
-    
+    public int computeValue() {
+    	return this.value;
+    }
 }

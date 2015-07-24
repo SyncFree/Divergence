@@ -68,5 +68,8 @@ public class Quiz {
         }
         return FALSE;
     }
+    public int computeValue() {
+    	return this.value;
+    }
 
 }

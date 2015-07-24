@@ -239,7 +239,7 @@ public class Course implements DataObject<Course, Integer>{
        Module m = this.getModule(modId);
     
        // We remove all the attached Sections
-       m.Sections.clear();
+//       m.Sections.clear();
        
        // We remove the module
        Modules.remove(m);
@@ -912,69 +912,69 @@ public class Course implements DataObject<Course, Integer>{
         return 1;
     }
     
-    public int CourseAddSectionOperation (String userId, String modId, String secId) {
-        
-            if (!existModule(modId)) {
-                return 0;
-            }
-            else {
-                Module m = getModule(modId);
-                if (!m.existSection(secId)) {
-                    m.addSection(secId);
-                } else {
-                    return 0;
-                }
-            }
-        return 1;
-    
-    }
-    public int CourseEditSectionOperation (String userId, String modId, String secId) {
-            if (!existModule(modId)) {
-                return 0;
-            }
-            else {
-                Module m = getModule(modId);
-                if (m.existSection(secId)) {
-                    m.getSection(secId).incValue();
-                } else {
-                    return 0;
-                }
-            }        
-        return 1;
-    
-    }
-    public int CourseDeleteSectionOperation (String userId, String modId, String secId) {
-            if (!existModule(modId)) {
-                return 0;
-            }
-            else {
-                Module m = getModule(modId);
-                if (m.existSection(secId)) {
-                    m.deleteSection(secId);
-                } else {
-                    return 0;
-                }
-            }
-        
-        return 1;
-    
-    }
-    public int CourseViewSectionOperation (String userId, String modId, String secId) {
-            if (!existModule(modId)) {
-                return 0;
-            }
-            else {
-                Module m = getModule(modId);
-                if (m.existSection(secId)) {
-                    m.viewSection(secId);
-                } else {
-                    return 0;
-                }
-            }
-
-        return 1;
-    
-    }
+//    public int CourseAddSectionOperation (String userId, String modId, String secId) {
+//        
+//            if (!existModule(modId)) {
+//                return 0;
+//            }
+//            else {
+//                Module m = getModule(modId);
+//                if (!m.existSection(secId)) {
+//                    m.addSection(secId);
+//                } else {
+//                    return 0;
+//                }
+//            }
+//        return 1;
+//    
+//    }
+//    public int CourseEditSectionOperation (String userId, String modId, String secId) {
+//            if (!existModule(modId)) {
+//                return 0;
+//            }
+//            else {
+//                Module m = getModule(modId);
+//                if (m.existSection(secId)) {
+//                    m.getSection(secId).incValue();
+//                } else {
+//                    return 0;
+//                }
+//            }        
+//        return 1;
+//    
+//    }
+//    public int CourseDeleteSectionOperation (String userId, String modId, String secId) {
+//            if (!existModule(modId)) {
+//                return 0;
+//            }
+//            else {
+//                Module m = getModule(modId);
+//                if (m.existSection(secId)) {
+//                    m.deleteSection(secId);
+//                } else {
+//                    return 0;
+//                }
+//            }
+//        
+//        return 1;
+//    
+//    }
+//    public int CourseViewSectionOperation (String userId, String modId, String secId) {
+//            if (!existModule(modId)) {
+//                return 0;
+//            }
+//            else {
+//                Module m = getModule(modId);
+//                if (m.existSection(secId)) {
+//                    m.viewSection(secId);
+//                } else {
+//                    return 0;
+//                }
+//            }
+//
+//        return 1;
+//    
+//    }
     
     public int CourseEnrollOperation (Users us, String userId) {
         // Check that userId exists in Users
@@ -1393,40 +1393,14 @@ public class Course implements DataObject<Course, Integer>{
 		int valOther = 0;
 		
 		if (other instanceof Course){
-		
-			//return Math.abs(this.value - (Integer) other.getMetadata());
 			Course cother = (Course) other;
 
 			// This versions value
-			for (Page p: Pages) val += p.getValue() + 1; 
-			for (Forum f: Forums) val += f.getValue() + 1;
-		    for ( Assignment o: Assignments) val += o.getValue() + 1; 
-		    for ( Module o: Modules) val += o.getValue() + 1;
-		    val += Members.size();
-		    for ( Member o: Members) valOther += o.getValue() + 1;
-		    for ( Blog o: Blogs) val += o.getValue() + 1;
-		    for ( Directory o: Directories) val += o.getValue() + 1;
-		    for ( Quiz o: Quizes) val += o.getValue() + 1;
-		    for ( QuizAttempt o: QuizAttempts) val += o.getValue() + 1;
-		    for ( Resource o: Resources) val += o.getValue() + 1;
-		    val += value;
+			val = this.computeValue();
 		    
 			// Computing the OTTER value
-		    for (Page p: cother.Pages) valOther += p.getValue() + 1; 
-			for (Forum f: cother.Forums) valOther += f.getValue() + 1;
-		    for ( Assignment o: cother.Assignments) valOther += o.getValue() + 1; 
-		    for ( Module o: cother.Modules) valOther += o.getValue() + 1;
-		    valOther += cother.Members.size();
-		    for ( Member o: cother.Members) valOther += o.getValue() + 1;
-		    for ( Blog o: cother.Blogs) valOther += o.getValue() + 1;
-		    for ( Directory o: cother.Directories) valOther += o.getValue() + 1;
-		    for ( Quiz o: cother.Quizes) valOther += o.getValue() + 1;
-		    for ( QuizAttempt o: cother.QuizAttempts) valOther += o.getValue() + 1;
-		    for ( Resource o: cother.Resources) valOther += o.getValue() + 1;
-		    valOther += cother.value;
-			
+		    valOther = cother.computeValue();
 		}
-		System.err.println("" + val+ "  " + valOther);
 		return Math.abs(val - valOther);
 	}
 
@@ -1434,6 +1408,23 @@ public class Course implements DataObject<Course, Integer>{
 		// Generic Empty View
 		// this way it will return the course anyway and the divergence can b computed in the client.
 	}
+	
+	public int computeValue() {
+		int val = 0;
+		// The +1 is to avoid having to add after the Pages.size() 
+		for (Page o: Pages) val += o.computeValue() + 1; 
+		for (Forum o: Forums) val += o.computeValue() + 1;
+	    for ( Assignment o: Assignments) val += o.computeValue() + 1; 
+	    for ( Module o: Modules) val += o.computeValue() + 1;
+	    for ( Member o: Members) val += o.computeValue() + 1;
+	    for ( Blog o: Blogs) val += o.computeValue() + 1;
+	    for ( Directory o: Directories) val += o.computeValue() + 1;
+	    for ( Quiz o: Quizes) val += o.computeValue() + 1;
+	    for ( QuizAttempt o: QuizAttempts) val += o.computeValue() + 1;
+	    for ( Resource o: Resources) val += o.computeValue() + 1;
+	    
+		return this.value + val;
+    }
     
     
 }

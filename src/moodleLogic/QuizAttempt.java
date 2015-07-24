@@ -38,5 +38,7 @@ public class QuizAttempt {
     void incValue() {
         this.value+=1;
     }
-    
+    public int computeValue() {
+    	return this.value;
+    }
 }

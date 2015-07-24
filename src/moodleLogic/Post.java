@@ -62,5 +62,7 @@ public class Post {
         this.value+=1;
     }
     
-    
+    public int computeValue() {
+    	return this.value;
+    }
 }

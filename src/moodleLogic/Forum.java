@@ -88,4 +88,10 @@ public class Forum {
     void deleteSubscriber(String userId) {
         Subscribers.remove(getSubscriber(userId));
     }
+    
+    public int computeValue() {
+    	int val = 0;
+    	for (Discussion d:Discussions) val += d.computeValue();
+    	return this.value + Subscribers.size() + Discussions.size() + val;
+    }
 }
