@@ -15,7 +15,7 @@ public class MoodleOperation extends AbstractOperation<MOODLE_OP>
 	private static Logger log = Logger.getLogger(MoodleOperation.class
 			.getName());
 
-	private static String DEFAULT_TIME_FORMAT = "\"dd MMMMM yyyy, kk:mm\"";
+	private static String DEFAULT_TIME_FORMAT = "\"dd MMMMM yyyy, HH:mm\"";
 	private static SimpleDateFormat formatter = new SimpleDateFormat(
 			DEFAULT_TIME_FORMAT);
 
