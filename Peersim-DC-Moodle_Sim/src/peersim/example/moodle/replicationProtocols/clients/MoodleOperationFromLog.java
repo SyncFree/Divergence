@@ -4,6 +4,7 @@ package peersim.example.moodle.replicationProtocols.clients;
 
 import java.util.ArrayList;
 
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,6 @@ import peersim.core.dcdatastore.clientEventGenerators.ClientOperationGenerationE
 import peersim.core.dcdatastore.clientEventGenerators.ClientOperationGenerator;
 import peersim.example.moodle.replicationProtocols.events.ForumSubscribeOperation;
 import peersim.example.moodle.replicationProtocols.events.*;
-import peersim.example.moodle.replicationsProtocols.data.*;
 
 
 public class MoodleOperationFromLog extends BaseClientOperationGenerator implements ClientOperationGenerator {	

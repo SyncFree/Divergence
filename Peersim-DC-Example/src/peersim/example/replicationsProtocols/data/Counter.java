@@ -1,6 +1,7 @@
 package peersim.example.replicationsProtocols.data;
 
 import peersim.core.dcdatastore.DCCommonState;
+
 import peersim.core.dcdatastore.util.DataObject;
 
 public class Counter implements DataObject<Integer, Integer> {
@@ -44,6 +45,20 @@ public class Counter implements DataObject<Integer, Integer> {
 		} else {
 			return (double) 0;
 		}
+	}
+	
+	public Object clone() {
+		Counter c = null;
+		try {
+			c = (Counter) super.clone();
+			c.data = data;
+			c.ops = ops;
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return c;
 	}
 
 }
