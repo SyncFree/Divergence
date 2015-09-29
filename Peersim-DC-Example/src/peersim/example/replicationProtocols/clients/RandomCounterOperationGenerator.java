@@ -70,10 +70,12 @@ public class RandomCounterOperationGenerator extends BaseClientOperationGenerato
 	}
 
 	public ClientOperationGenerationEvent hasMoreOperations() {
-		if (this.nextGenerationEvent <= this.maximumTimeToGenerateOperations)
+		if (this.nextGenerationEvent <= this.maximumTimeToGenerateOperations){
+			//System.out.println(">>> " + this.maximumTimeToGenerateOperations + " " + this.nextGenerationEvent);
 			return new ClientOperationGenerationEvent(this.nextGenerationEvent);
-		else 
+		} else { 
 			return null;
+		}
 	}
 
 	public List<ClientOperation> getNextSetOfOperations() {

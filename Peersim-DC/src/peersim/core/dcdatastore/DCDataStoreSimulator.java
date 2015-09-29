@@ -362,6 +362,9 @@ private static boolean loadClientOperations() {
 	
 	ClientOperationGenerationEvent ceg = clientManager.hasMoreOperations();
 	
+	if (ceg == null) DCDataStoreSimulator.setEndtime();
+
+	
 	if(ceg != null)
 		heap.add(ceg.getTime(), ceg, null, Byte.MIN_VALUE);
 	else if(operations.size() == 0)
@@ -472,7 +475,7 @@ public static void add(long delay, Object event, Node node, int pid)
 }
 
 private static void setEndtime() {
-	//System.err.println("Setting up End Time (currently: " + DCCommonState.getEndTime() +").");
+	System.err.println(">>> Setting up End Time (currently: " + DCCommonState.getEndTime() +").");
 	if( DCCommonState.getEndTime() < 0 ) {
 		endtime = DCCommonState.getTime() + gracetime;
 		DCCommonState.setEndTime(endtime);
@@ -482,6 +485,7 @@ private static void setEndtime() {
 					"Computed end time is too large: configured event queue only"+
 							" supports "+heap.maxTime());
 	}
+	System.err.println(">>> Set up End Time (currently: " + DCCommonState.getEndTime() +").");
 }
 
 }
