@@ -68,7 +68,7 @@ public class MoodleOperation extends AbstractOperation<MOODLE_OP>
 	public int compareTo(Operation<?> op) {
 		if (op instanceof MoodleOperation) {
 			MoodleOperation o = (MoodleOperation) op;
-			if (Long.compare(this.getTimestamp(), o.getTimestamp()) == 0) {
+			if (Long.compare(this.getTimestampInMillis(), o.getTimestampInMillis()) == 0) {
 				if (this.getAttributeByName(MOODLE_OP.REQUESTER_ID).compareTo(
 						o.getAttributeByName(MOODLE_OP.REQUESTER_ID)) == 0) {
 					return this
@@ -81,7 +81,7 @@ public class MoodleOperation extends AbstractOperation<MOODLE_OP>
 									o.getAttributeByName(MOODLE_OP.OPERATION));
 				}
 			} else {
-				return Long.compare(this.getTimestamp(), o.getTimestamp());
+				return Long.compare(this.getTimestampInMillis(), o.getTimestampInMillis());
 			}
 		} else {
 			return this.getClass().getName().compareTo(op.getClass().getName());

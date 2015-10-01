@@ -28,7 +28,7 @@ public class FilterExample {
 			Operation<MOODLE_OP> op = log.next();
 			String out = op.getAttributeByName(MOODLE_OP.COURSE_ID);
 			out += " " + op.getAttributeByName(MOODLE_OP.REQUESTER_ID);
-			out += " " + op.getTimestamp();
+			out += " " + op.getTimestampInMillis();
 			System.out.println(out);
 		}
 

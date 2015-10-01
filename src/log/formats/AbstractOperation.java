@@ -35,7 +35,7 @@ public abstract class AbstractOperation<T extends Enum<?>>
 		return attributes.get(name);
 	}
 
-	public long getTimestamp() {
+	public long getTimestampInMillis() {
 		return timestamp;
 	}
 
