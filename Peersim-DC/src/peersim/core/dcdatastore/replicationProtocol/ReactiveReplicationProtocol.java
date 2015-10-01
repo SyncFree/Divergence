@@ -1,6 +1,7 @@
 package peersim.core.dcdatastore.replicationProtocol;
 
 import java.util.Iterator;
+import java.util.Map;
 
 import peersim.config.Configuration;
 import peersim.core.Node;
@@ -10,6 +11,8 @@ import peersim.core.dcdatastore.ServerNode;
 import peersim.core.dcdatastore.clientEventGenerators.ClientReadOperation;
 import peersim.core.dcdatastore.clientEventGenerators.ClientWriteOperation;
 import peersim.core.dcdatastore.clientEventGenerators.ReadReply;
+import peersim.core.dcdatastore.initializers.databaseinit.DatabaseInitializable;
+import peersim.core.dcdatastore.observers.dbstate.DatabaseObservable;
 import peersim.core.dcdatastore.observers.divergence.DivergenceObservable;
 import peersim.core.dcdatastore.replicationProtocol.divergenceControl.DivergenceMetrics;
 import peersim.core.dcdatastore.serverEvents.OperationPropagationEvent;
@@ -18,7 +21,7 @@ import peersim.core.dcdatastore.util.DataObject;
 import peersim.edsim.EDProtocol;
 import peersim.transport.Transport;
 
-public abstract class ReactiveReplicationProtocol implements EDProtocol, DivergenceObservable, Cloneable {
+public abstract class ReactiveReplicationProtocol implements EDProtocol, DivergenceObservable, DatabaseInitializable, DatabaseObservable, Cloneable {
 	
 	private static final String PAR_TRACK_DIVERGENTE = "divergencetracking";
 	private static final String PAR_TRANSPORT = "transport";
@@ -49,7 +52,7 @@ public abstract class ReactiveReplicationProtocol implements EDProtocol, Diverge
 	public void processEvent(Node node, int pid, Object event) {
 		if(event instanceof ClientWriteOperation) {
 			if (this.handleClientWriteRequest((ServerNode)node, pid, (ClientWriteOperation<?>) event)) {
-				((ReactiveReplicationProtocol)DCCommonState.globalServer().getProtocol(pid)).handleClientWriteRequest((ServerNode)node, pid, (ClientWriteOperation<?>) event);
+				((ReactiveReplicationProtocol)DCCommonState.globalServer().getProtocol(pid)).handleClientWriteRequest((ServerNode)DCCommonState.globalServer(), pid, (ClientWriteOperation<?>) event);
 				this.propagateToAllDCs((ServerNode) node, pid, new SimpleOperationPropagationEvent((ServerNode) node, (ClientWriteOperation<?>) event));
 			}
 		} else if(event instanceof OperationPropagationEvent) {
@@ -80,12 +83,15 @@ public abstract class ReactiveReplicationProtocol implements EDProtocol, Diverge
 	}
 	
 	public final void replyToClient(ServerNode node, int pid, ReadReply<?> reply) {	
-		if(node.getID() < 0) return;
+		if(node.getIndex() < 0) return;
 		
-		if(HybridReplicationProtocol.trackDivergence) {
+		if(ReactiveReplicationProtocol.trackDivergence) {
 			String objectID = reply.getObjectID();
 			DataObject<?,?> localData = node.read(objectID);
-			this.divergenceMeasures.addMeasure(localData.computeDivergence((DataObject<?,?>)DCCommonState.globalServer().read(objectID)));
+			if(localData != null)
+				this.divergenceMeasures.addMeasure(localData.computeDivergence((DataObject<?,?>)DCCommonState.globalServer().read(objectID)));
+			else if(DCCommonState.globalServer().read(objectID) != null)
+				this.divergenceMeasures.addMeasure(((Integer)DCCommonState.globalServer().read(objectID).getMetadata()).doubleValue());
 		}
 		
 		((Transport)node.getProtocol(PeriodicReplicationProtocol.transportID)).send(node, reply.getDestination(), reply, reply.getClientProtocolID());
@@ -115,4 +121,11 @@ public abstract class ReactiveReplicationProtocol implements EDProtocol, Diverge
 		this.divergenceMeasures.reset();
 	}
 	
+	public void storeObject(ServerNode node, String key, DataObject<?,?> object) {
+		node.write(key, object);
+	}
+	
+	public Map<String,DataObject<?,?>> getDatabaseState(ServerNode node) {
+		return node.getDatabaseCopy();
+	}
 }

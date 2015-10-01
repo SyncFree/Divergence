@@ -31,7 +31,7 @@ public class RandomCounterOperationGenerator extends BaseClientOperationGenerato
 	private int numberOfOperationsPerClientPerRound;
 	
 	private long nextGenerationEvent;
-	
+
 	public RandomCounterOperationGenerator() {
 		super();
 	}
@@ -70,10 +70,12 @@ public class RandomCounterOperationGenerator extends BaseClientOperationGenerato
 	}
 
 	public ClientOperationGenerationEvent hasMoreOperations() {
-		if (this.nextGenerationEvent <= this.maximumTimeToGenerateOperations)
+		if (this.nextGenerationEvent <= this.maximumTimeToGenerateOperations){
+			//System.out.println(">>> " + this.maximumTimeToGenerateOperations + " " + this.nextGenerationEvent);
 			return new ClientOperationGenerationEvent(this.nextGenerationEvent);
-		else 
+		} else { 
 			return null;
+		}
 	}
 
 	public List<ClientOperation> getNextSetOfOperations() {
@@ -114,5 +116,8 @@ public class RandomCounterOperationGenerator extends BaseClientOperationGenerato
 		this.nextGenerationEvent = DCCommonState.getTime() + this.roundLength;
 		return ops;
 	}
-
+	
+	public String[] getObjectIdentifiers() {
+		return this.objectIdentifiers;
+	}
 }

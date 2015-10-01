@@ -44,6 +44,9 @@ protocol.tr.config latencymap.txt
 init.sch peersim.core.dcdatastore.controls.ServerInitiator
 init.sch.protocol replication
 
+init.dbinit peersim.example.replicationProtocol.init.CounterLoader
+init.dbinit.protocol replication
+
 ################ activators ===========================
 
 ################ observers ==============================
@@ -56,9 +59,14 @@ control.divergence.protocol replication
 control.divergence.filename divergece-report.txt
 control.divergence.step CYCLE
 
+control.dbstate peersim.core.dcdatastore.observers.dbstate.DatabaseObserver
+control.dbstate.protocol replication
+control.dbstate.filename DbState.txt
+control.dbstate.step CYCLE
+
 ################ Alignment ================================
 
-include.init sch
+include.init sch dbinit
 
 #include.protocol replication clayer tr
 

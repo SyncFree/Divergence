@@ -10,10 +10,10 @@ package moodleLogic;
  * @author jordi
  */
 class Url {
-    private int id;
+    private String id;
     private int value;
 
-    Url(int id) {
+    Url(String id) {
         this.id = id;
         this.value = 0;
     }
@@ -30,11 +30,11 @@ class Url {
         this.value+=1;
     }
     
-    public int getId() {
+    public String getId() {
         return this.id;
     }
     
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 }

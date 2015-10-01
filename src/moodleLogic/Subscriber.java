@@ -11,18 +11,18 @@ package moodleLogic;
  * @author jordi
  */
 public class Subscriber {
-    private int id; // That should the User's id
+    private String id; // That should the User's id
                     // Nicer ways to do it??
 
-    Subscriber(int id) {
+    Subscriber(String id) {
         this.id = id;
     }
 
-    public int getId() {
+    public String getId() {
         return this.id;
     }
     
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 }

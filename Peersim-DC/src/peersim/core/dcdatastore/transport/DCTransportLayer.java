@@ -6,7 +6,6 @@ import java.util.Scanner;
 import peersim.config.Configuration;
 import peersim.core.Node;
 import peersim.core.dcdatastore.ClientNode;
-import peersim.core.dcdatastore.DCCommonState;
 import peersim.core.dcdatastore.DCDataStoreSimulator;
 import peersim.core.dcdatastore.GeoReplicatedDatastoreNetwork;
 import peersim.core.dcdatastore.ServerNode;
@@ -63,7 +62,7 @@ public class DCTransportLayer implements Transport, Cloneable {
 	
 	public void send(Node src, Node dest, Object msg, int pid) {
 		long latency = getLatency(src, dest);
-		System.err.println("@" + DCCommonState.getTime() + "  Transport layer: Scheduling event at: " + (DCCommonState.getTime() + latency));
+		//System.err.println("@" + DCCommonState.getTime() + "  Transport layer: Scheduling event at: " + (DCCommonState.getTime() + latency));
 		DCDataStoreSimulator.add(latency, msg, dest, pid);
 	}
 

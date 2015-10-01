@@ -1,5 +1,7 @@
 package peersim.core.dcdatastore;
 
+import java.util.Map;
+
 import peersim.core.Node;
 import peersim.core.dcdatastore.util.DataObject;
 
@@ -18,5 +20,7 @@ public interface ServerNode extends Node {
 	public DataObject<?,?> write(String key, DataObject<?,?> o);
 	
 	public DataObject<?,?> read(String key);
+
+	public Map<String, DataObject<?, ?>> getDatabaseCopy();
 	
 }

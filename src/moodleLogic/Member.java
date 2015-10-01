@@ -11,14 +11,16 @@ package moodleLogic;
  * @author jordi
  */
 public class Member {
-    private int id;  // This Id should be the same than the User.id or the Post.owner id
+    private String id;  // This Id should be the same than the User.id or the Post.owner id
     private String role;
     private String oldRole;
+    private int value;
 
-    Member(int id, String role) {
+    Member(String id, String role) {
         this.id = id;
         this.role = role;
         this.oldRole = role;
+        this.value = 0;
     }
     
     public String getRole() {
@@ -37,11 +39,27 @@ public class Member {
         this.oldRole = oldRole;
     }
     
-    public int getId() {
+    public String getId() {
         return this.id;
     }
     
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
+    }
+    
+    public int getValue () {
+    	return this.value;
+    }
+    
+    public void setValue (int value){
+    	this.value = value;
+    }
+    
+    public void incValue (){
+    	this.value+=1;
+    }
+    
+    public int computeValue () {
+    	return this.value;
     }
 }

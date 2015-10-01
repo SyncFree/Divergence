@@ -1,6 +1,6 @@
 package peersim.core.dcdatastore.util;
 
-public interface DataObject<D, M> {
+public interface DataObject<D, M> extends Cloneable {
 
 	public D getData();
 	
@@ -11,5 +11,7 @@ public interface DataObject<D, M> {
 	public M getMetadata();
 	
 	public double computeDivergence(DataObject<?, ?> dataObject);
+	
+	public Object clone();
 	
 }

@@ -15,14 +15,14 @@ import java.util.Set;
  * @author jordi
  */
 public class Assignment {
-    private int id;
+    private String id;
     private int value;
     private Set<Submission> Submissions;
 
-    Assignment(int id) {
+    Assignment(String id) {
         this.id = id;
         this.value = 0;
-        this.Submissions = new HashSet();
+        this.Submissions = new HashSet<Submission>();
     }
     
     public int getValue() {
@@ -37,38 +37,41 @@ public class Assignment {
         this.value+=1;
     }
     
-    public int getId() {
+    public String getId() {
         return this.id;
     }
     
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    Submission getSubmission(int userId) {
+    Submission getSubmission(String userId) {
         for (Submission s: Submissions) {
             if (s.getId() == userId) return s;
         }
         return null;
     }
     
-    public void addSubmission(int userId){
+    public void addSubmission(String userId){
         Submissions.add(new Submission(userId));
     }
 
-    boolean existSubmission(int userId) {
+    boolean existSubmission(String userId) {
         for (Submission s: Submissions) {
             if (s.getId() == userId) return TRUE;
         }
         return FALSE;
     }
 
-    void viewSubmission(int userId) {
+    void viewSubmission(String userId) {
         // DO SOME VIEWING STUFF
     }
 
     void viewAssignment() {
         // DO SOME VIEWING STUFF
     }
-    
+    public int computeValue() {
+    	
+    	return this.value;
+    }
 }

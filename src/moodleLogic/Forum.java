@@ -15,23 +15,23 @@ import java.util.Set;
  * @author jordi
  */
 public class Forum {
-    private int id;
+    private String id;
     private int value;
     Set<Discussion> Discussions;
     Set<Subscriber> Subscribers;
 
-    Forum(int id) {
+    Forum(String id) {
         this.id = id;
         this.value = 0;
-        this.Discussions = new HashSet();
-        this.Subscribers = new HashSet();
+        this.Discussions = new HashSet<Discussion>();
+        this.Subscribers = new HashSet<Subscriber>();
     }
     
-    public int getId() {
+    public String getId() {
         return this.id;
     }
     
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
     
@@ -47,11 +47,11 @@ public class Forum {
         this.value+=1;
     }
 
-    public void addDiscussion(int disId) {
+    public void addDiscussion(String disId) {
         Discussions.add(new Discussion(disId));
     }
 
-    public boolean existDiscussion(int disId) {
+    public boolean existDiscussion(String disId) {
         for (Discussion d: Discussions) {
             if (d.getId() == disId) return TRUE;
         }
@@ -59,7 +59,7 @@ public class Forum {
         return FALSE;
     }
     
-    public Discussion getDiscussion (int disId) {
+    public Discussion getDiscussion (String disId) {
         for (Discussion d: Discussions) {
             if (d.getId() == disId) return d;
         }
@@ -67,25 +67,31 @@ public class Forum {
         return null;
     }
 
-    void addSubscriber(int userId) {
+    void addSubscriber(String userId) {
         Subscribers.add(new Subscriber(userId));
     }
 
-    public boolean existSubscriber(int userId) {
+    public boolean existSubscriber(String userId) {
         for (Subscriber s: Subscribers) {
             if (s.getId() == userId) return TRUE;
         }
         return FALSE;
     }
     
-    public Subscriber getSubscriber(int userId) {
+    public Subscriber getSubscriber(String userId) {
         for (Subscriber s: Subscribers) {
             if (s.getId() == userId) return s;
         }
         return null;
     }
 
-    void deleteSubscriber(int userId) {
+    void deleteSubscriber(String userId) {
         Subscribers.remove(getSubscriber(userId));
+    }
+    
+    public int computeValue() {
+    	int val = 0;
+    	for (Discussion d:Discussions) val += d.computeValue();
+    	return this.value + Subscribers.size() + Discussions.size() + val;
     }
 }

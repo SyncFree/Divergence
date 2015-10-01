@@ -1,5 +1,7 @@
 package peersim.example.replicationsProtocols.data;
 
+import peersim.core.dcdatastore.DCCommonState;
+
 import peersim.core.dcdatastore.util.DataObject;
 
 public class Counter implements DataObject<Integer, Integer> {
@@ -35,7 +37,28 @@ public class Counter implements DataObject<Integer, Integer> {
 	}
 
 	public double computeDivergence(DataObject<?, ?> other) {
-		return Math.abs(this.ops - (Integer) other.getMetadata());
+		if(other == null) { System.err.println("Master copy is null (Master id is: " + DCCommonState.globalServer().getID() + ")");}
+		
+		if(other instanceof Counter) {
+			Counter c = (Counter) other;
+			return (double) Math.abs(this.ops - c.getMetadata());
+		} else {
+			return (double) 0;
+		}
+	}
+	
+	public Object clone() {
+		Counter c = null;
+		try {
+			c = (Counter) super.clone();
+			c.data = data;
+			c.ops = ops;
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return c;
 	}
 
 }

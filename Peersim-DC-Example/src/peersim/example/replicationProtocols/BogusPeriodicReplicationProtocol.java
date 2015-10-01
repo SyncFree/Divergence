@@ -1,6 +1,7 @@
 package peersim.example.replicationProtocols;
 
 import java.util.ArrayList;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,7 +36,9 @@ public class BogusPeriodicReplicationProtocol extends
 	@Override
 	public boolean handleClientWriteRequest(ServerNode node, int pid,
 			ClientWriteOperation<?> event) {
-	
+		
+		//System.err.println("@"+DCCommonState.getTime() + " => " + this.getClass().getCanonicalName() + ": processing " + event.getClass().getName());
+		
 		CounterIncrementOperation operation = (CounterIncrementOperation) event;
 		Counter c = (Counter) node.read(operation.getObjectID());
 		if(c == null) { 
@@ -58,6 +61,7 @@ public class BogusPeriodicReplicationProtocol extends
 	@Override
 	public void handleServerPropagationRequest(ServerNode node, int pid,
 			OperationPropagationEvent event) {
+		//System.err.println("@" + DCCommonState.getTime() + " " + this.getClass().getCanonicalName() + ": delivering event of type: " + event.getClass().getName());
 		Iterator<ClientWriteOperation<?>> ite = ((MultipleOperationPropagationEvent) event).getClientOperations();
 		while(ite.hasNext()) {
 			CounterIncrementOperation operation = (CounterIncrementOperation) ite.next();

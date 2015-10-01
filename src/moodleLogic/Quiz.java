@@ -15,16 +15,16 @@ import java.util.Set;
  * @author jordi
  */
 public class Quiz {
-    private int id;
+    private String id;
     private int value;
     private int maxAttemps;
     private Set<QuizStudent> Students;
     
-    Quiz(int id, int maxAttemps, Set<Member> Members) {
+    Quiz(String id, int maxAttemps, Set<Member> Members) {
         this.id = id;
         this.value = 0;
         this.maxAttemps = maxAttemps;
-        this.Students = new HashSet();
+        this.Students = new HashSet<QuizStudent>();
         for (Member m: Members){
             if (m.getRole().equals("student")) {
                 Students.add(new QuizStudent(m.getId(), maxAttemps));
@@ -46,15 +46,15 @@ public class Quiz {
         this.value+=1;
     }
     
-    public int getId() {
+    public String getId() {
         return this.id;    
     }
     
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public QuizStudent getQuizStudent(int userId) {
+    public QuizStudent getQuizStudent(String userId) {
         for (QuizStudent qs: Students) {
             if (qs.getId() == userId) return qs;
         }
@@ -62,11 +62,14 @@ public class Quiz {
         return null;
     }
     
-    public Boolean existQuizStudent(int userId) {
+    public Boolean existQuizStudent(String userId) {
         for (QuizStudent qs: Students) {
             if (qs.getId() == userId) return TRUE;
         }
         return FALSE;
+    }
+    public int computeValue() {
+    	return this.value;
     }
 
 }

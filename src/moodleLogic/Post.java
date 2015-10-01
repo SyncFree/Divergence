@@ -13,13 +13,13 @@ import static java.lang.Boolean.*;
  * @author jordi
  */
 public class Post {
-    private int id;
-    private int owner;
+    private String id;
+    private String owner;
     // Shouldnt we say who reported who??
     private int value;
     private Boolean reported;
 
-    Post(int id, int userId) {
+    Post(String id, String userId) {
         this.id = id;
         this.owner = userId;
         this.value = 0;
@@ -34,19 +34,19 @@ public class Post {
         this.reported = reported;
     }
     
-    public int getId() {
+    public String getId() {
         return this.id;
     }
     
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
     
-    public int getOwner() {
+    public String getOwner() {
         return this.owner;
     }
     
-    public void setOwner(int owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
     
@@ -62,5 +62,7 @@ public class Post {
         this.value+=1;
     }
     
-    
+    public int computeValue() {
+    	return this.value;
+    }
 }

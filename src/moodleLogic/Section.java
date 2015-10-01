@@ -15,14 +15,12 @@ import java.util.Set;
  * @author jordi
  */
 public class Section {
-    private int id;
+    private String id;
     private int value;
-    private Set<Url> Urls;
     
-    Section(int id){
+    Section(String id){
         this.id = id;
         this.value = 0;
-        this.Urls = new HashSet();
     }
     
     public int getValue() {
@@ -37,39 +35,13 @@ public class Section {
         this.value+=1;
     }
     
-    public int getId() {
+    public String getId() {
         return this.id;
     }
     
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public boolean existUrl(int urlId) {
-        for (Url u: Urls) {
-            if (u.getId() == urlId) return TRUE;
-        }
-        return FALSE;
-    }
-    
-    public Url getUrl(int urlId) {
-        for (Url u: Urls) {
-            if (u.getId() == urlId) return u;
-        }
-        return null;
-    }
-
-    void addUrl(int urlId) {
-        Urls.add(new Url(urlId));
-    }
-
-    void deleteUrl(int urlId) {
-        Urls.remove(getUrl(urlId));
-    }
-
-    void viewUrl(int urlId) {
-        // Do some viewing stuff
-    }
-    
     
 }

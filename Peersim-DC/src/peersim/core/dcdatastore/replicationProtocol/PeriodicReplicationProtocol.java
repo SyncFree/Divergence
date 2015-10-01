@@ -1,6 +1,7 @@
 package peersim.core.dcdatastore.replicationProtocol;
 
 import java.util.Iterator;
+import java.util.Map;
 
 import peersim.config.Configuration;
 import peersim.core.Node;
@@ -13,6 +14,8 @@ import peersim.core.dcdatastore.clientEventGenerators.ClientWriteOperation;
 import peersim.core.dcdatastore.clientEventGenerators.ReadReply;
 import peersim.core.dcdatastore.controls.Initializable;
 import peersim.core.dcdatastore.controls.NextPeriodicSync;
+import peersim.core.dcdatastore.initializers.databaseinit.DatabaseInitializable;
+import peersim.core.dcdatastore.observers.dbstate.DatabaseObservable;
 import peersim.core.dcdatastore.observers.divergence.DivergenceObservable;
 import peersim.core.dcdatastore.replicationProtocol.divergenceControl.DivergenceMetrics;
 import peersim.core.dcdatastore.serverEvents.OperationPropagationEvent;
@@ -20,7 +23,7 @@ import peersim.core.dcdatastore.util.DataObject;
 import peersim.edsim.EDProtocol;
 import peersim.transport.Transport;
 
-public abstract class PeriodicReplicationProtocol implements EDProtocol, Initializable, DivergenceObservable, Cloneable {
+public abstract class PeriodicReplicationProtocol implements EDProtocol, Initializable, DivergenceObservable, DatabaseInitializable, DatabaseObservable, Cloneable {
 	
 	private static final String PAR_TRACK_DIVERGENTE = "divergencetracking";
 	private static final String PAR_TRANSPORT = "transport";
@@ -59,12 +62,14 @@ public abstract class PeriodicReplicationProtocol implements EDProtocol, Initial
 	}
 
 	public void processEvent(Node node, int pid, Object event) {
-		System.err.println("node " + node.getID() + " handling: " + event.getClass().getCanonicalName());
+		//System.err.println("node " + node.getID() + " handling: " + event.getClass().getCanonicalName());
 		if(event instanceof ClientWriteOperation) {
+			//System.err.println("Redirecting client write request to real protocol.");
 			if (this.handleClientWriteRequest((ServerNode)node, pid, (ClientWriteOperation<?>) event)) {
-				((PeriodicReplicationProtocol)DCCommonState.globalServer().getProtocol(pid)).handleClientWriteRequest((ServerNode)node, pid, (ClientWriteOperation<?>) event);
+				((PeriodicReplicationProtocol)DCCommonState.globalServer().getProtocol(pid)).handleClientWriteRequest((ServerNode)DCCommonState.globalServer(), pid, (ClientWriteOperation<?>) event);
 			}
 		} else if(event instanceof OperationPropagationEvent) {
+			//System.err.println("Redirecting operation propagation request to real protocol.");
 			this.handleServerPropagationRequest((ServerNode)node, pid, (OperationPropagationEvent) event);
 		} else if(event instanceof ClientReadOperation) {
 			this.handleClientReadRequest((ServerNode) node, pid, (ClientReadOperation) event);
@@ -77,6 +82,7 @@ public abstract class PeriodicReplicationProtocol implements EDProtocol, Initial
 
 	public void nextCycle(Node node, int protocolID) {
 		//Syncronization time
+		//System.err.println("@" + DCCommonState.getTime() + ", Node " + node.getID() + " is executing periodic sync.");
 		OperationPropagationEvent delta = this.getStateToPropagate((ServerNode) node);
 		this.propagateToAllDCs((ServerNode) node, protocolID, delta);
 	}
@@ -98,18 +104,22 @@ public abstract class PeriodicReplicationProtocol implements EDProtocol, Initial
 		Transport t = (Transport) node.getProtocol(PeriodicReplicationProtocol.transportID);
 		for(int dc = 1; dc <= n; dc++) {
 			if(dc != i ) {
+				//System.err.println("Node " + node.getID() + " sending " + event.getClass().getCanonicalName() + " to node " + GeoReplicatedDatastoreNetwork.getServersForDC(dc)[0].getID());
 				t.send(node, GeoReplicatedDatastoreNetwork.getServersForDC(dc)[0], event, pid);
 			}
 		}
 	}
 	
 	public final void replyToClient(ServerNode node, int pid, ReadReply<?> reply) {	
-		if(node.getID() < 0) return;
+		if(node.getIndex() < 0) return;
 		
-		if(HybridReplicationProtocol.trackDivergence) {
+		if(PeriodicReplicationProtocol.trackDivergence) {
 			String objectID = reply.getObjectID();
 			DataObject<?,?> localData = node.read(objectID);
-			this.divergenceMeasures.addMeasure(localData.computeDivergence((DataObject<?,?>)DCCommonState.globalServer().read(objectID)));
+			if(localData != null)
+				this.divergenceMeasures.addMeasure(localData.computeDivergence((DataObject<?,?>)DCCommonState.globalServer().read(objectID)));
+			else if(DCCommonState.globalServer().read(objectID) != null)
+				this.divergenceMeasures.addMeasure(((Integer)DCCommonState.globalServer().read(objectID).getMetadata()).doubleValue());
 		}
 		
 		((Transport)node.getProtocol(PeriodicReplicationProtocol.transportID)).send(node, reply.getDestination(), reply, reply.getClientProtocolID());
@@ -141,5 +151,13 @@ public abstract class PeriodicReplicationProtocol implements EDProtocol, Initial
 
 	public void resetDivergenceMetrics() {
 		this.divergenceMeasures.reset();
+	}
+	
+	public void storeObject(ServerNode node, String key, DataObject<?,?> object) {
+		node.write(key, object);
+	}
+	
+	public Map<String,DataObject<?,?>> getDatabaseState(ServerNode node) {
+		return node.getDatabaseCopy();
 	}
 }
