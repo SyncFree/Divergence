@@ -1,6 +1,34 @@
+/**
+ * Intro:
+ * This package represents the logic for a moodle course.
+ * A course if formed by different groups of operations that deal with different parts of the course,
+ * Calendar, Assignment, Module, Member, Forum, Blog, Directory, Quiz, Attemp, Url, Page and Resource.
+ * Each of these parts is represent in the course as a set of that type. 
+ * <p>
+ * Functions:
+ * In order to interact with a type, there are two different sets of operations.
+ * The first one, being more low-level, is add<Type>( ... ) where type is any of the previous (Calendar, Blog, ...)
+ * The different operations in this lower level are, add, delete, view, edit, exist and get.
+ *  - add: will add an element to the set of the type. It will not check for duplicates, but the id is expected to be unique.
+ *  - delete: will remove an element from the set. If it doesn't exist it will throw an exception.
+ *  - view: its a read operation that for the moment does nothing.
+ *  - edit: will modify(increment an update counter from the type) an existing element from the set. If it doesn't exist it will throw an exception
+ *  - exist: will test and return TRUE if a element is contained in the set and FALSE otherwise.
+ *  - get: will retrieve an element from the set or throw an exception.
+ *  
+ *  There are other specific operations that only apply to specific types.
+ *  
+ *  The second one is the interface that is used by peersim to interact with the moodleLogic. 
+ *  This functions follow the expression: 
+ *  <Type>{Add|Delete|View|Edit}Operation
+ *  Where <Type> is one of the previous (Calendar, Blog, ...)
+ * <p>
+ * @author Jordi 
+ */
 package moodleLogic;
 
 import static java.lang.Boolean.*;
+
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +42,8 @@ import peersim.core.dcdatastore.util.DataObject;
  */
 
 /**
- *
+ * Main class of the moodle logic as it contains all the modules (Calendars, Assignments, Members, ...)
+ * #
  * @author jordi
  */
 public class Course implements DataObject<Course, Integer> {
@@ -171,11 +200,26 @@ public class Course implements DataObject<Course, Integer> {
 		}
 		return null;
 	}
-
+	/**
+	 * Adds a new blog to the set of blogs of the course.
+	 * <p>
+	 * It is assumed that blogId does not already exist in the set.
+	 * <p>
+	 * This function is intended to be called from {@link #BlogAddOperation(String, String)}
+	 * @param blodId
+	 * @see BlogAddOperation
+	 */
 	public void addBlog(String blogId) {
 		Blogs.add(new Blog(blogId));
 	}
-
+	
+	/**
+	 * Checks if a specific blog exists in the set of blogs of the course.
+	 * <p>
+	 *
+	 * @param blodId integer id to a specific blog within the course.
+	 * @return	TRUE if the blog exists, and FALSE otherwise 
+	 */	
 	public boolean existBlog(String blogId) {
 		for (Blog b : Blogs) {
 			if (b.getId() == blogId)
@@ -184,7 +228,15 @@ public class Course implements DataObject<Course, Integer> {
 
 		return FALSE;
 	}
-
+	/**
+	 * Removes an existing blog from the set of blogs of the course.
+	 * <p>
+	 * It is assumed that blogId exists in the set.
+	 * <p>
+	 * This function is intended to be called from {@link #BlogDeleteOperation(String, String)}
+	 * @param blodId	int id to a specific blog within the course.
+	 * @see BlogDeleteOperation
+	 */
 	public void deleteBlog(String blogId) {
 		Blogs.remove(getBlog(blogId));
 	}
