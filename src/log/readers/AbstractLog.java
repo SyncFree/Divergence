@@ -11,7 +11,7 @@ import log.formats.OperationFactory;
 
 public abstract class AbstractLog<T extends Enum<T>> implements Log<T> {
 
-	public static String DELIMITER = "\t";
+	public static String DELIMITER = " ";
 	public static String NEW_LINE = "\n";
 
 	protected File logFile;
@@ -21,14 +21,12 @@ public abstract class AbstractLog<T extends Enum<T>> implements Log<T> {
 
 	private static Logger log = Logger.getLogger(AbstractLog.class.getName());
 
-	public AbstractLog(String pathToLog, OperationFactory<T> factory)
-			throws ParseException, IOException {
+	public AbstractLog(String pathToLog, OperationFactory<T> factory) throws ParseException, IOException {
 		this.logFile = new File(pathToLog);
 		this.factory = factory;
-		init();
 	}
 
-	private boolean init() throws ParseException, IOException {
+	protected boolean init() throws ParseException, IOException {
 		stream = new Scanner(logFile);
 		if (stream.hasNextLine()) {
 			init = true;

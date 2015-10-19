@@ -23,18 +23,18 @@ public class LogByTime<T extends Enum<T>> extends AbstractLog<T> {
 
 	private static Logger log = Logger.getLogger(LogByTime.class.getName());
 
-	public LogByTime(String pathToLog, OperationFactory<T> factory)
-			throws ParseException, IOException {
+	public LogByTime(String pathToLog, OperationFactory<T> factory) throws ParseException, IOException {
 		super(pathToLog, factory);
 		this.logFile = orderByTimeLog(logFile, factory);
 		init();
 	}
 
-	private boolean init() throws ParseException, IOException {
+	@Override
+	protected boolean init() throws ParseException, IOException {
 		stream = new Scanner(logFile);
 		if (stream.hasNextLine()) {
 			Operation<T> op = nextOp(stream.nextLine());
-			startTime = op.getTimestamp();
+			startTime = op.getTimestampInMillis();
 			stream.reset();
 			init = true;
 		} else {
@@ -44,37 +44,34 @@ public class LogByTime<T extends Enum<T>> extends AbstractLog<T> {
 		return init;
 	}
 
-	private static File orderByTimeLog(File logFile, OperationFactory<?> factory)
-			throws IOException {
+	private static File orderByTimeLog(File logFile, OperationFactory<?> factory) throws IOException {
 		Map<String, Operation<?>> ops = new HashMap<>();
-		PriorityQueue<String> orderedFile = new PriorityQueue<>(
-				new Comparator<String>() {
+		PriorityQueue<String> orderedFile = new PriorityQueue<>(new Comparator<String>() {
 
-					@Override
-					public int compare(String o1, String o2) {
-						Operation<?> op1 = ops.get(o1);
-						if (op1 == null) {
-							op1 = factory.parseLine(o1);
-							ops.put(o1, op1);
-						}
+			@Override
+			public int compare(String o1, String o2) {
+				Operation<?> op1 = ops.get(o1);
+				if (op1 == null) {
+					op1 = factory.parseLine(o1);
+					ops.put(o1, op1);
+				}
 
-						Operation<?> op2 = ops.get(o2);
-						if (op2 == null) {
-							op2 = factory.parseLine(o2);
-							ops.put(o2, op2);
-						}
+				Operation<?> op2 = ops.get(o2);
+				if (op2 == null) {
+					op2 = factory.parseLine(o2);
+					ops.put(o2, op2);
+				}
 
-						return op1.compareTo(op2);
-					}
-				});
+				return op1.compareTo(op2);
+			}
+		});
 
 		Scanner scanner = new Scanner(logFile);
 		while (scanner.hasNextLine()) {
 			orderedFile.add(scanner.nextLine());
 		}
 		scanner.close();
-		File tmp = File.createTempFile("ordered-" + logFile.getName() + "_",
-				null);
+		File tmp = File.createTempFile("ordered-" + logFile.getName() + "_", null);
 		FileOutputStream fileWriter = new FileOutputStream(tmp);
 		while (orderedFile.size() > 0) {
 			fileWriter.write((orderedFile.remove() + "\n").getBytes());
@@ -82,14 +79,14 @@ public class LogByTime<T extends Enum<T>> extends AbstractLog<T> {
 		fileWriter.close();
 		return tmp;
 	}
-	public static void main(String[] args) throws IOException,
-			InstantiationException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException,
-			NoSuchMethodException, SecurityException, ClassNotFoundException {
+
+	public static void main(String[] args) throws IOException, InstantiationException, IllegalAccessException,
+	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException,
+	ClassNotFoundException {
 
 		if (args.length < 2 || args.length > 2) {
 			System.err
-					.println("Bad args: arg1: logfile arg2: Factory Class name arg3: (optional): output filename. default stdout");
+			.println("Bad args: arg1: logfile arg2: Factory Class name arg3: (optional): output filename. default stdout");
 		}
 
 		FileInputStream is;
@@ -98,8 +95,8 @@ public class LogByTime<T extends Enum<T>> extends AbstractLog<T> {
 
 		Class<?> c = Class.forName(args[1]);
 
-		File orderedLog = orderByTimeLog(new File(args[0]),
-				(OperationFactory<?>) c.getMethod("getFactory").invoke(null));
+		File orderedLog = orderByTimeLog(new File(args[0]), (OperationFactory<?>) c.getMethod("getFactory")
+				.invoke(null));
 
 		is = new FileInputStream(orderedLog);
 
