@@ -1,8 +1,7 @@
 package peersim.example.replicationsProtocols.data;
 
 import peersim.core.dcdatastore.DCCommonState;
-
-import peersim.core.dcdatastore.util.DataObject;
+import peersim.core.dcdatastore.datatypes.DataObject;
 
 public class Counter implements DataObject<Integer, Integer> {
 

@@ -3,7 +3,7 @@ package peersim.core.dcdatastore;
 import java.util.Map;
 
 import peersim.core.Node;
-import peersim.core.dcdatastore.util.DataObject;
+import peersim.core.dcdatastore.datatypes.DataObject;
 
 public interface ServerNode extends Node {
 

@@ -14,13 +14,13 @@ import peersim.core.dcdatastore.clientEventGenerators.ClientWriteOperation;
 import peersim.core.dcdatastore.clientEventGenerators.ReadReply;
 import peersim.core.dcdatastore.controls.Initializable;
 import peersim.core.dcdatastore.controls.NextPeriodicSync;
+import peersim.core.dcdatastore.datatypes.DataObject;
 import peersim.core.dcdatastore.initializers.databaseinit.DatabaseInitializable;
 import peersim.core.dcdatastore.observers.dbstate.DatabaseObservable;
 import peersim.core.dcdatastore.observers.divergence.DivergenceObservable;
 import peersim.core.dcdatastore.replicationProtocol.divergenceControl.DivergenceMetrics;
 import peersim.core.dcdatastore.serverEvents.OperationPropagationEvent;
 import peersim.core.dcdatastore.serverEvents.SimpleOperationPropagationEvent;
-import peersim.core.dcdatastore.util.DataObject;
 import peersim.edsim.EDProtocol;
 import peersim.transport.Transport;
 

@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import peersim.core.dcdatastore.clientEventGenerators.BaseClientOperationGenerator;
+import peersim.core.dcdatastore.datatypes.DataObject;
 import peersim.core.dcdatastore.initializers.databaseinit.DatabaseInitiator;
-import peersim.core.dcdatastore.util.DataObject;
 import peersim.example.replicationProtocols.clients.RandomCounterOperationGenerator;
 import peersim.example.replicationsProtocols.data.Counter;
 

@@ -2,7 +2,7 @@ package peersim.core.dcdatastore;
 
 import peersim.config.Configuration;
 import peersim.core.GeneralNode;
-import peersim.core.dcdatastore.util.Message;
+import peersim.core.dcdatastore.datatypes.Message;
 import peersim.transport.Transport;
 
 public class GeneralDCNode extends GeneralNode implements DCNode, Cloneable {

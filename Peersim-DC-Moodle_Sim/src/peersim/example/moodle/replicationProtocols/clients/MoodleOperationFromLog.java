@@ -87,7 +87,7 @@ public class MoodleOperationFromLog extends BaseClientOperationGenerator impleme
 			operationType = op.getAttributeByName(MOODLE_OP.OPERATION).replaceAll("\"", "");
 			courseId = op.getAttributeByName(MOODLE_OP.COURSE_ID);
 			
-			long time = op.getTimestamp();
+			long time = op.getTimestampInMillis();
 			if(startOfTime == -1) {
 				startOfTime = time;
 			}

@@ -1,7 +1,7 @@
 package peersim.core.dcdatastore.initializers.databaseinit;
 
 import peersim.core.dcdatastore.ServerNode;
-import peersim.core.dcdatastore.util.DataObject;
+import peersim.core.dcdatastore.datatypes.DataObject;
 
 public interface DatabaseInitializable {
 

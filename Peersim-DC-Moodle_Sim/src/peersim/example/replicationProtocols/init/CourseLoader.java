@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import moodleLogic.Course;
+import peersim.core.dcdatastore.datatypes.DataObject;
 import peersim.core.dcdatastore.initializers.databaseinit.DatabaseInitiator;
-import peersim.core.dcdatastore.util.DataObject;
 
 public class CourseLoader extends DatabaseInitiator {
 

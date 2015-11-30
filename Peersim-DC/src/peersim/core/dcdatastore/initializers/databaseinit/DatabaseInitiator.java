@@ -8,7 +8,7 @@ import peersim.core.Node;
 import peersim.core.dcdatastore.DCCommonState;
 import peersim.core.dcdatastore.GeoReplicatedDatastoreNetwork;
 import peersim.core.dcdatastore.ServerNode;
-import peersim.core.dcdatastore.util.DataObject;
+import peersim.core.dcdatastore.datatypes.DataObject;
 
 public abstract class DatabaseInitiator implements Control {
 

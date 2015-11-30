@@ -1,8 +1,8 @@
 package peersim.core.dcdatastore;
 
 import peersim.core.Node;
+import peersim.core.dcdatastore.datatypes.Message;
 import peersim.transport.Transport;
-import peersim.core.dcdatastore.util.Message;
 
 public interface DCNode extends Node {
 	
