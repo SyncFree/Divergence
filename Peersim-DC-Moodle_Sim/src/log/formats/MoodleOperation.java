@@ -1,6 +1,5 @@
 package log.formats;
 
-import static log.readers.AbstractLog.DELIMITER;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,9 +7,12 @@ import java.util.logging.Logger;
 
 import log.formats.model.MOODLE_OP;
 
+
 public class MoodleOperation extends AbstractOperation<MOODLE_OP>
 		implements
 			OperationFactory<MOODLE_OP> {
+	// "Overwriting" the AbstractLog Delimiter MoodleLog delimiter
+	public static String DELIMITER = "\t";
 
 	private static Logger log = Logger.getLogger(MoodleOperation.class
 			.getName());
