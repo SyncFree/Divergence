@@ -44,11 +44,10 @@ public class LogByTime<T extends Enum<T>> extends AbstractLog<T> {
 		return init;
 	}
 
-	private static File orderByTimeLog(File logFile, OperationFactory<?> factory) throws IOException {
-		Map<String, Operation<?>> ops = new HashMap<>();
-		PriorityQueue<String> orderedFile = new PriorityQueue<>(new Comparator<String>() {
+	private static File orderByTimeLog(File logFile, final OperationFactory<?> factory) throws IOException {
+		final Map<String, Operation<?>> ops = new HashMap<String, Operation<?>>();
+		PriorityQueue<String> orderedFile = new PriorityQueue<String>(new Comparator<String>() {
 
-			@Override
 			public int compare(String o1, String o2) {
 				Operation<?> op1 = ops.get(o1);
 				if (op1 == null) {

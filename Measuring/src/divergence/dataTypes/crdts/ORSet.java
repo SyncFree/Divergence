@@ -60,7 +60,6 @@ public class ORSet<V> implements CvRDT, ICRDTSet<V> {
      * 
      * @param e
      */
-    @Override
     public synchronized void add(V e, LocalClock clk) {
         Set<Timestamp> s = elems.get(e);
         if (s == null) {
@@ -75,7 +74,6 @@ public class ORSet<V> implements CvRDT, ICRDTSet<V> {
      * 
      * @param e
      */
-    @Override
     public synchronized void remove(V e, LocalClock clk) {
         Set<Timestamp> s = elems.get(e);
         if (s == null) {
@@ -85,7 +83,6 @@ public class ORSet<V> implements CvRDT, ICRDTSet<V> {
         elems.remove(e);
     }
 
-    @Override
     public synchronized void merge(CvRDT oo, CausalityClock thisClock,
             CausalityClock ooClock) throws IncompatibleTypeException {
         if (!(oo instanceof ORSet)) {
@@ -116,7 +113,6 @@ public class ORSet<V> implements CvRDT, ICRDTSet<V> {
         }
     }
 
-    @Override
     public boolean equals(CvRDT o) {
         if (!(o instanceof ORSet<?>)) {
             return false;

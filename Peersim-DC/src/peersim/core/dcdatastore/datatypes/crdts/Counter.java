@@ -81,7 +81,6 @@ public class Counter implements CvRDT, DataObject<Integer, LocalClock>, Cloneabl
         return this.val;
     }
 
-    @Override
     public void merge(CvRDT other, CausalityClock thisClock,
             CausalityClock thatClock) throws IncompatibleTypeException {
         if (!(other instanceof Counter)) {
@@ -118,7 +117,6 @@ public class Counter implements CvRDT, DataObject<Integer, LocalClock>, Cloneabl
         }
     }
 
-    @Override
     public boolean equals(CvRDT other) {
         if (!(other instanceof Counter)) {
             return false;
@@ -152,17 +150,14 @@ public class Counter implements CvRDT, DataObject<Integer, LocalClock>, Cloneabl
 		return Distances.absDistance(this.val, other.val);	
 	}
 
-	@Override
 	public Integer getData() {
 		return new Integer(this.value());
 	}
 
-	@Override
 	public void setData(Integer data) {
 		this.val = data;
 	}
 
-	@Override
 	public void setData(Integer data, LocalClock metadata) {
 		if(data >= val)
 			this.add(data - val, metadata);
@@ -171,12 +166,10 @@ public class Counter implements CvRDT, DataObject<Integer, LocalClock>, Cloneabl
 	}
 
 	// TODO: Revise this method.
-	@Override
 	public LocalClock getMetadata() {
 		return new LocalClock(null);
 	}
 
-	@Override
 	public double computeDivergence(DataObject<?, ?> dataObject) {
 		return this.distance((Counter) dataObject);
 	}

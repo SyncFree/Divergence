@@ -6,8 +6,8 @@ public interface EventClock extends Serializable, Comparable<EventClock> {
     /**
      * Create a copy of this event clock.
      */
-    EventClock clone();
+    public EventClock clone();
 
-    String getIdentifier();
+    public String getIdentifier();
 
 }

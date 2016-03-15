@@ -1495,12 +1495,10 @@ public class Course implements DataObject<Course, Integer> {
 		return 1;
 	}
 
-	@Override
 	public Course getData() {
 		return this;
 	}
 
-	@Override
 	public void setData(Course data) {
 		this.id = data.id;
 		this.enrollmentLimit = data.enrollmentLimit;
@@ -1519,7 +1517,6 @@ public class Course implements DataObject<Course, Integer> {
 		this.Urls = data.Urls;
 	}
 
-	@Override
 	public void setData(Course data, Integer metadata) {
 		this.id = data.id;
 		this.enrollmentLimit = data.enrollmentLimit;
@@ -1539,12 +1536,10 @@ public class Course implements DataObject<Course, Integer> {
 		this.value = metadata;
 	}
 
-	@Override
 	public Integer getMetadata() {
 		return value;
 	}
 
-	@Override
 	public double computeDivergence(DataObject<?, ?> other) {
 		int val = 0;
 		int valOther = 0;

@@ -41,12 +41,10 @@ public abstract class AbstractLog<T extends Enum<T>> implements Log<T> {
 		return factory.parseLine(line);
 	}
 
-	@Override
 	public boolean hasNext() {
 		return stream.hasNext();
 	}
 
-	@Override
 	public Operation<T> next() {
 		try {
 			String line = stream.nextLine();

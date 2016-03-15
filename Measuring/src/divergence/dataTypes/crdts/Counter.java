@@ -79,7 +79,6 @@ public class Counter implements CvRDT {
         return this.val;
     }
 
-    @Override
     public void merge(CvRDT other, CausalityClock thisClock,
             CausalityClock thatClock) throws IncompatibleTypeException {
         if (!(other instanceof Counter)) {
@@ -116,7 +115,6 @@ public class Counter implements CvRDT {
         }
     }
 
-    @Override
     public boolean equals(CvRDT other) {
         if (!(other instanceof Counter)) {
             return false;

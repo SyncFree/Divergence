@@ -86,7 +86,7 @@ public class VersionVector implements CausalityClock {
      * @throws IncompatibleTypeException
      *             Case comparison cannot be made
      */
-    @Override
+
     public int compareTo(CausalityClock c) throws IncompatibleTypeException {
         if (!(c instanceof VersionVector)) {
             throw new IncompatibleTypeException();
@@ -165,7 +165,6 @@ public class VersionVector implements CausalityClock {
      *         causality clock.
      * @throws IncompatibleTypeException
      */
-    @Override
     public boolean includes(EventClock c) throws IncompatibleTypeException {
         if (!(c instanceof Timestamp)) {
             throw new IncompatibleTypeException();

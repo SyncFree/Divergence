@@ -64,33 +64,23 @@ public class Directory implements DataObject<String, Integer> {
         this.value+=1;
     }
 
-
-	@Override
 	public String getData() {
 		return this.id;
 	}
 
-
-	@Override
 	public void setData(String data) {
 		this.id = data;
 	}
 
-
-	@Override
 	public void setData(String data, Integer metadata) {
 		this.id = data;
 		this.value = metadata;
 	}
 
-
-	@Override
 	public Integer getMetadata() {
 		return this.value;
 	}
 
-
-	@Override
 	public double computeDivergence(DataObject<?, ?> dataObject) {
 		if(!(dataObject instanceof Directory) )
 			return 0;

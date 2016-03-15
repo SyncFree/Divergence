@@ -55,7 +55,6 @@ public class Timestamp implements EventClock {
         return 8 + siteid.length();
     }
 
-    @Override
     public String getIdentifier() {
         return siteid;
     }

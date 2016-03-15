@@ -24,13 +24,12 @@ public abstract class AbstractOperation<T extends Enum<?>>
 
 	public AbstractOperation(long timestamp) {
 		super();
-		this.attributes = new HashMap<>();
+		this.attributes = new HashMap<T,String>();
 		this.timestamp = timestamp;
 	}
 
 	public abstract Operation<T> parseLine(String nextLine);
 
-	@Override
 	public String getAttributeByName(T name) {
 		return attributes.get(name);
 	}

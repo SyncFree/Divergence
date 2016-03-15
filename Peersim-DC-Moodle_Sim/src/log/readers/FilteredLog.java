@@ -17,11 +17,11 @@ public class FilteredLog<T extends Enum<T>> implements Log<T> {
 
 	public FilteredLog(Log<T> logReader) {
 		this.logReader = logReader;
-		this.filter = new HashMap<>();
+		this.filter = new HashMap<T,Set<String>>();
 	}
 	public void addFilter(T attribute, String value) {
 		if (!filter.containsKey(attribute) || value.equals("*")) {
-			filter.put(attribute, new HashSet<>());
+			filter.put(attribute, new HashSet<String>());
 		}
 		filter.get(attribute).add(value);
 	}
@@ -29,7 +29,7 @@ public class FilteredLog<T extends Enum<T>> implements Log<T> {
 	public void addFilter(T attribute, String... values) {
 
 		if (!filter.containsKey(attribute)) {
-			filter.put(attribute, new HashSet<>());
+			filter.put(attribute, new HashSet<String>());
 		}
 
 		Set<String> filterValues = filter.get(attribute);
@@ -43,7 +43,6 @@ public class FilteredLog<T extends Enum<T>> implements Log<T> {
 		}
 	}
 
-	@Override
 	public boolean hasNext() {
 		computeNextOp();
 		if (nextOp == null)
@@ -78,7 +77,7 @@ public class FilteredLog<T extends Enum<T>> implements Log<T> {
 		}
 		return ok;
 	}
-	@Override
+
 	public Operation<T> next() {
 		if (nextOp == null)
 			computeNextOp();

@@ -62,7 +62,6 @@ public class ORSet<V> implements CvRDT, ICRDTSet<V>, DataObject<V, LocalClock>, 
      * 
      * @param e
      */
-    @Override
     public synchronized void add(V e, LocalClock clk) {
         Set<Timestamp> s = elems.get(e);
         if (s == null) {
@@ -77,7 +76,6 @@ public class ORSet<V> implements CvRDT, ICRDTSet<V>, DataObject<V, LocalClock>, 
      * 
      * @param e
      */
-    @Override
     public synchronized void remove(V e, LocalClock clk) {
         Set<Timestamp> s = elems.get(e);
         if (s == null) {
@@ -87,7 +85,6 @@ public class ORSet<V> implements CvRDT, ICRDTSet<V>, DataObject<V, LocalClock>, 
         elems.remove(e);
     }
 
-    @Override
     public synchronized void merge(CvRDT oo, CausalityClock thisClock,
             CausalityClock ooClock) throws IncompatibleTypeException {
         if (!(oo instanceof ORSet)) {
@@ -118,7 +115,6 @@ public class ORSet<V> implements CvRDT, ICRDTSet<V>, DataObject<V, LocalClock>, 
         }
     }
 
-    @Override
     public boolean equals(CvRDT o) {
         if (!(o instanceof ORSet<?>)) {
             return false;
@@ -179,31 +175,27 @@ public class ORSet<V> implements CvRDT, ICRDTSet<V>, DataObject<V, LocalClock>, 
     }
 
     //TODO: Revise this method.
-	@Override
 	public V getData() {
 		return null;
 	}
 
 	//TODO: Revise this method.
-	@Override
 	public void setData(V data) {
 		;
 	}
 
 	//TODO: Revise this method.
-	@Override
 	public void setData(V data, LocalClock metadata) {
 		;
 	}
 
 	//TODO: Revise this method.
-	@Override
 	public LocalClock getMetadata() {
 		return new LocalClock(null);
 	}
 
+
 	@SuppressWarnings("unchecked")
-	@Override
 	public double computeDivergence(DataObject<?, ?> dataObject) {
 		return this.distance((ORSet<V>) dataObject);
 	}

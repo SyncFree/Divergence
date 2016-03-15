@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -49,9 +50,13 @@ public class SimpleExampleAdService {
 		File opsPerKeyWritesOrderedFile = new File(args[1] + "_" + "ops_per_key_writes_ordered");
 
 		SimpleLog<AD_OP> log = new SimpleLog<AD_OP>(args[0], AdServiceOperation.getFactory());
-		ImmutableSet<String> all = ImmutableSet.copyOf(new String[] {});
-		ImmutableSet<String> reads = ImmutableSet.copyOf(new String[] { "read" });
-		ImmutableSet<String> writes = ImmutableSet.copyOf(new String[] { "write" });
+		ImmutableSet<String> all = ImmutableSet.copyOf(new ArrayList<String>());
+		ArrayList<String> iterable_reads = new ArrayList<String>();
+		iterable_reads.add("read");
+		ImmutableSet<String> reads = ImmutableSet.copyOf(iterable_reads);
+		ArrayList<String> iterable_writes = new ArrayList<String>();
+		iterable_writes.add("write");
+		ImmutableSet<String> writes = ImmutableSet.copyOf(iterable_writes);
 
 		Map<String, Integer> countAllOpsPerKey = computeOpsPerKey(log, all);
 		log.resetState();

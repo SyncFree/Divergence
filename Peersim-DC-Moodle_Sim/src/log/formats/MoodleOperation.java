@@ -64,7 +64,6 @@ public class MoodleOperation extends AbstractOperation<MOODLE_OP>
 				+ attributes.get(MOODLE_OP.INFO);
 	}
 
-	@Override
 	public int compareTo(Operation<?> op) {
 		if (op instanceof MoodleOperation) {
 			MoodleOperation o = (MoodleOperation) op;

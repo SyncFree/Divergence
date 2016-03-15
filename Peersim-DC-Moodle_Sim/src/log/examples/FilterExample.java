@@ -17,7 +17,7 @@ public class FilterExample {
 			IllegalArgumentException, InvocationTargetException,
 			NoSuchMethodException, SecurityException, ClassNotFoundException {
 
-		FilteredLog<MOODLE_OP> log = new FilteredLog<>(new SimpleLog<>(args[0],
+		FilteredLog<MOODLE_OP> log = new FilteredLog<MOODLE_OP>(new SimpleLog<MOODLE_OP>(args[0],
 				MoodleOperation.getFactory()));
 		log.addFilter(MOODLE_OP.REQUESTER_ID, "USER_354509214",
 				"USER_1569589921");

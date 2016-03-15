@@ -66,8 +66,8 @@ public class DivergenceTester {
 		LocalClock clk1= new LocalClock("Site 1");
 		LocalClock clk2= new LocalClock("Site 2");
 		
-		ORSet<String> set1=new ORSet<>();
-		ORSet<String> set2=new ORSet<>(set1);
+		ORSet<String> set1=new ORSet<String>();
+		ORSet<String> set2=new ORSet<String>(set1);
 		
 		display("ORSet Symmetric difference: ");
 		

@@ -10,7 +10,6 @@ public class Pair<F extends Comparable<F>, S extends Comparable<S>> implements C
 
 	final Comparator<Pair<F, S>> DESC_BY_SECOND = new Comparator<Pair<F, S>>() {
 
-		@Override
 		public int compare(Pair<F, S> o1, Pair<F, S> o2) {
 			return -(o1.second.compareTo(o2.second) != 0 ? o1.second.compareTo(o2.second) : o2.first
 					.compareTo(o2.first));
@@ -19,7 +18,6 @@ public class Pair<F extends Comparable<F>, S extends Comparable<S>> implements C
 
 	final Comparator<Pair<F, S>> ASC_BY_SECOND = new Comparator<Pair<F, S>>() {
 
-		@Override
 		public int compare(Pair<F, S> o1, Pair<F, S> o2) {
 			return o1.second.compareTo(o2.second) != 0 ? o1.second.compareTo(o2.second) : o2.first.compareTo(o2.first);
 		}
@@ -51,7 +49,6 @@ public class Pair<F extends Comparable<F>, S extends Comparable<S>> implements C
 		return false;
 	}
 
-	@Override
 	public int compareTo(Pair<F, S> o) {
 		return comparator.compare(this, o);
 	}
