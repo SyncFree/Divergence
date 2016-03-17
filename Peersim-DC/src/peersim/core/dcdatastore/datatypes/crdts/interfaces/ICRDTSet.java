@@ -23,13 +23,13 @@ public interface ICRDTSet<V> extends CvRDT{
      * 
      * @param e
      */
-    void add(V e, LocalClock clk);
+    boolean add(V e, LocalClock clk);
 
     /**
      * Delete element e from the set, using the given timestamp.
      * 
      * @param e
      */
-    void remove(V e, LocalClock clk);
+    boolean remove(V e, LocalClock clk);
 
 }

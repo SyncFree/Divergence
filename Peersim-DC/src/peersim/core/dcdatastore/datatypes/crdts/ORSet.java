@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.google.common.primitives.UnsignedInteger;
+
 import peersim.core.dcdatastore.datatypes.DataObject;
 import peersim.core.dcdatastore.datatypes.clocks.CausalityClock;
 import peersim.core.dcdatastore.datatypes.clocks.LocalClock;
@@ -26,7 +28,8 @@ public class ORSet<V> implements CvRDT, ICRDTSet<V>, DataObject<V, LocalClock>, 
     private static final long serialVersionUID = 1L;
     private Map<V, Set<Timestamp>> elems;
     private Set<Timestamp> tomb; // tombstones
-
+    private int size;
+    
     public ORSet() {
         elems = new HashMap<V, Set<Timestamp>>();
         tomb = new HashSet<Timestamp>();
@@ -36,15 +39,20 @@ public class ORSet<V> implements CvRDT, ICRDTSet<V>, DataObject<V, LocalClock>, 
         elems = new HashMap<V, Set<Timestamp>>(other.elems);
         tomb = new HashSet<Timestamp>(other.tomb);
     }
-
+    
+    public int getSize(){
+    	return size;
+    }
+    
     /**
      * Returns true if e is in the set
      * 
-     * @param e
+     * @param o
      * @return
      */
-    public synchronized boolean contains(V e) {
-        return elems.containsKey(e);
+    public synchronized boolean contains(Object o) {
+
+        return elems.containsKey(o);
     }
 
 //    /**
@@ -62,13 +70,13 @@ public class ORSet<V> implements CvRDT, ICRDTSet<V>, DataObject<V, LocalClock>, 
      * 
      * @param e
      */
-    public synchronized void add(V e, LocalClock clk) {
+    public synchronized boolean add(V e, LocalClock clk) {
         Set<Timestamp> s = elems.get(e);
         if (s == null) {
             s = new HashSet<Timestamp>();
             elems.put(e, s);
         }
-        s.add((Timestamp) clk.nextEventClock());
+        return (s.add((Timestamp) clk.nextEventClock()));
     }
 
     /**
@@ -76,14 +84,15 @@ public class ORSet<V> implements CvRDT, ICRDTSet<V>, DataObject<V, LocalClock>, 
      * 
      * @param e
      */
-    public synchronized void remove(V e, LocalClock clk) {
+    public synchronized boolean remove(V e, LocalClock clk) {
         Set<Timestamp> s = elems.get(e);
         if (s == null) {
-            return;
+            return(false);
         }
         tomb.addAll(s);
-        elems.remove(e);
+        return(elems.remove(e) == null);
     }
+    
 
     public synchronized void merge(CvRDT oo, CausalityClock thisClock,
             CausalityClock ooClock) throws IncompatibleTypeException {
@@ -215,5 +224,9 @@ public class ORSet<V> implements CvRDT, ICRDTSet<V>, DataObject<V, LocalClock>, 
 			//should never happen
 		}
 		return nors;
+	}
+
+	public Iterator<V> iterator() {
+		return elems.keySet().iterator();
 	}
 }
