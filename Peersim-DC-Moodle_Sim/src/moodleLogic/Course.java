@@ -29,12 +29,13 @@ package moodleLogic;
 
 import static java.lang.Boolean.*;
 
-
 import java.util.HashSet;
 import java.util.Set;
 
+import crdt.moodle.ORSetMoodle;
 import peersim.core.dcdatastore.datatypes.DataObject;
-
+import peersim.core.dcdatastore.datatypes.clocks.LocalClock;
+import peersim.core.dcdatastore.datatypes.crdts.ORSet;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -43,43 +44,44 @@ import peersim.core.dcdatastore.datatypes.DataObject;
  */
 
 /**
- * Main class of the moodle logic as it contains all the modules (Calendars, Assignments, Members, ...)
- * #
+ * Main class of the moodle logic as it contains all the modules (Calendars,
+ * Assignments, Members, ...) #
+ * 
  * @author jordi
  */
 public class Course implements DataObject<Course, Integer> {
 	private String id;
 	private int enrollmentLimit;
 	private int value;
-	private Set<Calendar> Calendars;
-	private Set<Assignment> Assignments;
-	private Set<Module> Modules;
-	private Set<Member> Members;
-	private Set<Forum> Forums;
-	private Set<Blog> Blogs;
-	private Set<Directory> Directories;
-	private Set<Quiz> Quizes;
-	private Set<QuizAttempt> QuizAttempts;
-	private Set<Resource> Resources;
-	private Set<Page> Pages;
-	private Set<Url> Urls;
+	private ORSetMoodle<Calendar> Calendars;
+	private ORSetMoodle<Assignment> Assignments;
+	private ORSetMoodle<Module> Modules;
+	private ORSetMoodle<Member> Members;
+	private ORSetMoodle<Forum> Forums;
+	private ORSetMoodle<Blog> Blogs;
+	private ORSetMoodle<Directory> Directories;
+	private ORSetMoodle<Quiz> Quizes;
+	private ORSetMoodle<QuizAttempt> QuizAttempts;
+	private ORSetMoodle<Resource> Resources;
+	private ORSetMoodle<Page> Pages;
+	private ORSetMoodle<Url> Urls;
 
 	public Course(String courseId, int enrollmentLimit) {
 		this.id = courseId;
 		this.enrollmentLimit = enrollmentLimit;
 		this.value = 0;
-		this.Calendars = new HashSet<Calendar>();
-		this.Assignments = new HashSet<Assignment>();
-		this.Modules = new HashSet<Module>();
-		this.Members = new HashSet<Member>();
-		this.Forums = new HashSet<Forum>();
-		this.Blogs = new HashSet<Blog>();
-		this.Directories = new HashSet<Directory>();
-		this.Quizes = new HashSet<Quiz>();
-		this.QuizAttempts = new HashSet<QuizAttempt>();
-		this.Resources = new HashSet<Resource>();
-		this.Pages = new HashSet<Page>();
-		this.Urls = new HashSet<Url>();
+		this.Calendars = new ORSetMoodle<Calendar>();
+		this.Assignments = new ORSetMoodle<Assignment>();
+		this.Modules = new ORSetMoodle<Module>();
+		this.Members = new ORSetMoodle<Member>();
+		this.Forums = new ORSetMoodle<Forum>();
+		this.Blogs = new ORSetMoodle<Blog>();
+		this.Directories = new ORSetMoodle<Directory>();
+		this.Quizes = new ORSetMoodle<Quiz>();
+		this.QuizAttempts = new ORSetMoodle<QuizAttempt>();
+		this.Resources = new ORSetMoodle<Resource>();
+		this.Pages = new ORSetMoodle<Page>();
+		this.Urls = new ORSetMoodle<Url>();
 	}
 
 	public Object clone() {
@@ -89,17 +91,17 @@ public class Course implements DataObject<Course, Integer> {
 			nc.id = this.id;
 			nc.enrollmentLimit = this.enrollmentLimit;
 			nc.value = this.value;
-			nc.Calendars = new HashSet<Calendar>(this.Calendars);
-			nc.Assignments = new HashSet<Assignment>(this.Assignments);
-			nc.Modules = new HashSet<Module>(this.Modules);
-			nc.Members = new HashSet<Member>(this.Members);
-			nc.Forums = new HashSet<Forum>(this.Forums);
-			nc.Blogs = new HashSet<Blog>(this.Blogs);
-			nc.Directories = new HashSet<Directory>(this.Directories);
-			nc.Quizes = new HashSet<Quiz>(this.Quizes);
-			nc.Resources = new HashSet<Resource>(this.Resources);
-			nc.Pages = new HashSet<Page>(this.Pages);
-			nc.Urls = new HashSet<Url>(this.Urls);
+			nc.Calendars = new ORSetMoodle<Calendar>(this.Calendars);
+			nc.Assignments = new ORSetMoodle<Assignment>(this.Assignments);
+			nc.Modules = new ORSetMoodle<Module>(this.Modules);
+			nc.Members = new ORSetMoodle<Member>(this.Members);
+			nc.Forums = new ORSetMoodle<Forum>(this.Forums);
+			nc.Blogs = new ORSetMoodle<Blog>(this.Blogs);
+			nc.Directories = new ORSetMoodle<Directory>(this.Directories);
+			nc.Quizes = new ORSetMoodle<Quiz>(this.Quizes);
+			nc.Resources = new ORSetMoodle<Resource>(this.Resources);
+			nc.Pages = new ORSetMoodle<Page>(this.Pages);
+			nc.Urls = new ORSetMoodle<Url>(this.Urls);
 
 		} catch (CloneNotSupportedException e) {
 			// TODO Auto-generated catch block
@@ -201,26 +203,30 @@ public class Course implements DataObject<Course, Integer> {
 		}
 		return null;
 	}
+
 	/**
 	 * Adds a new blog to the set of blogs of the course.
 	 * <p>
 	 * It is assumed that blogId does not already exist in the set.
 	 * <p>
-	 * This function is intended to be called from {@link #BlogAddOperation(String, String)}
+	 * This function is intended to be called from
+	 * {@link #BlogAddOperation(String, String)}
+	 * 
 	 * @param blodId
 	 * @see BlogAddOperation
 	 */
 	public void addBlog(String blogId) {
 		Blogs.add(new Blog(blogId));
 	}
-	
+
 	/**
 	 * Checks if a specific blog exists in the set of blogs of the course.
 	 * <p>
 	 *
-	 * @param blodId integer id to a specific blog within the course.
-	 * @return	TRUE if the blog exists, and FALSE otherwise 
-	 */	
+	 * @param blodId
+	 *            integer id to a specific blog within the course.
+	 * @return TRUE if the blog exists, and FALSE otherwise
+	 */
 	public boolean existBlog(String blogId) {
 		for (Blog b : Blogs) {
 			if (b.getId() == blogId)
@@ -229,13 +235,17 @@ public class Course implements DataObject<Course, Integer> {
 
 		return FALSE;
 	}
+
 	/**
 	 * Removes an existing blog from the set of blogs of the course.
 	 * <p>
 	 * It is assumed that blogId exists in the set.
 	 * <p>
-	 * This function is intended to be called from {@link #BlogDeleteOperation(String, String)}
-	 * @param blodId	int id to a specific blog within the course.
+	 * This function is intended to be called from
+	 * {@link #BlogDeleteOperation(String, String)}
+	 * 
+	 * @param blodId
+	 *            int id to a specific blog within the course.
 	 * @see BlogDeleteOperation
 	 */
 	public void deleteBlog(String blogId) {
