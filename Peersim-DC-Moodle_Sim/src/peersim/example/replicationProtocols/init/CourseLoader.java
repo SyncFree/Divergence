@@ -15,7 +15,7 @@ public class CourseLoader extends DatabaseInitiator {
 
 	@Override
 	protected Map<String, DataObject<?, ?>> getDataToLoad() {
-		String keys[] = {"COURSE_-1768490243","COURSE_-1914466859","COURSE_1435140924","COURSE_-1901537565"};
+		String keys[] = {"COURSE_-1768490243","COURSE_-1914466859","COURSE_1435140924", "COURSE_-1901537565", "VZE_4444993"};
 		
 		Map<String, DataObject<?, ?>> objects = new HashMap<String, DataObject<?, ?>>();
 		for (String key:keys){
