@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project logsimulator with libraries in sub-folder">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <!--define folder properties-->
+    <property name="dir.buildfile" value="."/>
+    <!-- Change dir.workspace to the right place for you! -->
+    <property name="dir.workspace" value="/home/jordi/eclipse_workspace"/>
+    <property name="dir.jarfile" value="${dir.buildfile}"/>
+    <target name="create_run_jar">
+        <jar destfile="${dir.jarfile}/logsim.jar">
+            <manifest>
+                <attribute name="Main-Class" value="peersim.Simulator"/>
+                <attribute name="Class-Path" value=". logsim_lib/djep-1.0.0.jar logsim_lib/jep-2.3.0.jar logsim_lib/commons-math3-3.5-javadoc.jar logsim_lib/commons-math3-3.5.jar logsim_lib/guava-18.0.jar"/>
+            </manifest>
+            <fileset dir="${dir.workspace}/logsimulator/bin"/>
+        </jar>
+        <delete dir="${dir.jarfile}/logsim_lib"/>
+        <mkdir dir="${dir.jarfile}/logsim_lib"/>
+        <copy file="${dir.workspace}/logsimulator/Peersim-DC/libs/djep-1.0.0.jar" todir="${dir.jarfile}/logsim_lib"/>
+        <copy file="${dir.workspace}/logsimulator/Peersim-DC/libs/jep-2.3.0.jar" todir="${dir.jarfile}/logsim_lib"/>
+        <copy file="${dir.workspace}/logsimulator/libs/commons-math3-3.5-javadoc.jar" todir="${dir.jarfile}/logsim_lib"/>
+        <copy file="${dir.workspace}/logsimulator/libs/commons-math3-3.5.jar" todir="${dir.jarfile}/logsim_lib"/>
+        <copy file="${dir.workspace}/logsimulator/libs/guava-18.0.jar" todir="${dir.jarfile}/logsim_lib"/>
+    </target>
+</project>
